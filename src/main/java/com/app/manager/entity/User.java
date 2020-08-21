@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,12 +25,30 @@ public class User {
     )
     private String id;
 
+    @Column(name = "subscriptionId")
+    private String subscriptionId;
+
+    @ManyToOne
+    @JoinColumn(name = "subscriptionId", updatable = false, insertable = false)
+    private Subscription subscription;
+
+    @OneToMany(mappedBy = "user")
+    private List<Session> sessions;
+
+    @OneToMany(mappedBy = "user")
+    private List<StudentCourse> studentCourses;
+
+    @OneToMany(mappedBy = "user")
+    private List<Course> courses;
+
+    @OneToMany(mappedBy = "user")
+    private List<Attendance> attendances;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
 
     @NotBlank()
     @Size(min = 6, max = 30)

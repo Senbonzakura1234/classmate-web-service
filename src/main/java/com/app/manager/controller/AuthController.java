@@ -1,6 +1,7 @@
 package com.app.manager.controller;
 
 import com.app.manager.entity.User;
+import com.app.manager.model.Seeder;
 import com.app.manager.model.payload.request.LoginRequest;
 import com.app.manager.model.payload.request.SignupRequest;
 import com.app.manager.model.payload.response.JwtResponse;
@@ -31,11 +32,12 @@ public class AuthController {
     @Autowired RoleService roleService;
     @Autowired PasswordEncoder encoder;
     @Autowired JwtUtils jwtUtils;
-
+    @Autowired Seeder seeder;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        roleService.generateRoles();
+//        seeder.Seed();
+
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -56,7 +58,8 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        roleService.generateRoles();
+//        seeder.Seed();
+
         var checkUsername = userService.checkExistUsername(signUpRequest.getUsername());
         if (checkUsername.isEmpty() || checkUsername.get()) {
             return ResponseEntity

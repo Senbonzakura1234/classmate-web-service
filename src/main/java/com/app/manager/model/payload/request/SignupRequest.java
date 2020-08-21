@@ -53,6 +53,25 @@ public class SignupRequest {
         this.password = password;
     }
 
+    public SignupRequest(
+            @NotBlank(message = "Please provide username")
+            @Size(min = 6, max = 30, message = "Username has at least 6 and max 30 characters")
+            String username,
+            @Email(message = "Please provide valid email")
+            @NotBlank(message = "Please provide your email")
+            @Size(max = 50, message = "Email too long")
+            String email,
+            @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).*$",
+            message = "Password must has an uppercase, an lower case and a numeric character")
+            @NotBlank(message = "Please provide password")
+            @Size(max = 200, message = "Password too long")
+            String password, Set<String> role) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
     public String getUsername() {
         return username;
     }
