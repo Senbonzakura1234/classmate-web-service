@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!--suppress ThymeleafVariablesResolveInspection -->
+<html lang="en" layout:decorate="~{fragments/layouts/error_layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block layout:fragment="stylesheet_custom"/>
+</head>
+
+<body>
+<th:block layout:fragment="home">
+    <div class="col-xl-12 error-page-divider text-xl-center">
+        <img class="bg-white mb-2"
+             style="border-radius: 100%; border: black solid 5px"
+             th:src="@{/assets/images/logo.svg}" alt="logo">
+    </div>
+    <div class="col-xl-12 error-page-divider text-xl-center">
+        <h2 class="font-weight-light">
+            Classmate
+<!--            <span class="d-none d-sm-inline">-</span>-->
+            <br class="d-sm-none">
+            Api WebService
+        </h2>
+        <span class="text-muted">
+            <span class="fas fa-cog fa-spin"></span>
+            Now running
+            <span class="fas fa-cog fa-spin"></span>
+        </span>
+    </div>
+</th:block>
+
+
+
+<th:block layout:fragment="script_plugin"/>
+
+<th:block layout:fragment="script_custom"/>
+
+</body>
+
+</html>

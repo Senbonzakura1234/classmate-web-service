@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!--suppress ThymeleafVariablesResolveInspection -->
+<html lang="en" layout:decorate="~{fragments/layouts/error_layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block layout:fragment="stylesheet_custom"/>
+</head>
+
+<body>
+
+<th:block layout:fragment="status" th:text="${status}"></th:block>
+<th:block layout:fragment="message">
+    <div class="col-xl-6 error-page-divider text-xl-left pl-xl-4">
+        <h2>SORRY!</h2>
+        <h3 class="font-weight-light">
+            <th:block th:text="${status == 404? 'The page you’re looking for was not found.' : ''}"></th:block>
+            <th:block th:text="${status == 500? 'Internal server error!' : ''}"></th:block>
+            <th:block th:text="${status != 500 && status != 404? error : ''}"></th:block>
+        </h3>
+    </div>
+</th:block>
+<th:block layout:fragment="backHomeLink">
+    <div class="row mt-5">
+        <div class="col-12 text-center mt-xl-2">
+            <a class="text-white font-weight-medium" th:href="@{/}">Back to home</a>
+        </div>
+    </div>
+</th:block>
+
+
+<th:block layout:fragment="script_plugin"/>
+
+<th:block layout:fragment="script_custom"/>
+
+</body>
+
+</html>
