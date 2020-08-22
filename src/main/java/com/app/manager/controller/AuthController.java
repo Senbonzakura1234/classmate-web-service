@@ -36,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-//        seeder.Seed();
+//        seeder.Seed(); // uncomment this to seed data, comment it again when done seeding
 
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -58,7 +58,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-//        seeder.Seed();
+//        seeder.Seed(); // uncomment this to seed data, comment it again when done seeding
 
         var checkUsername = userService.checkExistUsername(signUpRequest.getUsername());
         if (checkUsername.isEmpty() || checkUsername.get()) {
