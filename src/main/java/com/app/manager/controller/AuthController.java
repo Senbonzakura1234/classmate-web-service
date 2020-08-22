@@ -11,12 +11,14 @@ import com.app.manager.security.jwt.JwtUtils;
 import com.app.manager.service.interfaceClass.RoleService;
 import com.app.manager.service.interfaceClass.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,8 +37,17 @@ public class AuthController {
     @Autowired Seeder seeder;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest,
+                                              BindingResult bindingResult) {
 //        seeder.Seed(); // uncomment this to seed data, comment it again when done seeding
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error"));
+        }
 
         var authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -57,8 +68,18 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest,
+                                          BindingResult bindingResult) {
 //        seeder.Seed(); // uncomment this to seed data, comment it again when done seeding
+
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error"));
+        }
 
         var checkUsername = userService.checkExistUsername(signUpRequest.getUsername());
         if (checkUsername.isEmpty() || checkUsername.get()) {
