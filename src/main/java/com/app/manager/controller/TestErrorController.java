@@ -1,5 +1,6 @@
 package com.app.manager.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,11 @@ public class TestErrorController {
     @RequestMapping("/test/error/400")
     public void test400(@SuppressWarnings({"unused", "RedundantSuppression"})
                             @RequestParam(value = "id") String id){
+    }
+
+    @PreAuthorize("hasRole('TESTROLE')")
+    @RequestMapping("/test/error/403")
+    public void test403(){
     }
 
     @RequestMapping("/test/unAuthorize/error/401")
