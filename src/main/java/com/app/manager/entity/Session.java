@@ -17,49 +17,49 @@ public class Session {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    private String id;
+    private String id; // SessionModel
 
     @Column(name = "courseId")
-    private String courseId;
+    private String courseId; // SessionModel
 
     @ManyToOne
     @JoinColumn(name = "courseId", updatable = false, insertable = false)
     private Course course;
 
     @Column(name = "userId")
-    private String userId;
+    private String userId; // SessionModel
 
     @ManyToOne
     @JoinColumn(name = "userId", updatable = false, insertable = false)
     private User user;
 
     @OneToMany(mappedBy = "session")
-    private List<Attendance> attendances;
+    private List<Attendance> attendances; 
 
 
 
     @NotBlank
     @Column(name = "name", nullable = false)
-    private String name;
+    private String name; // SessionModel
 
 
     @Column(name = "starttime", nullable = false)
-    private Long starttime;
+    private Long starttime; // SessionModel
 
     @Min(value = 0)
     @Column(name = "attendanceduration", nullable = false)
-    private int attendanceduration;
+    private int attendanceduration; // SessionModel
 
     @Column(name = "attendancechecked", nullable = false)
-    private boolean attendancechecked;
+    private boolean attendancechecked; // SessionModel 
 
 
 
     @Column(name = "status", nullable = false)
-    private StatusEnum status;
+    private StatusEnum status; // SessionModel
 
     @Column(name = "createdat", nullable = false)
-    private Long createdat;
+    private Long createdat; // SessionModel
 
     @Column(name = "updatedat", nullable = false)
     private Long updatedat;
