@@ -36,7 +36,7 @@ public class CourseModel {
 
     public static Course castToEntity(CourseModel courseModel){
         Course course = new Course();
-        course.setCourseCategoryId(courseModel.getCoursecategoryid());
+        course.setCoursecategoryid(courseModel.getCoursecategoryid());
         course.setCreatedat(courseModel.getCreatedat());
         course.setDescription(courseModel.getDescription());
         course.setEnddate(courseModel.getEnddate());
@@ -50,7 +50,7 @@ public class CourseModel {
         if(course == null){
             return courseModel;
         }
-        courseModel.setCoursecategoryid(course.getCourseCategoryId());
+        courseModel.setCoursecategoryid(course.getCoursecategoryid());
         courseModel.setCreatedat(course.getCreatedat());
         courseModel.setDescription(course.getDescription());
         courseModel.setEnddate(course.getEnddate());

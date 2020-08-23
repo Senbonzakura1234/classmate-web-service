@@ -8,10 +8,8 @@ import com.app.manager.service.interfaceClass.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,7 +35,7 @@ public class CourseServiceImp implements CourseService {
                     courses = courseRepository.findBy(pageable);
                 }
             }
-            return courses.map(course -> new CourseModel(course.getCourseCategoryId(), course.getName(), course.getDescription(), course.getStartdate(), course.getEnddate(), course.getCreatedat()));
+            return courses.map(course -> new CourseModel(course.getCoursecategoryid(), course.getName(), course.getDescription(), course.getStartdate(), course.getEnddate(), course.getCreatedat()));
         } catch (Exception e) {
             e.printStackTrace();
             return Page.empty();
@@ -81,7 +79,7 @@ public class CourseServiceImp implements CourseService {
             }
 
             var course  = c.get();
-            course.setCourseCategoryId(courseModel.getCoursecategoryid());
+            course.setCoursecategoryid(courseModel.getCoursecategoryid());
             course.setCreatedat(courseModel.getCreatedat());
             course.setDescription(courseModel.getDescription());
             course.setEnddate(courseModel.getEnddate());

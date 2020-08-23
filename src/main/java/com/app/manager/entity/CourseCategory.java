@@ -18,7 +18,7 @@ public class CourseCategory {
     )
     private String id;
 
-    @OneToMany(mappedBy = "courseCategory")
+    @OneToMany(mappedBy = "coursecategory")
     private List<Course> courses;
 
 
