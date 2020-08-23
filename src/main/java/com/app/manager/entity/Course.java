@@ -52,7 +52,21 @@ public class Course {
     @Column(name = "enddate", nullable = false)
     private Long enddate;
 
+    public Long getStartdate() {
+        return startdate;
+    }
 
+    public void setStartdate(Long startdate) {
+        this.startdate = startdate;
+    }
+
+    public Long getEnddate() {
+        return enddate;
+    }
+
+    public void setEnddate(Long enddate) {
+        this.enddate = enddate;
+    }
 
     @Column(name = "status", nullable = false)
     private StatusEnum status;

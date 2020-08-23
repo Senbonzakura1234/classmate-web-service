@@ -1,7 +1,7 @@
 package com.app.manager.service.implementClass;
 
 import com.app.manager.entity.Course;
-import com.app.manager.model.midware_model.CourseModel;
+import com.app.manager.model.payload.CourseModel;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.repository.CourseRepository;
 import com.app.manager.service.interfaceClass.CourseService;
@@ -37,7 +37,7 @@ public class CourseServiceImp implements CourseService {
                     courses = courseRepository.findBy(pageable);
                 }
             }
-            return courses.map(course -> new CourseModel(course.getCoursecategoryid(), course.getName(), course.getDescription(), course.getStartdate(), course.getEnddate(), course.getCreatedat()));
+            return courses.map(course -> new CourseModel(course.getCourseCategoryId(), course.getName(), course.getDescription(), course.getStartdate(), course.getEnddate(), course.getCreatedat()));
         } catch (Exception e) {
             e.printStackTrace();
             return Page.empty();
@@ -49,11 +49,11 @@ public class CourseServiceImp implements CourseService {
         try {
             courseRepository.save(CourseModel.castToEntity(courseModel));
             return new DatabaseQueryResult(true,
-                    "save course success", HttpStatus.OK);
+                    "save course success");
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "save course failed", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "save course failed");
         }
     }
 
@@ -77,11 +77,11 @@ public class CourseServiceImp implements CourseService {
             var c = courseRepository.findById(id);
             if(c.isEmpty()){
                 return new DatabaseQueryResult(false,
-                        "save course failed", HttpStatus.NOT_FOUND);
+                        "save course failed");
             }
 
             var course  = c.get();
-            course.setCoursecategoryid(courseModel.getCoursecategoryid());
+            course.setCourseCategoryId(courseModel.getCoursecategoryid());
             course.setCreatedat(courseModel.getCreatedat());
             course.setDescription(courseModel.getDescription());
             course.setEnddate(courseModel.getEnddate());
@@ -89,11 +89,11 @@ public class CourseServiceImp implements CourseService {
             course.setStartdate(courseModel.getStartdate());
 
             return new DatabaseQueryResult(true,
-                    "save course success", HttpStatus.OK);
+                    "save course success");
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "save course failed", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "save course failed");
         }
     }
 
@@ -103,15 +103,15 @@ public class CourseServiceImp implements CourseService {
             var course = courseRepository.findById(id);
             if(course.isEmpty()){
                 return new DatabaseQueryResult(false,
-                        "delete course failed", HttpStatus.NOT_FOUND);
+                        "delete course failed");
             }
             courseRepository.delete(course.get());
             return new DatabaseQueryResult(true,
-                    "delete course success", HttpStatus.OK);
+                    "delete course success");
         }catch (Exception e){
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "save course failed", HttpStatus.INTERNAL_SERVER_ERROR);
+                    "save course failed");
         }
     }
 }
