@@ -1,4 +1,4 @@
-package com.app.manager.model.midware_model;
+package com.app.manager.model.payload;
 
 import com.app.manager.entity.Course;
 
@@ -36,7 +36,7 @@ public class CourseModel {
 
     public static Course castToEntity(CourseModel courseModel){
         Course course = new Course();
-        course.setCoursecategoryid(courseModel.getCoursecategoryid());
+        course.setCourseCategoryId(courseModel.getCoursecategoryid());
         course.setCreatedat(courseModel.getCreatedat());
         course.setDescription(courseModel.getDescription());
         course.setEnddate(courseModel.getEnddate());
@@ -50,7 +50,7 @@ public class CourseModel {
         if(course == null){
             return courseModel;
         }
-        courseModel.setCoursecategoryid(course.getCoursecategoryid());
+        courseModel.setCoursecategoryid(course.getCourseCategoryId());
         courseModel.setCreatedat(course.getCreatedat());
         courseModel.setDescription(course.getDescription());
         courseModel.setEnddate(course.getEnddate());

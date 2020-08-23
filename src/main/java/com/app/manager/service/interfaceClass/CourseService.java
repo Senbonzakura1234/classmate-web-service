@@ -1,7 +1,7 @@
 package com.app.manager.service.interfaceClass;
 
 import com.app.manager.entity.Course;
-import com.app.manager.model.midware_model.CourseModel;
+import com.app.manager.model.payload.CourseModel;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
