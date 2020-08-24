@@ -80,6 +80,12 @@ public class Course {
     @Column(name = "deletedat")
     private Long deletedat;
 
+    public Course(String name, String coursecategoryid, StatusEnum status) {
+        this.status = status;
+        this.name = name;
+        this.coursecategoryid = coursecategoryid;
+    }
+
     public Course() {
         status = StatusEnum.PENDING;
         startdate = System.currentTimeMillis();

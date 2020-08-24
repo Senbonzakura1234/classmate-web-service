@@ -1,7 +1,7 @@
 package com.app.manager.service.implementClass;
 
 import com.app.manager.entity.CourseCategory;
-import com.app.manager.repository.CourseCategoryRepository;
+import com.app.manager.context.repository.CourseCategoryRepository;
 import com.app.manager.service.interfaceClass.CourseCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

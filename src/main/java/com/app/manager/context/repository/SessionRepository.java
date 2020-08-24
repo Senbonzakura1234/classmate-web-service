@@ -1,6 +1,5 @@
-package com.app.manager.repository;
+package com.app.manager.context.repository;
 
-import com.app.manager.entity.Course;
 import com.app.manager.entity.Session;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

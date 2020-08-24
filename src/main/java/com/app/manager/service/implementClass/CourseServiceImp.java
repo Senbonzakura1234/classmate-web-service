@@ -3,7 +3,7 @@ package com.app.manager.service.implementClass;
 import com.app.manager.entity.Course;
 import com.app.manager.model.payload.CourseModel;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
-import com.app.manager.repository.CourseRepository;
+import com.app.manager.context.repository.CourseRepository;
 import com.app.manager.service.interfaceClass.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
