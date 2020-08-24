@@ -17,6 +17,7 @@ public class RoleServiceImp implements RoleService {
     public void generateRoles() {
         for(ERole eRole : ERole.values()){
             try {
+                if(eRole == ERole.ALL) continue;
                 var role = roleRepository.findByName(eRole);
                 if (role.isEmpty()) {
                     var newRole = new Role();

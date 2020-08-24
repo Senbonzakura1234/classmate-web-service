@@ -77,8 +77,9 @@ public class Subscription {
     }
 
     public enum StatusEnum {
-        SHOW(0, "Show"),
-        HIDE(1, "Hide");
+        ALL(0, "All"),
+        SHOW(1, "Show"),
+        HIDE(2, "Hide");
 
         private final int value;
         private final String name;

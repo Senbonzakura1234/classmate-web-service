@@ -8,8 +8,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface CourseRepository extends JpaRepository<Course, String>,
         JpaSpecificationExecutor<Course> {
-    Page<Course> findByNameContains(String queryName, Pageable pageable);
-    Page<Course> findByNameContainsAndStatus(String queryName, Course.StatusEnum status, Pageable pageable);
-    Page<Course> findByStatus(Course.StatusEnum status, Pageable pageable);
-    Page<Course> findBy(Pageable pageable);
+
 }

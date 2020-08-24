@@ -1,10 +1,11 @@
 package com.app.manager.entity;
 
 public enum ERole {
-    ROLE_ADMIN(0, "Admin"),
-    ROLE_TEACHER(1, "Teacher"),
-    ROLE_STUDENT(2, "Student"),
-    ROLE_USER(3, "User");
+    ALL(0, "All"),
+    ROLE_ADMIN(1, "Admin"),
+    ROLE_TEACHER(2, "Teacher"),
+    ROLE_STUDENT(3, "Student"),
+    ROLE_USER(4, "User");
 
     private final int value;
     private final String name;

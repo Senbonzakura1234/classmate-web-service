@@ -1,6 +1,7 @@
-package com.app.manager.context.Specification;
+package com.app.manager.context.specification;
 
 import com.app.manager.entity.Course;
+import com.app.manager.entity.Session;
 import com.app.manager.model.SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -11,10 +12,10 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseSpecification implements Specification<Course> {
+public class SessionSpecification implements Specification<Session> {
     private List<SearchCriteria> list;
 
-    public CourseSpecification() {
+    public SessionSpecification() {
         this.list = new ArrayList<>();
     }
 
@@ -23,50 +24,49 @@ public class CourseSpecification implements Specification<Course> {
     }
 
     @Override
-    public Predicate toPredicate(Root<Course> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-
+    public Predicate toPredicate(Root<Session> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
         //create a new predicate list
         List<Predicate> predicates = new ArrayList<>();
 
         //add add criteria to predicates
         for (SearchCriteria criteria : list) {
             if (criteria.getOperation().equals(SearchCriteria.SearchOperation.GREATER_THAN)) {
-                predicates.add(builder.greaterThan(
+                predicates.add(criteriaBuilder.greaterThan(
                         root.get(criteria.getKey()), criteria.getValue().toString()));
             } else if (criteria.getOperation().equals(SearchCriteria.SearchOperation.LESS_THAN)) {
-                predicates.add(builder.lessThan(
+                predicates.add(criteriaBuilder.lessThan(
                         root.get(criteria.getKey()), criteria.getValue().toString()));
             } else if (criteria.getOperation().equals(SearchCriteria.SearchOperation.GREATER_THAN_EQUAL)) {
-                predicates.add(builder.greaterThanOrEqualTo(
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(
                         root.get(criteria.getKey()), criteria.getValue().toString()));
             } else if (criteria.getOperation().equals(SearchCriteria.SearchOperation.LESS_THAN_EQUAL)) {
-                predicates.add(builder.lessThanOrEqualTo(
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(
                         root.get(criteria.getKey()), criteria.getValue().toString()));
             } else if (criteria.getOperation().equals(SearchCriteria.SearchOperation.NOT_EQUAL)) {
-                predicates.add(builder.notEqual(
+                predicates.add(criteriaBuilder.notEqual(
                         root.get(criteria.getKey()), criteria.getValue()));
             } else if (criteria.getOperation().equals(SearchCriteria.SearchOperation.EQUAL)) {
-                predicates.add(builder.equal(
+                predicates.add(criteriaBuilder.equal(
                         root.get(criteria.getKey()), criteria.getValue()));
             } else if (criteria.getOperation().equals(SearchCriteria.SearchOperation.MATCH)) {
-                predicates.add(builder.like(
-                        builder.lower(root.get(criteria.getKey())),
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get(criteria.getKey())),
                         "%" + criteria.getValue().toString().toLowerCase() + "%"));
             } else if (criteria.getOperation().equals(SearchCriteria.SearchOperation.MATCH_END)) {
-                predicates.add(builder.like(
-                        builder.lower(root.get(criteria.getKey())),
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get(criteria.getKey())),
                         criteria.getValue().toString().toLowerCase() + "%"));
             } else if (criteria.getOperation().equals(SearchCriteria.SearchOperation.MATCH_START)) {
-                predicates.add(builder.like(
-                        builder.lower(root.get(criteria.getKey())),
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get(criteria.getKey())),
                         "%" + criteria.getValue().toString().toLowerCase()));
             } else if (criteria.getOperation().equals(SearchCriteria.SearchOperation.IN)) {
-                predicates.add(builder.in(root.get(criteria.getKey())).value(criteria.getValue()));
+                predicates.add(criteriaBuilder.in(root.get(criteria.getKey())).value(criteria.getValue()));
             } else if (criteria.getOperation().equals(SearchCriteria.SearchOperation.NOT_IN)) {
-                predicates.add(builder.not(root.get(criteria.getKey())).in(criteria.getValue()));
+                predicates.add(criteriaBuilder.not(root.get(criteria.getKey())).in(criteria.getValue()));
             }
         }
 
-        return builder.and(predicates.toArray(new Predicate[0]));
+        return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }
 }

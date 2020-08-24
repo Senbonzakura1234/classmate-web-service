@@ -1,5 +1,6 @@
 package com.app.manager.service.implementClass;
 
+import com.app.manager.context.specification.CourseSpecification;
 import com.app.manager.entity.Course;
 import com.app.manager.model.payload.CourseModel;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -8,6 +9,7 @@ import com.app.manager.service.interfaceClass.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,27 +21,18 @@ public class CourseServiceImp implements CourseService {
     CourseRepository courseRepository;
 
     @Override
-    public Page<CourseModel> getAll(String queryName, Course.StatusEnum status, Pageable pageable) {
+    public Page<CourseModel> findAll(CourseSpecification courseSpecification, Pageable pageable) {
         try {
-            Page<Course> courses;
-            if(queryName != null && !queryName.isEmpty()){
-                if(status != null){
-                    courses = courseRepository.findByNameContainsAndStatus(queryName, status, pageable);
-                }else {
-                    courses = courseRepository.findByNameContains(queryName, pageable);
-                }
-            }else {
-                if(status != null){
-                    courses = courseRepository.findByStatus(status, pageable);
-                }else {
-                    courses = courseRepository.findBy(pageable);
-                }
-            }
-            return courses.map(course -> new CourseModel(course.getCoursecategoryid(),
+            Page<Course> courses = courseRepository.findAll(courseSpecification, pageable);
+            return courses.map(course -> new CourseModel(
+                    course.getId(),
+                    course.getUserid(), course.getCoursecategoryid(),
                     course.getName(), course.getDescription(),
-                    course.getStartdate(), course.getEnddate(), course.getCreatedat()));
+                    course.getStartdate(), course.getEnddate(),
+                    course.getCreatedat(), course.getStatus()));
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
             return Page.empty();
         }
     }
@@ -49,11 +42,11 @@ public class CourseServiceImp implements CourseService {
         try {
             courseRepository.save(CourseModel.castToEntity(courseModel));
             return new DatabaseQueryResult(true,
-                    "save course success");
+                    "save course success", HttpStatus.OK, courseModel);
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "save course failed");
+                    "save course failed", HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
     }
 
@@ -77,7 +70,7 @@ public class CourseServiceImp implements CourseService {
             var c = courseRepository.findById(id);
             if(c.isEmpty()){
                 return new DatabaseQueryResult(false,
-                        "save course failed");
+                        "save course failed", HttpStatus.NOT_FOUND, "");
             }
 
             var course  = c.get();
@@ -89,11 +82,11 @@ public class CourseServiceImp implements CourseService {
             course.setStartdate(courseModel.getStartdate());
 
             return new DatabaseQueryResult(true,
-                    "save course success");
+                    "save course success", HttpStatus.OK, courseModel);
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "save course failed");
+                    "save course failed", HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
     }
 
@@ -103,15 +96,15 @@ public class CourseServiceImp implements CourseService {
             var course = courseRepository.findById(id);
             if(course.isEmpty()){
                 return new DatabaseQueryResult(false,
-                        "delete course failed");
+                        "delete course failed", HttpStatus.NOT_FOUND, "");
             }
             courseRepository.delete(course.get());
             return new DatabaseQueryResult(true,
-                    "delete course success");
+                    "delete course success", HttpStatus.OK, "");
         }catch (Exception e){
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "save course failed");
+                    "save course failed", HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
     }
 }

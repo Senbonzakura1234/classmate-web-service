@@ -1,23 +1,25 @@
 package com.app.manager.model.payload;
 
-import com.app.manager.entity.Course;
 import com.app.manager.entity.Session;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SessionModel {
-    private String id; // SessionModel
-    private String courseId; // SessionModel
-    private String userId; // SessionModel
-    private String name; // SessionModel
-    private Long starttime; // SessionModel
+    private String id;
+    private String courseId; //search
+    private String userId; //search
+    private String name; //search
+    private Long starttime;
     private int attendanceduration;
     private boolean attendancechecked;
-    private Session.StatusEnum status;
+    private Session.StatusEnum status; //search
     private Long createdat;
 
-    public SessionModel(String id, String courseId, String userId, String name, Long starttime, int attendanceduration, boolean attendancechecked, Session.StatusEnum status, Long createdat) {
+    public SessionModel(String id, String courseId, String userId,
+                        String name, Long starttime, int attendanceduration,
+                        boolean attendancechecked, Session.StatusEnum status,
+                        Long createdat) {
         this.id = id;
         this.courseId = courseId;
         this.userId = userId;
@@ -44,8 +46,8 @@ public class SessionModel {
         sessionModel.setName(session.getName());
         sessionModel.setStarttime(session.getStarttime());
         sessionModel.setStatus(session.getStatus());
-        sessionModel.setUserId(session.getUserId());
-        sessionModel.setCourseId(session.getCourseId());
+        sessionModel.setUserId(session.getUserid());
+        sessionModel.setCourseId(session.getCourseid());
 
         return sessionModel;
     }
@@ -59,8 +61,8 @@ public class SessionModel {
         session.setName(sessionModel.getName());
         session.setStarttime(sessionModel.getStarttime());
         session.setStatus(sessionModel.getStatus());
-        session.setUserId(sessionModel.getUserId());
-        session.setCourseId(sessionModel.getCourseId());
+        session.setUserid(sessionModel.getUserId());
+        session.setCourseid(sessionModel.getCourseId());
         return session;
     }
 

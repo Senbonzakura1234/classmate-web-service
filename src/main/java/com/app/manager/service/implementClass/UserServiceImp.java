@@ -8,6 +8,7 @@ import com.app.manager.context.repository.RoleRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.service.interfaceClass.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -102,11 +103,11 @@ public class UserServiceImp implements UserService {
             user.setRoles(roles);
             userRepository.save(user);
             return new DatabaseQueryResult(true,
-                    "User registered successfully!");
+                    "User registered successfully!", HttpStatus.OK, "");
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "User register failed, " + e.getMessage());
+                    "User register failed, " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
     }
 
