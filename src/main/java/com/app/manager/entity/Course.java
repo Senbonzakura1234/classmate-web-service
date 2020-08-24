@@ -4,11 +4,12 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "course")
-public class Course {
+public class Course implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(generator = "UUID")

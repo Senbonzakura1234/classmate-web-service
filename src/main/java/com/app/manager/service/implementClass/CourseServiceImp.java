@@ -35,7 +35,9 @@ public class CourseServiceImp implements CourseService {
                     courses = courseRepository.findBy(pageable);
                 }
             }
-            return courses.map(course -> new CourseModel(course.getCoursecategoryid(), course.getName(), course.getDescription(), course.getStartdate(), course.getEnddate(), course.getCreatedat()));
+            return courses.map(course -> new CourseModel(course.getCoursecategoryid(),
+                    course.getName(), course.getDescription(),
+                    course.getStartdate(), course.getEnddate(), course.getCreatedat()));
         } catch (Exception e) {
             e.printStackTrace();
             return Page.empty();
