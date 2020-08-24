@@ -2,7 +2,7 @@ package com.app.manager.service.implementClass;
 
 import com.app.manager.entity.ERole;
 import com.app.manager.entity.Role;
-import com.app.manager.repository.RoleRepository;
+import com.app.manager.context.repository.RoleRepository;
 import com.app.manager.service.interfaceClass.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
