@@ -51,9 +51,10 @@ public class Attendance {
     }
 
     public enum StatusEnum {
-        ATTENDANT(0, "On time"),
-        LATE(1, "Late"),
-        ABSENT(2, "Absent");
+        ALL(0, "All"),
+        ATTENDANT(1, "On time"),
+        LATE(2, "Late"),
+        ABSENT(3, "Absent");
 
         private final int value;
         private final String name;

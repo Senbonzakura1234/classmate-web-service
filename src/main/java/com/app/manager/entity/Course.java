@@ -96,10 +96,11 @@ public class Course implements Serializable {
     }
 
     public enum StatusEnum {
-        PENDING(0, "Pending"),
-        ONGOING(1, "Ongoing"),
-        CANCEL(2, "Cancel"),
-        END(3, "End"),;
+        ALL(0, "All"),
+        PENDING(1, "Pending"),
+        ONGOING(2, "Ongoing"),
+        CANCEL(3, "Cancel"),
+        END(4, "End"),;
 
         private final int value;
         private final String name;

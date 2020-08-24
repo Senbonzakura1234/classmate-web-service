@@ -19,18 +19,18 @@ public class Session {
     )
     private String id; // SessionModel
 
-    @Column(name = "courseId")
-    private String courseId; // SessionModel
+    @Column(name = "courseid")
+    private String courseid; // SessionModel
 
     @ManyToOne
-    @JoinColumn(name = "courseId", updatable = false, insertable = false)
+    @JoinColumn(name = "courseid", updatable = false, insertable = false)
     private Course course;
 
-    @Column(name = "userId")
-    private String userId; // SessionModel
+    @Column(name = "userid")
+    private String userid; // SessionModel
 
     @ManyToOne
-    @JoinColumn(name = "userId", updatable = false, insertable = false)
+    @JoinColumn(name = "userid", updatable = false, insertable = false)
     private User user;
 
     @OneToMany(mappedBy = "session")
@@ -75,11 +75,12 @@ public class Session {
     }
 
     public enum StatusEnum {
-        PENDING(0, "Pending"),
-        ONGOING(1, "Ongoing"),
-        ATTENDANCE_CHECK(2, "Attendance check"),
-        EXERCISING(3, "Exercising"),
-        END(4, "END");
+        ALL(0, "All"),
+        PENDING(1, "Pending"),
+        ONGOING(2, "Ongoing"),
+        ATTENDANCE_CHECK(3, "Attendance check"),
+        EXERCISING(4, "Exercising"),
+        END(5, "END");
 
         private final int value;
         private final String name;
@@ -137,12 +138,12 @@ public class Session {
         this.deletedat = deletedat;
     }
 
-    public String getCourseId() {
-        return courseId;
+    public String getCourseid() {
+        return courseid;
     }
 
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
+    public void setCourseid(String courseId) {
+        this.courseid = courseId;
     }
 
     public Course getCourse() {
@@ -153,12 +154,12 @@ public class Session {
         this.course = course;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserid(String userId) {
+        this.userid = userId;
     }
 
     public User getUser() {

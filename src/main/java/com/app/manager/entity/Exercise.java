@@ -75,9 +75,10 @@ public class Exercise {
     }
 
     public enum StatusEnum {
-        ONGOING(0, "Ongoing"),
-        MARKING(1, "Marking"),
-        END(2, "End");
+        ALL(0, "All"),
+        ONGOING(1, "Ongoing"),
+        MARKING(2, "Marking"),
+        END(3, "End");
 
         private final int value;
         private final String name;

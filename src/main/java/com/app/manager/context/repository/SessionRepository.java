@@ -1,13 +1,8 @@
 package com.app.manager.context.repository;
 
 import com.app.manager.entity.Session;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface SessionRepository extends CrudRepository<Session, String> {
-    Page<Session> findByNameContains(String queryName, Pageable pageable);
-    Page<Session> findByNameContainsAndStatus(String queryName, Session.StatusEnum status, Pageable pageable);
-    Page<Session> findByStatus(Session.StatusEnum status, Pageable pageable);
-    Page<Session> findBy(Pageable pageable);
+public interface SessionRepository extends JpaRepository<Session, String>, JpaSpecificationExecutor<Session> {
 }

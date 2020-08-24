@@ -118,26 +118,7 @@ public class User {
     }
 
 
-    public enum StatusEnum {
-        SHOW(0, "Show"),
-        HIDE(1, "Hide");
 
-        private final int value;
-        private final String name;
-
-        StatusEnum(int value, String name) {
-            this.value = value;
-            this.name = name;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
 
     public String getId() {
         return id;
