@@ -33,7 +33,7 @@ public class CourseController {
             @RequestParam(value = "userid", required = false, defaultValue = "") String userid,
             @RequestParam(value = "startdate", required = false, defaultValue = "0") long startdate,
             @RequestParam(value = "enddate", required = false, defaultValue = "0") long enddate,
-            @RequestParam(value = "status", required = false, defaultValue = "0") Course.StatusEnum status,
+            @RequestParam(value = "status", required = false) Course.StatusEnum status,
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(name = "size", required = false, defaultValue = "20") Integer size,
             @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
@@ -46,7 +46,7 @@ public class CourseController {
         }
 
         if(status != null && status != Course.StatusEnum.ALL){
-            query.add(new SearchCriteria("status", status, SearchCriteria.SearchOperation.EQUAL));
+            query.add(new SearchCriteria("status", status.getValue(), SearchCriteria.SearchOperation.EQUAL));
         }
 
         if(coursecategoryid != null && !coursecategoryid.isEmpty()){

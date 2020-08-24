@@ -34,7 +34,7 @@ public class SessionController {
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "courseid", required = false, defaultValue = "0") String courseid,
             @RequestParam(value = "userid", required = false, defaultValue = "0") String userid,
-            @RequestParam(value = "status", required = false, defaultValue = "0") Session.StatusEnum status,
+            @RequestParam(value = "status", required = false) Session.StatusEnum status,
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(name = "size", required = false, defaultValue = "20") Integer size,
             @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
@@ -46,7 +46,7 @@ public class SessionController {
         }
 
         if(status != null && status != Session.StatusEnum.ALL){
-            query.add(new SearchCriteria("status", status, SearchCriteria.SearchOperation.EQUAL));
+            query.add(new SearchCriteria("status", status.getValue(), SearchCriteria.SearchOperation.EQUAL));
         }
 
         if(courseid != null && !courseid.isEmpty()){

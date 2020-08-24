@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/test")
@@ -30,6 +33,25 @@ public class TestController {
     CourseService courseService;
     @Autowired
     SessionService sessionService;
+
+
+
+    @GetMapping("/testError")
+    public ResponseEntity<?> TestError() {
+        var msGenre = new CourseSpecification();
+        msGenre.add(new SearchCriteria("name", "", SearchCriteria.SearchOperation.MATCH));
+        msGenre.add(new SearchCriteria("status", Course.StatusEnum.PENDING.getValue(),
+                SearchCriteria.SearchOperation.EQUAL));
+
+        var courses = courseRepository.findAll(msGenre);
+
+        List<Course> list = new ArrayList<>();
+        for(Course course : courses){
+            System.out.println(course.getName());
+            list.add(course);
+        }
+        return ResponseEntity.ok(list);
+    }
 
     @GetMapping("/all")
     public ResponseEntity<?> allAccess() {
