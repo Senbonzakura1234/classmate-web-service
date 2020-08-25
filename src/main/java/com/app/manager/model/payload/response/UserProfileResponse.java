@@ -5,15 +5,20 @@ import com.app.manager.entity.User;
 public class UserProfileResponse {
     private String id;
     private String username; //search
-    private String email;
-    private String fullname; //search
-    private String phone;
-    private String address;
-    private String civil_id;
-    private Long birthday;
-    private User.GenderEnum gender;
+    private String email = "";
+    private String fullname = ""; //search
+    private String phone = "";
+    private String address = "";
+    private String civil_id = "";
+    private Long birthday = 0L;
+    private User.GenderEnum gender = User.GenderEnum.UNKNOWN;
 
     public UserProfileResponse() {
+    }
+
+    public UserProfileResponse(String id, String username) {
+        this.id = id;
+        this.username = username;
     }
 
     public UserProfileResponse(String id, String username,
