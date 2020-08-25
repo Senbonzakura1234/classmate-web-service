@@ -3,7 +3,7 @@ package com.app.manager.controller;
 import com.app.manager.context.specification.SessionSpecification;
 import com.app.manager.entity.Session;
 import com.app.manager.model.SearchCriteria;
-import com.app.manager.model.payload.SessionModel;
+import com.app.manager.model.payload.request.SessionRequest;
 import com.app.manager.model.payload.response.MessageResponse;
 import com.app.manager.service.interfaceClass.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +66,7 @@ public class SessionController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> save(@Valid @RequestBody SessionModel sessionModel, BindingResult bindingResult) {
+    public ResponseEntity<?> save(@Valid @RequestBody SessionRequest sessionRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors()
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -75,14 +75,16 @@ public class SessionController {
                     .badRequest()
                     .body(new MessageResponse("Error: Validate Error"));
         }
-        var result = sessionService.save(sessionModel);
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = sessionService.save(sessionRequest, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
                 ResponseEntity.status(result.getHttpStatus()).body(result);
     }
 
     @PostMapping("/edit")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> update(@Valid @RequestBody SessionModel sessionModel,
+    public ResponseEntity<?> update(@Valid @RequestBody SessionRequest sessionRequest,
                                     @RequestParam(value = "id") String id,
                                     BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -95,7 +97,7 @@ public class SessionController {
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
-        var result = sessionService.update(sessionModel, id, currentUser);
+        var result = sessionService.update(sessionRequest, id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
                 ResponseEntity.status(result.getHttpStatus()).body(result);
     }

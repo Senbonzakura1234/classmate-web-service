@@ -1,11 +1,11 @@
-package com.app.manager.model.payload;
+package com.app.manager.model.payload.response;
 
 import com.app.manager.entity.Session;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SessionModel {
+public class SessionResponse {
     private String id;
     private String courseId; //search
     private String userId; //search
@@ -16,10 +16,10 @@ public class SessionModel {
     private Session.StatusEnum status; //search
     private Long createdat;
 
-    public SessionModel(String id, String courseId, String userId,
-                        String name, Long starttime, int attendanceduration,
-                        boolean attendancechecked, Session.StatusEnum status,
-                        Long createdat) {
+    public SessionResponse(String id, String courseId, String userId,
+                           String name, Long starttime, int attendanceduration,
+                           boolean attendancechecked, Session.StatusEnum status,
+                           Long createdat) {
         this.id = id;
         this.courseId = courseId;
         this.userId = userId;
@@ -31,48 +31,34 @@ public class SessionModel {
         this.createdat = createdat;
     }
 
-    public SessionModel() {
+    public SessionResponse() {
     }
 
-    public static SessionModel castToObjectModel(Session session){
-        SessionModel sessionModel = new SessionModel();
+    public static SessionResponse castToObjectModel(Session session){
+        SessionResponse sessionResponse = new SessionResponse();
         if(session == null){
-            return sessionModel;
+            return sessionResponse;
         }
-        sessionModel.setId(session.getId());
-        sessionModel.setCreatedat(session.getCreatedat());
-        sessionModel.setAttendancechecked(session.isAttendancechecked());
-        sessionModel.setAttendanceduration(session.getAttendanceduration());
-        sessionModel.setName(session.getName());
-        sessionModel.setStarttime(session.getStarttime());
-        sessionModel.setStatus(session.getStatus());
-        sessionModel.setUserId(session.getUserid());
-        sessionModel.setCourseId(session.getCourseid());
+        sessionResponse.setId(session.getId());
+        sessionResponse.setCreatedat(session.getCreatedat());
+        sessionResponse.setAttendancechecked(session.isAttendancechecked());
+        sessionResponse.setAttendanceduration(session.getAttendanceduration());
+        sessionResponse.setName(session.getName());
+        sessionResponse.setStarttime(session.getStarttime());
+        sessionResponse.setStatus(session.getStatus());
+        sessionResponse.setUserId(session.getUserid());
+        sessionResponse.setCourseId(session.getCourseid());
 
-        return sessionModel;
+        return sessionResponse;
     }
 
-    public static Session castToEntity(SessionModel sessionModel){
-        Session session = new Session();
-        session.setId(sessionModel.getId());
-        session.setCreatedat(sessionModel.getCreatedat());
-        session.setAttendancechecked(sessionModel.isAttendancechecked());
-        session.setAttendanceduration(sessionModel.getAttendanceduration());
-        session.setName(sessionModel.getName());
-        session.setStarttime(sessionModel.getStarttime());
-        session.setStatus(sessionModel.getStatus());
-        session.setUserid(sessionModel.getUserId());
-        session.setCourseid(sessionModel.getCourseId());
-        return session;
-    }
-
-    public static List<SessionModel> castToListModels(List<Session> sessions){
-        List<SessionModel> sessionModels = new ArrayList<>();
-        if (sessions == null) return sessionModels;
+    public static List<SessionResponse> castToListModels(List<Session> sessions){
+        List<SessionResponse> sessionResponses = new ArrayList<>();
+        if (sessions == null) return sessionResponses;
         for (var item: sessions) {
-            sessionModels.add(castToObjectModel(item));
+            sessionResponses.add(castToObjectModel(item));
         }
-        return sessionModels;
+        return sessionResponses;
     }
 
     public String getId() {

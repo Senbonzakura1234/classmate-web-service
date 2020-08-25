@@ -1,11 +1,11 @@
-package com.app.manager.model.payload;
+package com.app.manager.model.payload.response;
 
 import com.app.manager.entity.Course;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseModel {
+public class CourseResponse {
     private String id;
     private String userid; //search
     private String coursecategoryid; //search
@@ -16,21 +16,21 @@ public class CourseModel {
     private Long createdat;
     private Course.StatusEnum status; //search
 
-    public CourseModel() {
+    public CourseResponse() {
     }
 
-    public static List<CourseModel> castToListModels(List<Course> courses){
-        List<CourseModel> courseModels = new ArrayList<>();
-        if (courses == null) return courseModels;
+    public static List<CourseResponse> castToListModels(List<Course> courses){
+        List<CourseResponse> courseResponses = new ArrayList<>();
+        if (courses == null) return courseResponses;
         for (var item: courses) {
-            courseModels.add(castToObjectModel(item));
+            courseResponses.add(castToObjectModel(item));
         }
-        return courseModels;
+        return courseResponses;
     }
 
-    public CourseModel(String id, String userid, String coursecategoryid,
-                       String name, String description, Long startdate,
-                       Long enddate, Long createdat, Course.StatusEnum status) {
+    public CourseResponse(String id, String userid, String coursecategoryid,
+                          String name, String description, Long startdate,
+                          Long enddate, Long createdat, Course.StatusEnum status) {
         this.id = id;
         this.userid = userid;
         this.coursecategoryid = coursecategoryid;
@@ -42,36 +42,22 @@ public class CourseModel {
         this.status = status;
     }
 
-    public static Course castToEntity(CourseModel courseModel){
-        Course course = new Course();
-        course.setId(courseModel.getId());
-        course.setCoursecategoryid(courseModel.getCoursecategoryid());
-        course.setCreatedat(courseModel.getCreatedat());
-        course.setDescription(courseModel.getDescription());
-        course.setEnddate(courseModel.getEnddate());
-        course.setName(courseModel.getName());
-        course.setStartdate(courseModel.getStartdate());
-        course.setUserid(courseModel.getUserid());
-        course.setStatus(courseModel.getStatus());
-        return course;
-    }
-
-    public static CourseModel castToObjectModel(Course course){
-        CourseModel courseModel = new CourseModel();
+    public static CourseResponse castToObjectModel(Course course){
+        CourseResponse courseResponse = new CourseResponse();
         if(course == null){
-            return courseModel;
+            return courseResponse;
         }
-        courseModel.setId(course.getId());
-        courseModel.setCoursecategoryid(course.getCoursecategoryid());
-        courseModel.setCreatedat(course.getCreatedat());
-        courseModel.setDescription(course.getDescription());
-        courseModel.setEnddate(course.getEnddate());
-        courseModel.setName(course.getName());
-        courseModel.setStartdate(course.getStartdate());
-        courseModel.setUserid(course.getUserid());
-        courseModel.setStatus(course.getStatus());
+        courseResponse.setId(course.getId());
+        courseResponse.setCoursecategoryid(course.getCoursecategoryid());
+        courseResponse.setCreatedat(course.getCreatedat());
+        courseResponse.setDescription(course.getDescription());
+        courseResponse.setEnddate(course.getEnddate());
+        courseResponse.setName(course.getName());
+        courseResponse.setStartdate(course.getStartdate());
+        courseResponse.setUserid(course.getUserid());
+        courseResponse.setStatus(course.getStatus());
 
-        return courseModel;
+        return courseResponse;
     }
 
     public String getId() {

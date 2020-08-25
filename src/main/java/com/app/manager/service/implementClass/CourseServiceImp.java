@@ -4,7 +4,8 @@ import com.app.manager.context.repository.CourseRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.context.specification.CourseSpecification;
 import com.app.manager.entity.Course;
-import com.app.manager.model.payload.CourseModel;
+import com.app.manager.model.payload.request.CourseRequest;
+import com.app.manager.model.payload.response.CourseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,11 @@ public class CourseServiceImp implements CourseService {
     UserRepository userRepository;
 
     @Override
-    public List<CourseModel> findAll(CourseSpecification courseSpecification) {
+    public List<CourseResponse> findAll(CourseSpecification courseSpecification) {
         try {
             List<Course> courses = courseRepository.findAll(courseSpecification);
-            List<CourseModel> list = new ArrayList<>();
-            courses.forEach(course -> list.add(new CourseModel(
+            List<CourseResponse> list = new ArrayList<>();
+            courses.forEach(course -> list.add(new CourseResponse(
                     course.getId(),
                     course.getUserid(), course.getCoursecategoryid(),
                     course.getName(), course.getDescription(),
@@ -44,11 +45,18 @@ public class CourseServiceImp implements CourseService {
     }
 
     @Override
-    public DatabaseQueryResult save(CourseModel courseModel) {
+    public DatabaseQueryResult save(CourseRequest courseRequest, String currentUsername) {
         try {
-            courseRepository.save(CourseModel.castToEntity(courseModel));
+            var teacher = userRepository.findByUsername(currentUsername);
+            if(teacher.isEmpty())
+                return new DatabaseQueryResult(false,
+                        "Teacher not found", HttpStatus.NOT_FOUND, "");
+            var course = CourseRequest.castToEntity(courseRequest,
+                    teacher.get().getId());
+            courseRepository.save(course);
             return new DatabaseQueryResult(true,
-                    "save course success", HttpStatus.OK, courseModel);
+                    "save course success", HttpStatus.OK,
+                    CourseResponse.castToObjectModel(course));
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
@@ -57,13 +65,13 @@ public class CourseServiceImp implements CourseService {
     }
 
     @Override
-    public Optional<CourseModel> getOne(String id) {
+    public Optional<CourseResponse> getOne(String id) {
         try {
             var course = courseRepository.findById(id);
             if(course.isEmpty()){
                 return Optional.empty();
             }
-            return Optional.of(CourseModel.castToObjectModel(course.get()));
+            return Optional.of(CourseResponse.castToObjectModel(course.get()));
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
@@ -71,7 +79,7 @@ public class CourseServiceImp implements CourseService {
     }
 
     @Override
-    public DatabaseQueryResult update(CourseModel courseModel,
+    public DatabaseQueryResult update(CourseRequest courseRequest,
                                       String id, String currentUsername) {
         try {
             var teacher = userRepository.findByUsername(currentUsername);
@@ -91,15 +99,16 @@ public class CourseServiceImp implements CourseService {
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, "");
 
-            course.setCoursecategoryid(courseModel.getCoursecategoryid());
-            course.setCreatedat(courseModel.getCreatedat());
-            course.setDescription(courseModel.getDescription());
-            course.setEnddate(courseModel.getEnddate());
-            course.setName(courseModel.getName());
-            course.setStartdate(courseModel.getStartdate());
+            course.setCoursecategoryid(courseRequest.getCoursecategoryid());
+            course.setDescription(courseRequest.getDescription());
+            course.setEnddate(courseRequest.getEnddate());
+            course.setName(courseRequest.getName());
+            course.setStartdate(courseRequest.getStartdate());
+            courseRepository.save(course);
 
             return new DatabaseQueryResult(true,
-                    "save course success", HttpStatus.OK, courseModel);
+                    "save course success", HttpStatus.OK,
+                    CourseResponse.castToObjectModel(course));
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,

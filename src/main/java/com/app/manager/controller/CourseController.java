@@ -3,7 +3,7 @@ package com.app.manager.controller;
 import com.app.manager.context.specification.CourseSpecification;
 import com.app.manager.entity.Course;
 import com.app.manager.model.SearchCriteria;
-import com.app.manager.model.payload.CourseModel;
+import com.app.manager.model.payload.request.CourseRequest;
 import com.app.manager.model.payload.request.StudentCourseRequest;
 import com.app.manager.model.payload.response.MessageResponse;
 import com.app.manager.service.interfaceClass.CourseService;
@@ -79,7 +79,7 @@ public class CourseController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> save(@Valid @RequestBody CourseModel courseModel,
+    public ResponseEntity<?> save(@Valid @RequestBody CourseRequest courseRequest,
                                   BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors()
@@ -89,14 +89,16 @@ public class CourseController {
                     .badRequest()
                     .body(new MessageResponse("Error: Validate Error"));
         }
-        var result = courseService.save(courseModel);
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = courseService.save(courseRequest, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
                 ResponseEntity.status(result.getHttpStatus()).body(result);
     }
 
     @PostMapping("/edit")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> update(@Valid @RequestBody CourseModel courseModel,
+    public ResponseEntity<?> update(@Valid @RequestBody CourseRequest courseRequest,
                                     @RequestParam(value = "id") String id,
                                     BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -109,7 +111,7 @@ public class CourseController {
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
-        var result = courseService.update(courseModel, id, currentUser);
+        var result = courseService.update(courseRequest, id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
                 ResponseEntity.status(result.getHttpStatus()).body(result);
     }
