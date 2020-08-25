@@ -8,9 +8,6 @@ import com.app.manager.model.payload.response.MessageResponse;
 import com.app.manager.service.interfaceClass.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,11 +31,7 @@ public class SessionController {
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "courseid", required = false, defaultValue = "0") String courseid,
             @RequestParam(value = "userid", required = false, defaultValue = "0") String userid,
-            @RequestParam(value = "status", required = false) Session.StatusEnum status,
-            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = "20") Integer size,
-            @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
-            @RequestParam(name = "sortBy", required = false, defaultValue = "name") String sortBy
+            @RequestParam(value = "status", required = false) Session.StatusEnum status
     ) {
         var query = new SessionSpecification();
         if(name != null){
@@ -57,14 +50,8 @@ public class SessionController {
             query.add(new SearchCriteria("userid", userid,
                     SearchCriteria.SearchOperation.EQUAL));
         }
-        Sort sortable = sort.equals("DESC")?
-                Sort.by(sortBy).descending():
-                Sort.by(sortBy).ascending();
 
-        Pageable pageable = PageRequest.of(page <= 0? 0: page - 1, size, sortable);
-
-
-        return ResponseEntity.ok(sessionService.findAll(query, pageable));
+        return ResponseEntity.ok(sessionService.findAll(query));
     }
 
     @GetMapping("/detail")

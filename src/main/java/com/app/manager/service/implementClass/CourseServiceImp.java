@@ -8,11 +8,11 @@ import com.app.manager.model.payload.CourseModel;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,22 +25,21 @@ public class CourseServiceImp implements CourseService {
     UserRepository userRepository;
 
     @Override
-    public Page<CourseModel> findAll(CourseSpecification courseSpecification, Pageable pageable) {
+    public List<CourseModel> findAll(CourseSpecification courseSpecification) {
         try {
-            Page<Course> courses = courseRepository.findAll(courseSpecification, pageable);
-
-
-
-            return courses.map(course -> new CourseModel(
+            List<Course> courses = courseRepository.findAll(courseSpecification);
+            List<CourseModel> list = new ArrayList<>();
+            courses.forEach(course -> list.add(new CourseModel(
                     course.getId(),
                     course.getUserid(), course.getCoursecategoryid(),
                     course.getName(), course.getDescription(),
                     course.getStartdate(), course.getEnddate(),
-                    course.getCreatedat(), course.getStatus()));
+                    course.getCreatedat(), course.getStatus())));
+           return list;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            return Page.empty();
+            return new ArrayList<>();
         }
     }
 
