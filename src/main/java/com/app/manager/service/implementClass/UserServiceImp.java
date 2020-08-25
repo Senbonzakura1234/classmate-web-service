@@ -1,13 +1,18 @@
 package com.app.manager.service.implementClass;
 
+import com.app.manager.context.specification.UserSpecification;
 import com.app.manager.entity.ERole;
 import com.app.manager.entity.Role;
 import com.app.manager.entity.User;
+import com.app.manager.model.UserModel;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.context.repository.RoleRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.service.interfaceClass.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -108,6 +113,22 @@ public class UserServiceImp implements UserService {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
                     "User register failed, " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, "");
+        }
+    }
+
+    @Override
+    public Page<UserModel> findAll(Specification<User> specification, Pageable pageable) {
+        try {
+            Page<User> users = userRepository.findAll(specification, pageable);
+
+            return users.map(user -> new UserModel(
+                    user.getId(), user.getUsername(), user.getEmail(),
+                    user.getFullname(), user.getPhone(), user.getAddress(),
+                    user.getCivil_id(), user.getBirthday(), user.getGender()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return Page.empty();
         }
     }
 
