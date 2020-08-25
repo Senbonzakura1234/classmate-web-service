@@ -1,20 +1,20 @@
 package com.app.manager.service.implementClass;
 
 import com.app.manager.context.repository.CourseRepository;
+import com.app.manager.context.repository.SessionRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.context.specification.SessionSpecification;
 import com.app.manager.entity.Course;
 import com.app.manager.entity.Session;
 import com.app.manager.model.payload.SessionModel;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
-import com.app.manager.context.repository.SessionRepository;
 import com.app.manager.service.interfaceClass.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -137,18 +137,19 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public Page<SessionModel> findAll(SessionSpecification sessionSpecification,
-                                      Pageable pageable) {
+    public List<SessionModel> findAll(SessionSpecification sessionSpecification) {
         try {
-            Page<Session> sessions = sessionRepository.findAll(sessionSpecification, pageable);
-            return sessions.map(session -> new SessionModel(session.getId(),
+            List<Session> sessions = sessionRepository.findAll(sessionSpecification);
+            List<SessionModel> list = new ArrayList<>();
+            sessions.forEach(session -> list.add(new SessionModel(session.getId(),
                     session.getCourseid(), session.getUserid(),
                     session.getName(), session.getStarttime(), session.getAttendanceduration(),
-                    session.isAttendancechecked(), session.getStatus(), session.getCreatedat()));
+                    session.isAttendancechecked(), session.getStatus(), session.getCreatedat())));
+            return list;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            return Page.empty();
+            return new ArrayList<>();
         }
     }
 }

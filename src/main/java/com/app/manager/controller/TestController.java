@@ -66,7 +66,7 @@ public class TestController {
         Pageable pageable = PageRequest.of(0, 20, sortable);
 
 
-        return ResponseEntity.ok(courseService.findAll(msGenre, pageable));
+        return ResponseEntity.ok(courseService.findAll(msGenre));
     }
 
     @GetMapping("/allSession")
@@ -83,7 +83,7 @@ public class TestController {
         Pageable pageable = PageRequest.of(0, 20, sortable);
 
 
-        return ResponseEntity.ok(sessionService.findAll(msGenre, pageable));
+        return ResponseEntity.ok(sessionService.findAll(msGenre));
     }
 
     @GetMapping("/user")

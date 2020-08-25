@@ -10,9 +10,6 @@ import com.app.manager.service.interfaceClass.CourseService;
 import com.app.manager.service.interfaceClass.StudentCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -40,11 +37,7 @@ public class CourseController {
             @RequestParam(value = "userid", required = false, defaultValue = "") String userid,
             @RequestParam(value = "startdate", required = false, defaultValue = "0") long startdate,
             @RequestParam(value = "enddate", required = false, defaultValue = "0") long enddate,
-            @RequestParam(value = "status", required = false) Course.StatusEnum status,
-            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = "20") Integer size,
-            @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
-            @RequestParam(name = "sortBy", required = false, defaultValue = "name") String sortBy
+            @RequestParam(value = "status", required = false) Course.StatusEnum status
     ) {
         var query = new CourseSpecification();
         if(name != null){
@@ -71,13 +64,7 @@ public class CourseController {
             query.add(new SearchCriteria("enddate", enddate, SearchCriteria.SearchOperation.LESS_THAN_EQUAL));
         }
 
-        Sort sortable = sort.equals("DESC")?
-                Sort.by(sortBy).descending():
-                Sort.by(sortBy).ascending();
-
-        Pageable pageable = PageRequest.of(page <= 0? 0: page - 1, size, sortable);
-
-        return ResponseEntity.ok(courseService.findAll(query, pageable));
+        return ResponseEntity.ok(courseService.findAll(query));
     }
 
     @GetMapping("/detail")
@@ -92,7 +79,8 @@ public class CourseController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> save(@Valid @RequestBody CourseModel courseModel, BindingResult bindingResult) {
+    public ResponseEntity<?> save(@Valid @RequestBody CourseModel courseModel,
+                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors()
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
