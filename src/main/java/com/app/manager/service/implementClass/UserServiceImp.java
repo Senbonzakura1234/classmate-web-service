@@ -1,24 +1,20 @@
 package com.app.manager.service.implementClass;
 
+import com.app.manager.context.repository.RoleRepository;
+import com.app.manager.context.repository.UserRepository;
 import com.app.manager.entity.ERole;
 import com.app.manager.entity.Role;
 import com.app.manager.entity.User;
 import com.app.manager.model.payload.response.UserProfileResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
-import com.app.manager.context.repository.RoleRepository;
-import com.app.manager.context.repository.UserRepository;
 import com.app.manager.service.interfaceClass.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImp implements UserService {
@@ -117,8 +113,8 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public Page<UserProfileResponse> findAll(Specification<User> specification,
-                                             Pageable pageable, String currentUsername) {
+    public List<UserProfileResponse> findAll(Specification<User> specification,
+                                             String currentUsername) {
         try {
             var currentUser = userRepository.
                     findByUsername(currentUsername)
@@ -127,27 +123,21 @@ public class UserServiceImp implements UserService {
             var roleTeacher = roleRepository.findByName(ERole.ROLE_TEACHER)
                     .orElseThrow(() -> new RuntimeException("Internal Server Error"));
 
-            Page<User> users = userRepository.findAll(specification, pageable);
-            return users.map(user -> {
-                if(user.getProfile_visibility() == User.VisibilityEnum.PUBLIC){
-                    return new UserProfileResponse(
-                            user.getId(), user.getUsername(), user.getEmail(),
-                            user.getFullname(), user.getPhone(), user.getAddress(),
-                            user.getCivil_id(), user.getBirthday(), user.getGender());
-                }else if(user.getProfile_visibility() == User.VisibilityEnum.TEACHER
-                    && currentUser.getRoles().contains(roleTeacher)){
-                    return new UserProfileResponse(
-                            user.getId(), user.getUsername(), user.getEmail(),
-                            user.getFullname(), user.getPhone(), user.getAddress(),
-                            user.getCivil_id(), user.getBirthday(), user.getGender());
-                }else {
-                    return new UserProfileResponse(user.getId(), user.getUsername());
-                }
-            });
+            List<User> users = userRepository.findAll(specification);
+            List<UserProfileResponse> list = new ArrayList<>();
+
+            users.forEach(user -> list.add(user.getProfile_visibility() == User.VisibilityEnum.PUBLIC ||
+                    user.getProfile_visibility() == User.VisibilityEnum.TEACHER
+                            && currentUser.getRoles().contains(roleTeacher) ? new UserProfileResponse(
+                    user.getId(), user.getUsername(), user.getEmail(),
+                    user.getFullname(), user.getPhone(), user.getAddress(),
+                    user.getCivil_id(), user.getBirthday(), user.getGender()) :
+                    new UserProfileResponse(user.getId(), user.getUsername())));
+            return list;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            return Page.empty();
+            return new ArrayList<>();
         }
     }
 
