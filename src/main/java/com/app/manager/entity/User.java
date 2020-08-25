@@ -68,56 +68,82 @@ public class User {
     private String email;
 
 
+    @Column(name = "fullname", nullable = false)
+    private String fullname = "";
+
+    @Column(name = "phone", nullable = false)
+    private String phone = "";
+
+    @Column(name = "address", nullable = false)
+    private String address = "";
+
+    @Column(name = "civil_id", nullable = false)
+    private String civil_id = "";
+
+    @Column(name = "birthday")
+    private Long birthday;
+
+    @Column(name = "gender", nullable = false)
+    private GenderEnum gender = GenderEnum.UNKNOWN;
+
 
 
 
     @Column(name = "account_non_expired", nullable = false)
-    private boolean account_non_expired;
+    private boolean account_non_expired = true;
 
     @Column(name = "account_non_locked", nullable = false)
-    private boolean account_non_locked;
+    private boolean account_non_locked = true;
 
     @Column(name = "credentials_non_expired", nullable = false)
-    private boolean credentials_non_expired;
+    private boolean credentials_non_expired = true;
 
     @Column(name = "enabled", nullable = false)
-    private boolean enabled;
+    private boolean enabled = true;
 
 
     @Column(name = "createdat", nullable = false)
-    private Long createdat;
+    private Long createdat = System.currentTimeMillis();
 
     @Column(name = "updatedat", nullable = false)
-    private Long updatedat;
+    private Long updatedat = System.currentTimeMillis();
 
     @Column(name = "deletedat")
     private Long deletedat;
 
     public User() {
-        account_non_expired = true;
-        account_non_locked = true;
-        credentials_non_expired = true;
-        enabled = true;
-
-        createdat = System.currentTimeMillis();
-        updatedat = System.currentTimeMillis();
     }
 
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-
-        account_non_expired = true;
-        account_non_locked = true;
-        credentials_non_expired = true;
-        enabled = true;
-
-        createdat = System.currentTimeMillis();
-        updatedat = System.currentTimeMillis();
     }
 
 
+    public enum GenderEnum {
+        ALL(0, "All"),
+        MALE(1, "Male"),
+        FEMALE(2, "Female"),
+        OTHER(3, "Other"),
+        UNKNOWN(3, "Unknown");
+
+        private final int value;
+        private final String name;
+
+        GenderEnum(int value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
 
 
     public String getId() {
@@ -215,5 +241,101 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getSubscriptionId() {
+        return subscriptionId;
+    }
+
+    public void setSubscriptionId(String subscriptionId) {
+        this.subscriptionId = subscriptionId;
+    }
+
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
+    }
+
+    public List<Session> getSessions() {
+        return sessions;
+    }
+
+    public void setSessions(List<Session> sessions) {
+        this.sessions = sessions;
+    }
+
+    public List<StudentCourse> getStudentCourses() {
+        return studentCourses;
+    }
+
+    public void setStudentCourses(List<StudentCourse> studentCourses) {
+        this.studentCourses = studentCourses;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
+    public List<Attendance> getAttendances() {
+        return attendances;
+    }
+
+    public void setAttendances(List<Attendance> attendances) {
+        this.attendances = attendances;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCivil_id() {
+        return civil_id;
+    }
+
+    public void setCivil_id(String civil_id) {
+        this.civil_id = civil_id;
+    }
+
+    public Long getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Long birthday) {
+        this.birthday = birthday;
+    }
+
+    public GenderEnum getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderEnum gender) {
+        this.gender = gender;
     }
 }
