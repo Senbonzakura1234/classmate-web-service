@@ -111,7 +111,8 @@ public class UserServiceImp implements UserService {
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "User register failed, " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    "User register failed, " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
     }
 
@@ -119,11 +120,12 @@ public class UserServiceImp implements UserService {
     public Page<UserProfileResponse> findAll(Specification<User> specification, Pageable pageable) {
         try {
             Page<User> users = userRepository.findAll(specification, pageable);
-
-            return users.map(user -> new UserProfileResponse(
+            return users.map(user -> user.getProfile_visibility() == User.VisibilityEnum.PUBLIC?
+                    new UserProfileResponse(
                     user.getId(), user.getUsername(), user.getEmail(),
                     user.getFullname(), user.getPhone(), user.getAddress(),
-                    user.getCivil_id(), user.getBirthday(), user.getGender()));
+                    user.getCivil_id(), user.getBirthday(), user.getGender()) :
+                    new UserProfileResponse(user.getId(), user.getUsername()));
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
