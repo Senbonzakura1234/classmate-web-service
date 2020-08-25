@@ -28,6 +28,7 @@ public class CourseController {
     CourseService courseService;
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getAll(
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "coursecategoryid", required = false, defaultValue = "") String coursecategoryid,
@@ -76,6 +77,7 @@ public class CourseController {
     }
 
     @GetMapping("/detail")
+    @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {
         var result = courseService.getOne(id);
         if(result.isEmpty()) return ResponseEntity.badRequest().body("Not found");

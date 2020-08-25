@@ -31,6 +31,7 @@ public class SessionController {
     SessionService sessionService;
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getAll(
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "courseid", required = false, defaultValue = "0") String courseid,
@@ -69,6 +70,7 @@ public class SessionController {
     }
 
     @GetMapping("/detail")
+    @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {
         var result = sessionService.getOne(id);
         if(result.isEmpty()) return ResponseEntity.badRequest().body("Not found");

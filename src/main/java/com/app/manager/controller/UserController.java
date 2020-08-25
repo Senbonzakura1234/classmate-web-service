@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
@@ -20,6 +21,7 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getAll(
             @RequestParam(value = "username", required = false, defaultValue = "") String username,
             @RequestParam(value = "fullname", required = false, defaultValue = "") String fullname,
