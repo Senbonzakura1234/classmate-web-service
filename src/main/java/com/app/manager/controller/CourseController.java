@@ -4,16 +4,19 @@ import com.app.manager.context.specification.CourseSpecification;
 import com.app.manager.entity.Course;
 import com.app.manager.model.SearchCriteria;
 import com.app.manager.model.payload.CourseModel;
-import com.app.manager.model.payload.request.LoginRequest;
+import com.app.manager.model.payload.request.StudentCourseRequest;
 import com.app.manager.model.payload.response.MessageResponse;
 import com.app.manager.service.interfaceClass.CourseService;
+import com.app.manager.service.interfaceClass.StudentCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +29,8 @@ import javax.validation.Valid;
 public class CourseController {
     @Autowired
     CourseService courseService;
+    @Autowired
+    StudentCourseService studentCourseService;
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
@@ -41,7 +46,6 @@ public class CourseController {
             @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
             @RequestParam(name = "sortBy", required = false, defaultValue = "name") String sortBy
     ) {
-
         var query = new CourseSpecification();
         if(name != null){
             query.add(new SearchCriteria("name", name, SearchCriteria.SearchOperation.MATCH));
@@ -80,7 +84,8 @@ public class CourseController {
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {
         var result = courseService.getOne(id);
-        if(result.isEmpty()) return ResponseEntity.badRequest().body("Not found");
+        if(result.isEmpty()) return ResponseEntity
+                .status(HttpStatus.NOT_FOUND).body("Not Found");
         return ResponseEntity.ok(result.get());
     }
 
@@ -98,7 +103,7 @@ public class CourseController {
         }
         var result = courseService.save(courseModel);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.badRequest().body(result.getDescription());
+                ResponseEntity.status(result.getHttpStatus()).body(result);
     }
 
     @PostMapping("/edit")
@@ -114,16 +119,32 @@ public class CourseController {
                     .badRequest()
                     .body(new MessageResponse("Error: Validate Error"));
         }
-        var result = courseService.update(courseModel, id);
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = courseService.update(courseModel, id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.badRequest().body(result.getDescription());
+                ResponseEntity.status(result.getHttpStatus()).body(result);
     }
 
     @PostMapping("/delete")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> delete(@RequestParam(value = "id") String id) {
-        var result = courseService.delete(id);
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = courseService.delete(id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.badRequest().body(result.getDescription());
+                ResponseEntity.status(result.getHttpStatus()).body(result);
+    }
+
+    @PostMapping("/addToCourse")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> addToCourse(
+            @Valid @RequestBody StudentCourseRequest studentCourseRequest) {
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = studentCourseService
+                .addStudentToCourse(studentCourseRequest, currentUser);
+        if(result.isSuccess()) return ResponseEntity.ok(result);
+                return ResponseEntity.status(result.getHttpStatus()).body(result);
     }
 }

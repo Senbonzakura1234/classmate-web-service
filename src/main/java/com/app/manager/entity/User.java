@@ -152,7 +152,7 @@ public class User {
     public enum VisibilityEnum {
         PUBLIC(0, "Public"),
 //        CLASSMATE_AND_TEACHER(1, "Classmate and Teacher only"),
-//        TEACHER(2, "Teacher only"),
+        TEACHER(2, "Teacher only"),
         PRIVATE(1, "Private");
 
         private final int value;

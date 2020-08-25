@@ -12,6 +12,6 @@ public interface CourseService {
     Page<CourseModel> findAll(CourseSpecification courseSpecification, Pageable pageable);
     DatabaseQueryResult save(CourseModel courseModel);
     Optional<CourseModel> getOne(String id);
-    DatabaseQueryResult update(CourseModel courseModel, String id);
-    DatabaseQueryResult delete(String id);
+    DatabaseQueryResult update(CourseModel courseModel, String id, String currentUsername);
+    DatabaseQueryResult delete(String id, String currentUsername);
 }

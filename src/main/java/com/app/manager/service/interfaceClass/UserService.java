@@ -15,5 +15,5 @@ public interface UserService {
     Optional<Boolean> checkExistUsername(String username);
     Optional<Boolean> checkExistEmail(String email);
     DatabaseQueryResult saveUser(User user, Set<String> strRoles);
-    Page<UserProfileResponse> findAll(Specification<User> specification, Pageable pageable);
+    Page<UserProfileResponse> findAll(Specification<User> specification, Pageable pageable, String currentUsername);
 }

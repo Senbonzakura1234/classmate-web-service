@@ -117,15 +117,33 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public Page<UserProfileResponse> findAll(Specification<User> specification, Pageable pageable) {
+    public Page<UserProfileResponse> findAll(Specification<User> specification,
+                                             Pageable pageable, String currentUsername) {
         try {
+            var currentUser = userRepository.
+                    findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("Internal Server Error"));
+
+            var roleTeacher = roleRepository.findByName(ERole.ROLE_TEACHER)
+                    .orElseThrow(() -> new RuntimeException("Internal Server Error"));
+
             Page<User> users = userRepository.findAll(specification, pageable);
-            return users.map(user -> user.getProfile_visibility() == User.VisibilityEnum.PUBLIC?
-                    new UserProfileResponse(
-                    user.getId(), user.getUsername(), user.getEmail(),
-                    user.getFullname(), user.getPhone(), user.getAddress(),
-                    user.getCivil_id(), user.getBirthday(), user.getGender()) :
-                    new UserProfileResponse(user.getId(), user.getUsername()));
+            return users.map(user -> {
+                if(user.getProfile_visibility() == User.VisibilityEnum.PUBLIC){
+                    return new UserProfileResponse(
+                            user.getId(), user.getUsername(), user.getEmail(),
+                            user.getFullname(), user.getPhone(), user.getAddress(),
+                            user.getCivil_id(), user.getBirthday(), user.getGender());
+                }else if(user.getProfile_visibility() == User.VisibilityEnum.TEACHER
+                    && currentUser.getRoles().contains(roleTeacher)){
+                    return new UserProfileResponse(
+                            user.getId(), user.getUsername(), user.getEmail(),
+                            user.getFullname(), user.getPhone(), user.getAddress(),
+                            user.getCivil_id(), user.getBirthday(), user.getGender());
+                }else {
+                    return new UserProfileResponse(user.getId(), user.getUsername());
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());

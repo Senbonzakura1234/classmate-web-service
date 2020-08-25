@@ -1,22 +1,20 @@
 package com.app.manager.controller;
 
-import com.app.manager.context.specification.CourseSpecification;
 import com.app.manager.context.specification.SessionSpecification;
-import com.app.manager.entity.Course;
 import com.app.manager.entity.Session;
 import com.app.manager.model.SearchCriteria;
-import com.app.manager.model.payload.CourseModel;
 import com.app.manager.model.payload.SessionModel;
 import com.app.manager.model.payload.response.MessageResponse;
-import com.app.manager.service.interfaceClass.CourseService;
 import com.app.manager.service.interfaceClass.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,7 +71,8 @@ public class SessionController {
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {
         var result = sessionService.getOne(id);
-        if(result.isEmpty()) return ResponseEntity.badRequest().body("Not found");
+        if(result.isEmpty())  return ResponseEntity
+                .status(HttpStatus.NOT_FOUND).body("Not Found");
         return ResponseEntity.ok(result.get());
     }
 
@@ -91,7 +90,7 @@ public class SessionController {
         }
         var result = sessionService.save(sessionModel);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.badRequest().body(result.getDescription());
+                ResponseEntity.status(result.getHttpStatus()).body(result);
     }
 
     @PostMapping("/edit")
@@ -107,16 +106,20 @@ public class SessionController {
                     .badRequest()
                     .body(new MessageResponse("Error: Validate Error"));
         }
-        var result = sessionService.update(sessionModel, id);
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = sessionService.update(sessionModel, id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.badRequest().body(result.getDescription());
+                ResponseEntity.status(result.getHttpStatus()).body(result);
     }
 
     @PostMapping("/delete")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> delete(@RequestParam(value = "id") String id) {
-        var result = sessionService.delete(id);
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = sessionService.delete(id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.badRequest().body(result.getDescription());
+                ResponseEntity.status(result.getHttpStatus()).body(result);
     }
 }

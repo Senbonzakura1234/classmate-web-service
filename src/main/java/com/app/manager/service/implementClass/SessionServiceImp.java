@@ -1,6 +1,9 @@
 package com.app.manager.service.implementClass;
 
+import com.app.manager.context.repository.CourseRepository;
+import com.app.manager.context.repository.UserRepository;
 import com.app.manager.context.specification.SessionSpecification;
+import com.app.manager.entity.Course;
 import com.app.manager.entity.Session;
 import com.app.manager.model.payload.SessionModel;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -20,6 +23,13 @@ public class SessionServiceImp implements SessionService {
     @Autowired
     SessionRepository sessionRepository;
 
+    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
+    @Autowired
+    UserRepository userRepository;
+
+    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
+    @Autowired
+    CourseRepository courseRepository;
 
     @Override
     public DatabaseQueryResult save(SessionModel sessionModel) {
@@ -49,13 +59,31 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public DatabaseQueryResult update(SessionModel sessionModel, String id) {
+    public DatabaseQueryResult update(SessionModel sessionModel,
+                                      String id, String currentUsername) {
         try {
+            var teacher = userRepository.findByUsername(currentUsername);
+            if(teacher.isEmpty())
+                return new DatabaseQueryResult(false, "Teacher not found",
+                        HttpStatus.NOT_FOUND, "");
+
             var s = sessionRepository.findById(id);
             if(s.isEmpty()){
                 return new DatabaseQueryResult(false,
                         "save course failed", HttpStatus.NOT_FOUND, "");
             }
+
+            var course = courseRepository
+                    .findById(s.get().getCourseid())
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+
+            if(!course.getUserid().equals(teacher.get().getId()))
+                return new DatabaseQueryResult(false, "Not your course",
+                        HttpStatus.BAD_REQUEST, "");
+
+            if(course.getStatus() != Course.StatusEnum.ONGOING)
+                return new DatabaseQueryResult(false, "Course is not ongoing",
+                        HttpStatus.BAD_REQUEST, "");
 
             var session  = s.get();
             session.setCreatedat(sessionModel.getCreatedat());
@@ -77,13 +105,27 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public DatabaseQueryResult delete(String id) {
+    public DatabaseQueryResult delete(String id, String currentUsername) {
         try {
+            var teacher = userRepository.findByUsername(currentUsername);
+            if(teacher.isEmpty())
+                return new DatabaseQueryResult(false, "Teacher not found",
+                        HttpStatus.NOT_FOUND, "");
+
             var session = sessionRepository.findById(id);
             if(session.isEmpty()){
                 return new DatabaseQueryResult(false,
                         "delete course failed", HttpStatus.NOT_FOUND, "");
             }
+
+            var course = courseRepository
+                    .findById(session.get().getCourseid())
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+
+            if(!course.getUserid().equals(teacher.get().getId()))
+                return new DatabaseQueryResult(false, "Not your course",
+                        HttpStatus.BAD_REQUEST, "");
+
             sessionRepository.delete(session.get());
             return new DatabaseQueryResult(true,
                     "delete course success", HttpStatus.OK, "");
@@ -95,7 +137,8 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public Page<SessionModel> findAll(SessionSpecification sessionSpecification, Pageable pageable) {
+    public Page<SessionModel> findAll(SessionSpecification sessionSpecification,
+                                      Pageable pageable) {
         try {
             Page<Session> sessions = sessionRepository.findAll(sessionSpecification, pageable);
             return sessions.map(session -> new SessionModel(session.getId(),
