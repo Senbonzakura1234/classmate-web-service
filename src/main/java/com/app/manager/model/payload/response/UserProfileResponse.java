@@ -1,8 +1,8 @@
-package com.app.manager.model;
+package com.app.manager.model.payload.response;
 
 import com.app.manager.entity.User;
 
-public class UserModel {
+public class UserProfileResponse {
     private String id;
     private String username; //search
     private String email;
@@ -13,14 +13,14 @@ public class UserModel {
     private Long birthday;
     private User.GenderEnum gender;
 
-    public UserModel() {
+    public UserProfileResponse() {
     }
 
-    public UserModel(String id, String username,
-                     String email, String fullname,
-                     String phone, String address,
-                     String civil_id, Long birthday,
-                     User.GenderEnum gender) {
+    public UserProfileResponse(String id, String username,
+                               String email, String fullname,
+                               String phone, String address,
+                               String civil_id, Long birthday,
+                               User.GenderEnum gender) {
         this.id = id;
         this.username = username;
         this.email = email;

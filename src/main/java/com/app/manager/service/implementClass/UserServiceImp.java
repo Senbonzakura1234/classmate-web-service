@@ -1,10 +1,9 @@
 package com.app.manager.service.implementClass;
 
-import com.app.manager.context.specification.UserSpecification;
 import com.app.manager.entity.ERole;
 import com.app.manager.entity.Role;
 import com.app.manager.entity.User;
-import com.app.manager.model.UserModel;
+import com.app.manager.model.payload.response.UserProfileResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.context.repository.RoleRepository;
 import com.app.manager.context.repository.UserRepository;
@@ -117,11 +116,11 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public Page<UserModel> findAll(Specification<User> specification, Pageable pageable) {
+    public Page<UserProfileResponse> findAll(Specification<User> specification, Pageable pageable) {
         try {
             Page<User> users = userRepository.findAll(specification, pageable);
 
-            return users.map(user -> new UserModel(
+            return users.map(user -> new UserProfileResponse(
                     user.getId(), user.getUsername(), user.getEmail(),
                     user.getFullname(), user.getPhone(), user.getAddress(),
                     user.getCivil_id(), user.getBirthday(), user.getGender()));

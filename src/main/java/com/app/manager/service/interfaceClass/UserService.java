@@ -1,8 +1,7 @@
 package com.app.manager.service.interfaceClass;
 
-import com.app.manager.context.specification.UserSpecification;
 import com.app.manager.entity.User;
-import com.app.manager.model.UserModel;
+import com.app.manager.model.payload.response.UserProfileResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,5 +15,5 @@ public interface UserService {
     Optional<Boolean> checkExistUsername(String username);
     Optional<Boolean> checkExistEmail(String email);
     DatabaseQueryResult saveUser(User user, Set<String> strRoles);
-    Page<UserModel> findAll(Specification<User> specification, Pageable pageable);
+    Page<UserProfileResponse> findAll(Specification<User> specification, Pageable pageable);
 }
