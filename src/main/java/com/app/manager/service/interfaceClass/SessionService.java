@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface SessionService {
     DatabaseQueryResult save(SessionModel sessionModel);
     Optional<SessionModel> getOne(String id);
-    DatabaseQueryResult update(SessionModel sessionModel, String id);
-    DatabaseQueryResult delete(String id);
+    DatabaseQueryResult update(SessionModel sessionModel, String id, String currentUsername);
+    DatabaseQueryResult delete(String id, String currentUsername);
     Page<SessionModel> findAll(SessionSpecification sessionSpecification, Pageable pageable);
 }

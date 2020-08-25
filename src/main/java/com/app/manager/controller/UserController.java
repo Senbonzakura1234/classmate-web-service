@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
@@ -29,6 +30,8 @@ public class UserController {
             @RequestParam(name = "size", required = false, defaultValue = "20") Integer size,
             @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort,
             @RequestParam(name = "sortBy", required = false, defaultValue = "createdat") String sortBy){
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
 
         var queryFullname = new UserSpecification();
         var queryUsername = new UserSpecification();
@@ -49,6 +52,7 @@ public class UserController {
 
         Pageable pageable = PageRequest.of(page <= 0? 0: page - 1, size, sortable);
         return ResponseEntity.ok(userService.findAll(
-                Specification.where(queryFullname).or(queryUsername), pageable));
+                Specification.where(queryFullname)
+                        .or(queryUsername), pageable, currentUser));
     }
 }
