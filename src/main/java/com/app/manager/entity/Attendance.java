@@ -32,29 +32,32 @@ public class Attendance {
 
 
 
+    @Column(name = "face_matched", nullable = false)
+    private boolean face_matched = false;
+
+    @Column(name = "image_uri", nullable = false)
+    private String image_uri = "";
+
+
     @Column(name = "status", nullable = false)
-    private StatusEnum status;
+    private StatusEnum status = StatusEnum.ALL;
 
     @Column(name = "createdat", nullable = false)
-    private Long createdat;
+    private Long createdat = System.currentTimeMillis();
 
     @Column(name = "updatedat", nullable = false)
-    private Long updatedat;
+    private Long updatedat = System.currentTimeMillis();
 
     @Column(name = "deletedat")
     private Long deletedat;
 
     public Attendance() {
-        status = StatusEnum.ATTENDANT;
-        createdat = System.currentTimeMillis();
-        updatedat = System.currentTimeMillis();
     }
 
     public enum StatusEnum {
         ALL(0, "All"),
         ATTENDANT(1, "On time"),
-        LATE(2, "Late"),
-        ABSENT(3, "Absent");
+        ABSENT(2, "Absent");
 
         private final int value;
         private final String name;
@@ -142,5 +145,21 @@ public class Attendance {
 
     public void setSession(Session session) {
         this.session = session;
+    }
+
+    public boolean isFace_matched() {
+        return face_matched;
+    }
+
+    public void setFace_matched(boolean face_matched) {
+        this.face_matched = face_matched;
+    }
+
+    public String getImage_uri() {
+        return image_uri;
+    }
+
+    public void setImage_uri(String image_uri) {
+        this.image_uri = image_uri;
     }
 }

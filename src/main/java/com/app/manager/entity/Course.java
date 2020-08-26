@@ -48,10 +48,10 @@ public class Course implements Serializable {
     private String description;
 
     @Column(name = "startdate", nullable = false)
-    private Long startdate;
+    private Long startdate = System.currentTimeMillis();
 
     @Column(name = "enddate", nullable = false)
-    private Long enddate;
+    private Long enddate = System.currentTimeMillis();
 
     public Long getStartdate() {
         return startdate;
@@ -70,29 +70,19 @@ public class Course implements Serializable {
     }
 
     @Column(name = "status", nullable = false)
-    private StatusEnum status;
+    private StatusEnum status = StatusEnum.PENDING;
 
     @Column(name = "createdat", nullable = false)
-    private Long createdat;
+    private Long createdat = System.currentTimeMillis();
 
     @Column(name = "updatedat", nullable = false)
-    private Long updatedat;
+    private Long updatedat = System.currentTimeMillis();
 
     @Column(name = "deletedat")
     private Long deletedat;
 
-    public Course(String name, String coursecategoryid, StatusEnum status) {
-        this.status = status;
-        this.name = name;
-        this.coursecategoryid = coursecategoryid;
-    }
 
     public Course() {
-        status = StatusEnum.PENDING;
-        startdate = System.currentTimeMillis();
-        enddate = System.currentTimeMillis();
-        createdat = System.currentTimeMillis();
-        updatedat = System.currentTimeMillis();
     }
 
     public enum StatusEnum {

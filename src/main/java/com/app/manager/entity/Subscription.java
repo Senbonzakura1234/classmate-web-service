@@ -59,21 +59,18 @@ public class Subscription {
 
 
     @Column(name = "status", nullable = false)
-    private StatusEnum status;
+    private StatusEnum status = StatusEnum.SHOW;
 
     @Column(name = "createdat", nullable = false)
-    private Long createdat;
+    private Long createdat = System.currentTimeMillis();
 
     @Column(name = "updatedat", nullable = false)
-    private Long updatedat;
+    private Long updatedat = System.currentTimeMillis();
 
     @Column(name = "deletedat")
     private Long deletedat;
 
     public Subscription() {
-        status = StatusEnum.SHOW;
-        createdat = System.currentTimeMillis();
-        updatedat = System.currentTimeMillis();
     }
 
     public enum StatusEnum {

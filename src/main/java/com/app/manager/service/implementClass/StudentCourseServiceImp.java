@@ -63,6 +63,11 @@ public class StudentCourseServiceImp implements StudentCourseService {
                         " or user is not Student",
                         HttpStatus.NOT_FOUND, "");
 
+//            if(student.get().isFacedefinition())
+//                return new DatabaseQueryResult(false,
+//                        "Student must have face definition",
+//                        HttpStatus.BAD_REQUEST, "");
+
 
             var studentCourse = new StudentCourse();
             studentCourse.setCourseId(studentCourseRequest.getCourseId());
