@@ -26,12 +26,6 @@ public class Session {
     @JoinColumn(name = "courseid", updatable = false, insertable = false)
     private Course course;
 
-    @Column(name = "userid")
-    private String userid;
-
-    @ManyToOne
-    @JoinColumn(name = "userid", updatable = false, insertable = false)
-    private User user;
 
     @OneToMany(mappedBy = "session")
     private List<Attendance> attendances; 
@@ -172,22 +166,6 @@ public class Session {
 
     public void setCourse(Course course) {
         this.course = course;
-    }
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userId) {
-        this.userid = userId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public List<Attendance> getAttendances() {

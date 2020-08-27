@@ -33,9 +33,6 @@ public class User {
     private Subscription subscription;
 
     @OneToMany(mappedBy = "user")
-    private List<Session> sessions;
-
-    @OneToMany(mappedBy = "user")
     private List<StudentCourse> studentCourses;
 
     @OneToMany(mappedBy = "user")
@@ -291,14 +288,6 @@ public class User {
 
     public void setSubscription(Subscription subscription) {
         this.subscription = subscription;
-    }
-
-    public List<Session> getSessions() {
-        return sessions;
-    }
-
-    public void setSessions(List<Session> sessions) {
-        this.sessions = sessions;
     }
 
     public List<StudentCourse> getStudentCourses() {

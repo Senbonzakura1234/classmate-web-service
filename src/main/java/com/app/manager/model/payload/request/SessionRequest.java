@@ -28,13 +28,12 @@ public class SessionRequest {
         this.sessionduration = sessionduration;
     }
 
-    public static Session castToEntity(SessionRequest sessionRequest, String teacherId){
+    public static Session castToEntity(SessionRequest sessionRequest){
         Session session = new Session();
 
         session.setSessionduration(sessionRequest.getSessionduration());
         session.setName(sessionRequest.getName());
         session.setStarttime(sessionRequest.getStarttime());
-        session.setUserid(teacherId);
         session.setCourseid(sessionRequest.getCourseId());
         return session;
     }

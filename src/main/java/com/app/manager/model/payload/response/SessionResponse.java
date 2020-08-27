@@ -8,7 +8,6 @@ import java.util.List;
 public class SessionResponse {
     private String id;
     private String courseId; //search
-    private String userId; //search
     private String name; //search
     private Long starttime;
     private int sessionduration;
@@ -16,13 +15,12 @@ public class SessionResponse {
     private Session.StatusEnum status; //search
     private Long createdat;
 
-    public SessionResponse(String id, String courseId, String userId,
+    public SessionResponse(String id, String courseId,
                            String name, Long starttime, int sessionduration,
                            Session.AttendanceStatusEnum attendancestatus, Session.StatusEnum status,
                            Long createdat) {
         this.id = id;
         this.courseId = courseId;
-        this.userId = userId;
         this.name = name;
         this.starttime = starttime;
         this.sessionduration = sessionduration;
@@ -46,7 +44,6 @@ public class SessionResponse {
         sessionResponse.setName(session.getName());
         sessionResponse.setStarttime(session.getStarttime());
         sessionResponse.setStatus(session.getStatus());
-        sessionResponse.setUserId(session.getUserid());
         sessionResponse.setCourseId(session.getCourseid());
 
         return sessionResponse;
@@ -75,14 +72,6 @@ public class SessionResponse {
 
     public void setCourseId(String courseId) {
         this.courseId = courseId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getName() {

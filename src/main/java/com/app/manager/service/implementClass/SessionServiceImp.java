@@ -46,7 +46,7 @@ public class SessionServiceImp implements SessionService {
             if(!course.getUserid().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, "");
-            var session = SessionRequest.castToEntity(sessionRequest, currentUsername);
+            var session = SessionRequest.castToEntity(sessionRequest);
             sessionRepository.save(session);
             return new DatabaseQueryResult(true,
                     "save course success", HttpStatus.OK,
@@ -154,7 +154,7 @@ public class SessionServiceImp implements SessionService {
             List<Session> sessions = sessionRepository.findAll(sessionSpecification);
             List<SessionResponse> list = new ArrayList<>();
             sessions.forEach(session -> list.add(new SessionResponse(session.getId(),
-                    session.getCourseid(), session.getUserid(),
+                    session.getCourseid(),
                     session.getName(), session.getStarttime(), session.getSessionduration(),
                     session.getAttendancestatus(), session.getStatus(), session.getCreatedat())));
             return list;
