@@ -196,14 +196,18 @@ public class SessionServiceImp implements SessionService {
 
             var listStudentCourse = studentCourseRepository
                     .findAllByCourseIdAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+            var attendanceList = new ArrayList<Attendance>();
             listStudentCourse.forEach(studentCourse -> {
                 var user = userRepository.findById(studentCourse.getUserId());
                 if(user.isEmpty()) return;
                 var attendance = new Attendance();
                 attendance.setUserId(user.get().getId());
                 attendance.setSessionId(s.getId());
-                attendanceRepository.save(attendance);
+                attendanceList.add(attendance);
             });
+            if(!attendanceList.isEmpty()){
+                attendanceRepository.saveAll(attendanceList);
+            }
             return new DatabaseQueryResult(true,
                     "Attendance Check Started", HttpStatus.OK, "");
         } catch (RuntimeException e) {
