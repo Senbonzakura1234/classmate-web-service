@@ -14,4 +14,6 @@ public interface SessionService {
     DatabaseQueryResult update(SessionRequest sessionRequest, String id, String currentUsername);
     DatabaseQueryResult delete(String id, String currentUsername);
     List<SessionResponse> findAll(SessionSpecification sessionSpecification);
+    DatabaseQueryResult startAttendanceCheck(String id, String currentUsername);
+    DatabaseQueryResult closeAttendanceCheck(String id, String currentUsername);
 }

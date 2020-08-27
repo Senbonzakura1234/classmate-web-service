@@ -17,17 +17,17 @@ public class Session {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    private String id; // SessionModel
+    private String id;
 
     @Column(name = "courseid")
-    private String courseid; // SessionModel
+    private String courseid;
 
     @ManyToOne
     @JoinColumn(name = "courseid", updatable = false, insertable = false)
     private Course course;
 
     @Column(name = "userid")
-    private String userid; // SessionModel
+    private String userid;
 
     @ManyToOne
     @JoinColumn(name = "userid", updatable = false, insertable = false)
@@ -40,52 +40,72 @@ public class Session {
 
     @NotBlank
     @Column(name = "name", nullable = false)
-    private String name; // SessionModel
+    private String name;
 
 
     @Column(name = "starttime", nullable = false)
-    private Long starttime; // SessionModel
+    private Long starttime;
 
-    @Min(value = 0)
-    @Column(name = "attendanceduration", nullable = false)
-    private int attendanceduration; // SessionModel
+    @Min(value = 1)
+    @Column(name = "sessionduration", nullable = false)
+    private int sessionduration = 1;
 
-    @Column(name = "attendancechecked", nullable = false)
-    private boolean attendancechecked; // SessionModel 
+    @Column(name = "attendancecheckstarttime", nullable = false)
+    private Long attendancecheckstarttime = 0L;
+
+    @Column(name = "attendancestatus", nullable = false)
+    private AttendanceStatusEnum attendancestatus = AttendanceStatusEnum.PENDING;
 
 
 
     @Column(name = "status", nullable = false)
-    private StatusEnum status; // SessionModel
+    private StatusEnum status = StatusEnum.PENDING;
 
     @Column(name = "createdat", nullable = false)
-    private Long createdat; // SessionModel
+    private Long createdat = System.currentTimeMillis();
 
     @Column(name = "updatedat", nullable = false)
-    private Long updatedat;
+    private Long updatedat = System.currentTimeMillis();
 
     @Column(name = "deletedat")
     private Long deletedat;
 
     public Session() {
-        attendancechecked = false;
-        status = StatusEnum.PENDING;
-        createdat = System.currentTimeMillis();
-        updatedat = System.currentTimeMillis();
     }
 
     public enum StatusEnum {
         ALL(0, "All"),
         PENDING(1, "Pending"),
         ONGOING(2, "Ongoing"),
-        ATTENDANCE_CHECK(3, "Attendance check"),
-        EXERCISING(4, "Exercising"),
-        END(5, "END");
+//        ATTENDANCE_CHECK(3, "Attendance check"),
+        EXERCISING(3, "Exercising"),
+        END(4, "END");
 
         private final int value;
         private final String name;
 
         StatusEnum(int value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        public int getValue() {
+            return value;
+        }
+        public String getName() {
+            return name;
+        }
+    }
+
+    public enum AttendanceStatusEnum {
+        PENDING(1, "Pending"),
+        ONGOING(2, "Ongoing"),
+        END(3, "END");
+
+        private final int value;
+        private final String name;
+
+        AttendanceStatusEnum(int value, String name) {
             this.value = value;
             this.name = name;
         }
@@ -194,19 +214,27 @@ public class Session {
         this.starttime = starttime;
     }
 
-    public int getAttendanceduration() {
-        return attendanceduration;
+    public int getSessionduration() {
+        return sessionduration;
     }
 
-    public void setAttendanceduration(int attendanceduration) {
-        this.attendanceduration = attendanceduration;
+    public void setSessionduration(int attendanceduration) {
+        this.sessionduration = attendanceduration;
     }
 
-    public boolean isAttendancechecked() {
-        return attendancechecked;
+    public AttendanceStatusEnum getAttendancestatus() {
+        return attendancestatus;
     }
 
-    public void setAttendancechecked(boolean attendancechecked) {
-        this.attendancechecked = attendancechecked;
+    public void setAttendancestatus(AttendanceStatusEnum attendancechecked) {
+        this.attendancestatus = attendancechecked;
+    }
+
+    public Long getAttendancecheckstarttime() {
+        return attendancecheckstarttime;
+    }
+
+    public void setAttendancecheckstarttime(Long attendancecheckstarttime) {
+        this.attendancecheckstarttime = attendancecheckstarttime;
     }
 }

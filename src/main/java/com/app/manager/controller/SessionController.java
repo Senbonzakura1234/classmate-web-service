@@ -111,4 +111,24 @@ public class SessionController {
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
                 ResponseEntity.status(result.getHttpStatus()).body(result);
     }
+
+    @PostMapping("/startAttendandeCheck")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> startAttendanceCheck(@RequestParam(value = "id") String id) {
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = sessionService.startAttendanceCheck(id, currentUser);
+        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+                ResponseEntity.status(result.getHttpStatus()).body(result);
+    }
+
+    @PostMapping("/closeAttendanceCheck")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> closeAttendanceCheck(@RequestParam(value = "id") String id) {
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = sessionService.closeAttendanceCheck(id, currentUser);
+        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+                ResponseEntity.status(result.getHttpStatus()).body(result);
+    }
 }

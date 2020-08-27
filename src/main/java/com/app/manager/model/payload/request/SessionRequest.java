@@ -13,25 +13,25 @@ public class SessionRequest {
     @NotBlank
     private Long starttime = 0L;
     @NotBlank
-    @Min(value = 0)
-    private int attendanceduration = 0;
+    @Min(value = 1)
+    private int sessionduration = 1;
 
     public SessionRequest() {
     }
 
     public SessionRequest(@NotBlank String courseId, @NotBlank String name,
                           @NotBlank Long starttime,
-                          @NotBlank @Min(value = 0) int attendanceduration) {
+                          @NotBlank @Min(value = 0) int sessionduration) {
         this.courseId = courseId;
         this.name = name;
         this.starttime = starttime;
-        this.attendanceduration = attendanceduration;
+        this.sessionduration = sessionduration;
     }
 
     public static Session castToEntity(SessionRequest sessionRequest, String teacherId){
         Session session = new Session();
 
-        session.setAttendanceduration(sessionRequest.getAttendanceduration());
+        session.setSessionduration(sessionRequest.getSessionduration());
         session.setName(sessionRequest.getName());
         session.setStarttime(sessionRequest.getStarttime());
         session.setUserid(teacherId);
@@ -65,11 +65,11 @@ public class SessionRequest {
         this.starttime = starttime;
     }
 
-    public int getAttendanceduration() {
-        return attendanceduration;
+    public int getSessionduration() {
+        return sessionduration;
     }
 
-    public void setAttendanceduration(int attendanceduration) {
-        this.attendanceduration = attendanceduration;
+    public void setSessionduration(int sessionduration) {
+        this.sessionduration = sessionduration;
     }
 }

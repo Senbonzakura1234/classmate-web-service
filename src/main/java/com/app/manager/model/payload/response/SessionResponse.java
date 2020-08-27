@@ -11,22 +11,22 @@ public class SessionResponse {
     private String userId; //search
     private String name; //search
     private Long starttime;
-    private int attendanceduration;
-    private boolean attendancechecked;
+    private int sessionduration;
+    private Session.AttendanceStatusEnum attendancestatus;
     private Session.StatusEnum status; //search
     private Long createdat;
 
     public SessionResponse(String id, String courseId, String userId,
-                           String name, Long starttime, int attendanceduration,
-                           boolean attendancechecked, Session.StatusEnum status,
+                           String name, Long starttime, int sessionduration,
+                           Session.AttendanceStatusEnum attendancestatus, Session.StatusEnum status,
                            Long createdat) {
         this.id = id;
         this.courseId = courseId;
         this.userId = userId;
         this.name = name;
         this.starttime = starttime;
-        this.attendanceduration = attendanceduration;
-        this.attendancechecked = attendancechecked;
+        this.sessionduration = sessionduration;
+        this.attendancestatus = attendancestatus;
         this.status = status;
         this.createdat = createdat;
     }
@@ -41,8 +41,8 @@ public class SessionResponse {
         }
         sessionResponse.setId(session.getId());
         sessionResponse.setCreatedat(session.getCreatedat());
-        sessionResponse.setAttendancechecked(session.isAttendancechecked());
-        sessionResponse.setAttendanceduration(session.getAttendanceduration());
+        sessionResponse.setAttendancestatus(session.getAttendancestatus());
+        sessionResponse.setSessionduration(session.getSessionduration());
         sessionResponse.setName(session.getName());
         sessionResponse.setStarttime(session.getStarttime());
         sessionResponse.setStatus(session.getStatus());
@@ -101,20 +101,20 @@ public class SessionResponse {
         this.starttime = starttime;
     }
 
-    public int getAttendanceduration() {
-        return attendanceduration;
+    public int getSessionduration() {
+        return sessionduration;
     }
 
-    public void setAttendanceduration(int attendanceduration) {
-        this.attendanceduration = attendanceduration;
+    public void setSessionduration(int sessionduration) {
+        this.sessionduration = sessionduration;
     }
 
-    public boolean isAttendancechecked() {
-        return attendancechecked;
+    public Session.AttendanceStatusEnum getAttendancestatus() {
+        return attendancestatus;
     }
 
-    public void setAttendancechecked(boolean attendancechecked) {
-        this.attendancechecked = attendancechecked;
+    public void setAttendancestatus(Session.AttendanceStatusEnum attendancestatus) {
+        this.attendancestatus = attendancestatus;
     }
 
     public Session.StatusEnum getStatus() {

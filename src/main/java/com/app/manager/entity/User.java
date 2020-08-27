@@ -91,6 +91,13 @@ public class User {
 
 
 
+    @Column(name = "facedefinitionid", nullable = false)
+    private String facedefinitionid = "";
+
+    @Column(name = "facedefinition", nullable = false)
+    private boolean facedefinition = false;
+
+
 
     @Column(name = "account_non_expired", nullable = false)
     private boolean account_non_expired = true;
@@ -372,5 +379,21 @@ public class User {
 
     public void setProfile_visibility(VisibilityEnum profile_visibility) {
         this.profile_visibility = profile_visibility;
+    }
+
+    public String getFacedefinitionid() {
+        return facedefinitionid;
+    }
+
+    public void setFacedefinitionid(String facedefinitionid) {
+        this.facedefinitionid = facedefinitionid;
+    }
+
+    public boolean isFacedefinition() {
+        return facedefinition;
+    }
+
+    public void setFacedefinition(boolean facedefinition) {
+        this.facedefinition = facedefinition;
     }
 }
