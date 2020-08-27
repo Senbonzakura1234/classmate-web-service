@@ -4,15 +4,16 @@ import com.app.manager.entity.Session;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class SessionRequest {
     @NotBlank
     private String courseId = "";
     @NotBlank
     private String name = "";
-    @NotBlank
+    @NotNull
     private Long starttime = 0L;
-    @NotBlank
+    @NotNull
     @Min(value = 1)
     private int sessionduration = 1;
 
@@ -20,8 +21,7 @@ public class SessionRequest {
     }
 
     public SessionRequest(@NotBlank String courseId, @NotBlank String name,
-                          @NotBlank Long starttime,
-                          @NotBlank @Min(value = 0) int sessionduration) {
+                          @NotNull Long starttime, @NotNull @Min(value = 1) int sessionduration) {
         this.courseId = courseId;
         this.name = name;
         this.starttime = starttime;

@@ -3,6 +3,7 @@ package com.app.manager.model.payload.request;
 import com.app.manager.entity.Course;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class CourseRequest {
     @NotBlank
@@ -11,17 +12,17 @@ public class CourseRequest {
     private String name = "";
     @NotBlank
     private String description = "";
-    @NotBlank
+    @NotNull
     private Long startdate = 0L;
-    @NotBlank
+    @NotNull
     private Long enddate = 0L;
 
     public CourseRequest() {
     }
 
-    public CourseRequest(@NotBlank String coursecategoryid,
-                         @NotBlank String name, @NotBlank String description,
-                         @NotBlank Long startdate, @NotBlank Long enddate) {
+    public CourseRequest(@NotBlank String coursecategoryid, @NotBlank String name,
+                         @NotBlank String description, @NotNull Long startdate,
+                         @NotNull Long enddate) {
         this.coursecategoryid = coursecategoryid;
         this.name = name;
         this.description = description;

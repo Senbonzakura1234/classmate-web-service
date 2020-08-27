@@ -1,14 +1,17 @@
 package com.app.manager.model.payload.request;
 
-public class LoginRequest {
-    private String username;
+import javax.validation.constraints.NotBlank;
 
+public class LoginRequest {
+    @NotBlank
+    private String username;
+    @NotBlank
     private String password;
 
     public LoginRequest() {
     }
 
-    public LoginRequest(String username, String password) {
+    public LoginRequest(@NotBlank String username, @NotBlank String password) {
         this.username = username;
         this.password = password;
     }
