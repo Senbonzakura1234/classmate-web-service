@@ -5,27 +5,31 @@ import com.app.manager.context.repository.UserRepository;
 import com.app.manager.entity.ERole;
 import com.app.manager.entity.Role;
 import com.app.manager.entity.User;
+import com.app.manager.model.payload.request.FaceDefinitionClientRequest;
+import com.app.manager.model.payload.request.FaceDefinitionServerRequest;
+import com.app.manager.model.payload.response.FaceDefinitionServerResponse;
 import com.app.manager.model.payload.response.UserProfileResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.MessageFormat;
 import java.util.*;
 
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
 public class UserServiceImp implements UserService {
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired
-    UserRepository userRepository;
+    @Autowired UserRepository userRepository;
+    @Autowired RoleRepository roleRepository;
 
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired
-    RoleRepository roleRepository;
-
+    private static final String faceCheckHost = "";
 
     @Override
     public Optional<User> findUser(String username) {
@@ -141,6 +145,34 @@ public class UserServiceImp implements UserService {
         }
     }
 
+    @Override
+    public DatabaseQueryResult faceCheckDefinition
+            (FaceDefinitionClientRequest faceDefinitionClientRequest, String currentUsername) {
+        var student = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        var faceDefinition = new FaceDefinitionServerRequest(
+                    faceDefinitionClientRequest.getImg_urls(),
+                    student.isFacedefinition()
+                            && student.getFacedefinitionid() != null
+                            && !student.getFacedefinitionid().isEmpty(),
+                        student.isFacedefinition()
+                            && student.getFacedefinitionid() != null
+                            && !student.getFacedefinitionid().isEmpty()?
+                        student.getFacedefinitionid() : "");
+
+        var result = sentNewFaceDefinition(faceDefinition);
+        if(result.isEmpty() || !result.get().isSuccess())
+            return new DatabaseQueryResult(false,
+                    "Setup face definition fail",
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+
+        student.setFacedefinition(true);
+        student.setFacedefinitionid(faceDefinition.getDefinitionId());
+        userRepository.save(student);
+        return new DatabaseQueryResult(true,
+                "Setup face definition success", HttpStatus.OK, "");
+    }
+
     private Optional<Role> getRoleInstant(ERole roleName){
         try {
             var role = roleRepository.findByName(roleName);
@@ -155,4 +187,15 @@ public class UserServiceImp implements UserService {
         }
     }
 
+    private Optional<FaceDefinitionServerResponse>
+        sentNewFaceDefinition(FaceDefinitionServerRequest faceDefinitionServerRequest){
+        var entity = new HttpEntity<>(faceDefinitionServerRequest, new HttpHeaders());
+        var restTemplate = new RestTemplate();
+
+        var response = restTemplate
+                .exchange(faceCheckHost, HttpMethod.POST,
+                        entity, FaceDefinitionServerResponse.class);
+        return response.getBody() != null ?
+                Optional.of(response.getBody()) : Optional.empty();
+    }
 }

@@ -113,6 +113,6 @@ public class AuthController {
                     .ok(new MessageResponse("User registered successfully!")) :
                 ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse(result.getDescription()));
+                    .body(result);
     }
 }

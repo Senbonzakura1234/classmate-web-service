@@ -122,7 +122,7 @@ public class AttendanceServiceImp implements AttendanceService {
         var restTemplate = new RestTemplate();
 
         var response = restTemplate
-                .exchange(faceCheckHost, HttpMethod.GET, entity, FaceCheckServerResponse.class);
+                .exchange(faceCheckHost, HttpMethod.POST, entity, FaceCheckServerResponse.class);
         return response.getBody() != null ?
                 Optional.of(response.getBody()) : Optional.empty();
     }

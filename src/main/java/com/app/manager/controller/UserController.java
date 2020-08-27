@@ -2,13 +2,19 @@ package com.app.manager.controller;
 
 import com.app.manager.context.specification.UserSpecification;
 import com.app.manager.model.SearchCriteria;
+import com.app.manager.model.payload.request.FaceDefinitionClientRequest;
+import com.app.manager.model.payload.response.MessageResponse;
 import com.app.manager.service.interfaceClass.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -42,5 +48,33 @@ public class UserController {
         return ResponseEntity.ok(userService.findAll(
                 Specification.where(queryFullname)
                         .or(queryUsername), currentUser));
+    }
+
+    @PostMapping("/profile/faceCheckDefinition")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> faceCheckDefinition
+            (@Valid @RequestBody FaceDefinitionClientRequest faceDefinitionClientRequest,
+             BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error"));
+        }
+        if(faceDefinitionClientRequest.getImg_urls().isEmpty())
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Null Imagelist"));
+
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result =
+                userService.faceCheckDefinition(faceDefinitionClientRequest, currentUser);
+
+        return result.isSuccess() ?
+                ResponseEntity.ok(result) :
+                ResponseEntity.badRequest().body(result);
     }
 }
