@@ -174,10 +174,12 @@ public class SessionServiceImp implements SessionService {
                         HttpStatus.NOT_FOUND, "");
 
             var session = sessionRepository.findById(id);
-            if(session.isEmpty()){
+            if(session.isEmpty()) return new DatabaseQueryResult(false,
+                    "Session not found", HttpStatus.NOT_FOUND, "");
+
+            if(session.get().getAttendancestatus() == Session.AttendanceStatusEnum.ONGOING)
                 return new DatabaseQueryResult(false,
-                        "Session not found", HttpStatus.NOT_FOUND, "");
-            }
+                "Session not found", HttpStatus.BAD_REQUEST, "");
 
             var course = courseRepository
                     .findById(session.get().getCourseid())
@@ -194,16 +196,14 @@ public class SessionServiceImp implements SessionService {
 
             var listStudentCourse = studentCourseRepository
                     .findAllByCourseIdAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
-            var attendanceList = new ArrayList<Attendance>();
             listStudentCourse.forEach(studentCourse -> {
                 var user = userRepository.findById(studentCourse.getUserId());
                 if(user.isEmpty()) return;
                 var attendance = new Attendance();
                 attendance.setUserId(user.get().getId());
                 attendance.setSessionId(s.getId());
-                attendanceList.add(attendance);
+                attendanceRepository.save(attendance);
             });
-            attendanceRepository.saveAll(attendanceList);
             return new DatabaseQueryResult(true,
                     "Attendance Check Started", HttpStatus.OK, "");
         } catch (RuntimeException e) {
