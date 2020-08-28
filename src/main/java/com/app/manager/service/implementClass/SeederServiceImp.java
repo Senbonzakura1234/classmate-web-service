@@ -1,10 +1,8 @@
 package com.app.manager.service.implementClass;
 
-import com.app.manager.context.repository.CourseCategoryRepository;
-import com.app.manager.context.repository.RoleRepository;
-import com.app.manager.context.repository.SubscriptionRepository;
+import com.app.manager.context.repository.*;
 import com.app.manager.entity.*;
-import com.app.manager.model.SeederData;
+import com.app.manager.model.seeder.SeederData;
 import com.app.manager.service.interfaceClass.SeederService;
 import com.app.manager.service.interfaceClass.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,19 +10,26 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-@SuppressWarnings("ALL")
+
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
 public class SeederServiceImp implements SeederService {
     @Autowired SeederData seederData;
     @Autowired RoleRepository roleRepository;
     @Autowired SubscriptionRepository subscriptionRepository;
     @Autowired CourseCategoryRepository coursecategoryRepository;
+    @Autowired UserRepository userRepository;
+    @Autowired CourseRepository courseRepository;
+    @Autowired StudentCourseRepository studentCourseRepository;
+    @Autowired SessionRepository sessionRepository;
     @Autowired UserService userService;
 
     @Override
     public void generateRoles() {
-        for(ERole eRole : ERole.values()){
+        for(var eRole : ERole.values()){
             try {
                 if(eRole == ERole.ALL) continue;
                 var role = roleRepository.findByName(eRole);
@@ -44,10 +49,10 @@ public class SeederServiceImp implements SeederService {
 
     @Override
     public void generateSubscription() {
-        for(Subscription.SubscriptionList subscriptionName : Subscription.SubscriptionList.values()){
+        for(var subscriptionName : Subscription.SubscriptionList.values()){
             var subscription = subscriptionRepository.findFirstByName(subscriptionName.getName());
             try {
-                if (subscription == null) {
+                if (subscription.isEmpty()) {
                     var newSubscription = new Subscription();
                     newSubscription.setName(subscriptionName.getName());
                     subscriptionRepository.save(newSubscription);
@@ -63,11 +68,11 @@ public class SeederServiceImp implements SeederService {
 
     @Override
     public void generateCategory() {
-        for (String name: seederData.getCourseCategoryNames()
+        for (var name: seederData.getCourseCategoryNames()
         ) {
             try {
                 var category = coursecategoryRepository.findFirstByName(name);
-                if(category == null){
+                if(category.isEmpty()){
                     var newCategory = new CourseCategory();
                     newCategory.setName(name);
                     newCategory.setDescription(name);
@@ -95,28 +100,124 @@ public class SeederServiceImp implements SeederService {
             var rand = new Random();
             var chance = rand.nextInt(1000);
             var subscribtionName = signupRequest.getRole()
-                    .contains(ERole.ROLE_ADMIN) ? Subscription.SubscriptionList.PREMIUM :
+                    .contains(ERole.ROLE_ADMIN.getName()) ? Subscription.SubscriptionList.PREMIUM :
                     chance % 2 == 0 ? Subscription.SubscriptionList.PREMIUM :
                             Subscription.SubscriptionList.FREE;
             var subscribtion = getSubscribtionInstant(subscribtionName);
+            if(subscribtion.isEmpty()) return;
             System.out.println(userService.saveUser(user, signupRequest.getRole(),
                     subscribtion.get().getId()).getDescription());
         });
     }
 
-    private Optional<Role> getRoleInstant(ERole roleName){
+    @Override
+    public void generateCourse() {
+        var categories = seederData.getCourseCategoryNames()
+                .stream().filter(s -> !s.equals("Undefine")).collect(Collectors.toList());
+        var teachers= seederData.getUserSeeds()
+                .stream().filter(signupRequest -> signupRequest.getRole()
+                        .contains(ERole.ROLE_TEACHER.getName())).collect(Collectors.toList());
+        IntStream.range(0, 10).forEach(i -> {
+            try {
+                var randCate = new Random();
+                var randTeacher = new Random();
+                var categoryName = categories.get(randCate.nextInt(categories.size()));
+                var teacherName = teachers.get(randTeacher.nextInt(teachers.size())).getUsername();
+
+                var category = coursecategoryRepository.findFirstByName(categoryName);
+                if (category.isEmpty()) return;
+
+                var teacher = userRepository.findByUsername(teacherName);
+                if (teacher.isEmpty()) return;
+
+                var course = new Course();
+                course.setName("Course Name " + i);
+                var checkCourse = courseRepository.findFirstByName("Course Name " + i);
+                if (checkCourse.isPresent()) return;
+
+                course.setDescription("Teacher: " + teacherName + ", Category: " + categoryName);
+                course.setCoursecategoryid(category.get().getId());
+                course.setUserid(teacher.get().getId());
+
+
+                course.setStatus(Course.StatusEnum.ONGOING);
+                courseRepository.save(course);
+                System.out.println("Add course success");
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void generateStudentCourse() {
         try {
-            var role = roleRepository.findByName(roleName);
-            if(role.isPresent()) return role;
-            var newRole = new Role(roleName);
-            roleRepository.save(newRole);
-            return Optional.of(newRole);
+            var courses = courseRepository.findAll();
+            courses.forEach(course -> {
+                var students= seederData.getUserSeeds()
+                        .stream().filter(signupRequest -> signupRequest.getRole()
+                                .contains(ERole.ROLE_STUDENT.getName()))
+                                .collect(Collectors.toList());
+
+                students.forEach(signupRequest -> {
+                    try {
+                        var student = userRepository
+                                .findByUsername(signupRequest.getUsername());
+                        if (student.isEmpty()) return;
+                        var studentCourse = new StudentCourse();
+                        studentCourse.setUserId(student.get().getId());
+                        studentCourse.setCourseId(course.getId());
+                        studentCourseRepository.save(studentCourse);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println(e.getMessage());
+                    }
+                });
+                System.out.println("Add student to course " + course.getName());
+            });
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
-            return Optional.empty();
         }
     }
+
+    @Override
+    public void generateSession() {
+        IntStream.range(0, 10).forEach(i -> {
+            try {
+                var course = courseRepository.findFirstByName("Course Name " + i);
+                if(course.isEmpty()) return;
+                IntStream.range(0, 2).forEach(j -> {
+                    try {
+                        var session = new Session();
+                        session.setName("Session Name " + j + ", Course " + i);
+                        var checkSession = sessionRepository
+                                .findFirstByName("Session Name " + j + ", Course " + i);
+                        if(checkSession.isPresent()) return;
+                        session.setContent("Session " + j + " Content: " +
+                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+                                "Integer cursus, nunc at vehicula tempor, dui dolor eleifend lacus, " +
+                                "id dapibus dolor odio id risus. Cras quis erat nec nulla tempor vestibulum." +
+                                " Aenean malesuada velit eu bibendum ullamcorper." +
+                                " Ut aliquam enim sed gravida tempor. " +
+                                "Interdum et malesuada fames ac ante ipsum primis in faucibus." +
+                                " Cras aliquam est sit amet ipsum porta ultricies." +
+                                " Aliquam rhoncus lectus quis laoreet aliquet.");
+                        sessionRepository.save(session);
+                        System.out.println("Add sesion success");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println(e.getMessage());
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+            }
+        });
+    }
+
 
     private Optional<Subscription> getSubscribtionInstant(
             Subscription.SubscriptionList subscriptionName){

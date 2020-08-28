@@ -154,8 +154,8 @@ public class SessionServiceImp implements SessionService {
             List<Session> sessions = sessionRepository.findAll(sessionSpecification);
             List<SessionResponse> list = new ArrayList<>();
             sessions.forEach(session -> list.add(new SessionResponse(session.getId(),
-                    session.getCourseid(),
-                    session.getName(), session.getStarttime(), session.getSessionduration(),
+                    session.getCourseid(), session.getName(), session.getContent(),
+                    session.getStarttime(), session.getSessionduration(),
                     session.getAttendancestatus(), session.getStatus(), session.getCreatedat())));
             return list;
         } catch (Exception e) {

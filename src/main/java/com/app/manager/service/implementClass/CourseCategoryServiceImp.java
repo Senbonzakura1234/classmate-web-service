@@ -24,13 +24,13 @@ public class CourseCategoryServiceImp implements CourseCategoryService {
     public Optional<CourseCategory> getBasicCategory() {
         try {
             var category = coursecategoryRepository.findFirstByName(basicCategory);
-            if(category == null){
+            if(category.isEmpty()){
                 var newCategory = new CourseCategory();
                 newCategory.setName(basicCategory);
                 coursecategoryRepository.save(newCategory);
                 return Optional.of(newCategory);
             }
-            return Optional.of(category);
+            return category;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());

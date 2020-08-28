@@ -11,6 +11,7 @@ public class SessionRequest {
     private String courseId = "";
     @NotBlank
     private String name = "";
+    private String content = "";
     @NotNull
     private Long starttime = 0L;
     @NotNull
@@ -20,10 +21,11 @@ public class SessionRequest {
     public SessionRequest() {
     }
 
-    public SessionRequest(@NotBlank String courseId, @NotBlank String name,
+    public SessionRequest(@NotBlank String courseId, @NotBlank String name, String content,
                           @NotNull Long starttime, @NotNull @Min(value = 1) int sessionduration) {
         this.courseId = courseId;
         this.name = name;
+        this.content = content;
         this.starttime = starttime;
         this.sessionduration = sessionduration;
     }
@@ -33,6 +35,7 @@ public class SessionRequest {
 
         session.setSessionduration(sessionRequest.getSessionduration());
         session.setName(sessionRequest.getName());
+        session.setContent(sessionRequest.getContent());
         session.setStarttime(sessionRequest.getStarttime());
         session.setCourseid(sessionRequest.getCourseId());
         return session;
@@ -70,5 +73,13 @@ public class SessionRequest {
 
     public void setSessionduration(int sessionduration) {
         this.sessionduration = sessionduration;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

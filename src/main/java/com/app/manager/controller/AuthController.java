@@ -1,7 +1,7 @@
 package com.app.manager.controller;
 
 import com.app.manager.entity.User;
-import com.app.manager.model.Seeder;
+import com.app.manager.model.seeder.Seeder;
 import com.app.manager.model.payload.request.LoginRequest;
 import com.app.manager.model.payload.request.SignupRequest;
 import com.app.manager.model.payload.response.JwtResponse;

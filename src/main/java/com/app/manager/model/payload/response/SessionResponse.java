@@ -9,19 +9,21 @@ public class SessionResponse {
     private String id;
     private String courseId; //search
     private String name; //search
+    private String content;
     private Long starttime;
     private int sessionduration;
     private Session.AttendanceStatusEnum attendancestatus;
     private Session.StatusEnum status; //search
     private Long createdat;
 
-    public SessionResponse(String id, String courseId,
-                           String name, Long starttime, int sessionduration,
-                           Session.AttendanceStatusEnum attendancestatus, Session.StatusEnum status,
-                           Long createdat) {
+    public SessionResponse(String id, String courseId, String name,
+                           String content, Long starttime, int sessionduration,
+                           Session.AttendanceStatusEnum attendancestatus,
+                           Session.StatusEnum status, Long createdat) {
         this.id = id;
         this.courseId = courseId;
         this.name = name;
+        this.content = content;
         this.starttime = starttime;
         this.sessionduration = sessionduration;
         this.attendancestatus = attendancestatus;
@@ -42,6 +44,7 @@ public class SessionResponse {
         sessionResponse.setAttendancestatus(session.getAttendancestatus());
         sessionResponse.setSessionduration(session.getSessionduration());
         sessionResponse.setName(session.getName());
+        sessionResponse.setContent(session.getContent());
         sessionResponse.setStarttime(session.getStarttime());
         sessionResponse.setStatus(session.getStatus());
         sessionResponse.setCourseId(session.getCourseid());
@@ -120,5 +123,13 @@ public class SessionResponse {
 
     public void setCreatedat(Long createdat) {
         this.createdat = createdat;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

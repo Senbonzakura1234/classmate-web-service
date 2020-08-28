@@ -36,9 +36,13 @@ public class Session {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotBlank
+    @Column(name = "content", nullable = false, length = 512)
+    private String content = "";
+
 
     @Column(name = "starttime", nullable = false)
-    private Long starttime;
+    private Long starttime = 0L;
 
     @Min(value = 1)
     @Column(name = "sessionduration", nullable = false)
@@ -214,5 +218,13 @@ public class Session {
 
     public void setAttendancecheckstarttime(Long attendancecheckstarttime) {
         this.attendancecheckstarttime = attendancecheckstarttime;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

@@ -1,4 +1,4 @@
-package com.app.manager.model;
+package com.app.manager.model.seeder;
 
 import com.app.manager.service.interfaceClass.SeederService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,5 +14,8 @@ public class Seeder {
         seederService.generateSubscription();
         seederService.generateCategory();
         seederService.generateUser();
+        seederService.generateCourse();
+        seederService.generateStudentCourse();
+        seederService.generateSession();
     }
 }

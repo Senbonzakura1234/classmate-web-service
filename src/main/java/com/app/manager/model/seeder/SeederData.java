@@ -1,4 +1,4 @@
-package com.app.manager.model;
+package com.app.manager.model.seeder;
 
 import com.app.manager.entity.ERole;
 import com.app.manager.model.payload.request.SignupRequest;
@@ -30,7 +30,7 @@ public class SeederData {
         var list = new ArrayList<SignupRequest>();
 
         for (ERole role : ERole.values())
-            if (role != ERole.ROLE_ADMIN) for (int i = 0; i < (role == ERole.ROLE_TEACHER ? 5 : 20); i++)
+            if (role != ERole.ROLE_ADMIN) for (int i = 0; i < (role == ERole.ROLE_TEACHER ? 5 : 10); i++)
                 list.add(new SignupRequest(getUsername(role.getName() + i),
                         getEmail(role.getName() + i), getPassword(),
                         new HashSet<>(Collections.singletonList(role.getName()))));

@@ -5,4 +5,7 @@ public interface SeederService {
     void generateSubscription();
     void generateCategory();
     void generateUser();
+    void generateCourse();
+    void generateStudentCourse();
+    void generateSession();
 }
