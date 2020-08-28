@@ -12,7 +12,7 @@ public class HomeController {
 
     @RequestMapping({"/home", "/"})
     public String index() {
-        seeder.Seed(); // uncomment this to seed data, comment it again when done seeding
+//        seeder.Seed(); // uncomment this to seed data, comment it again when done seeding
         return "views/home";
     }
 }
