@@ -37,25 +37,4 @@ public class CourseCategoryServiceImp implements CourseCategoryService {
             return Optional.empty();
         }
     }
-
-    @Override
-    public void generateCategory() {
-        for (String name: categoriesExample
-             ) {
-            try {
-                var category = coursecategoryRepository.findFirstByName(name);
-                if(category == null){
-                    var newCategory = new CourseCategory();
-                    newCategory.setName(name);
-                    newCategory.setDescription(name);
-                    coursecategoryRepository.save(newCategory);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Can create role: " + name);
-                System.out.println("Reason: " + e.getMessage());
-                System.out.println("Cause by: " + e.getCause().toString());
-            }
-        }
-    }
 }

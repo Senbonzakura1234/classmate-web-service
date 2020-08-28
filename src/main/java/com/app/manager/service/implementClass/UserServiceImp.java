@@ -65,7 +65,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public DatabaseQueryResult saveUser(User user, Set<String> strRoles) {
+    public DatabaseQueryResult saveUser(User user, Set<String> strRoles, String subscribtionId) {
         try {
             Set<Role> roles = new HashSet<>();
 
@@ -104,6 +104,7 @@ public class UserServiceImp implements UserService {
                     }
                 });
             }
+            user.setSubscriptionId(subscribtionId);
             user.setRoles(roles);
             userRepository.save(user);
             return new DatabaseQueryResult(true,

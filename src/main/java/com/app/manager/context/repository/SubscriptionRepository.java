@@ -1,8 +1,10 @@
 package com.app.manager.context.repository;
 
 import com.app.manager.entity.Subscription;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SubscriptionRepository extends CrudRepository<Subscription, String> {
-    Subscription findFirstByName(String name);
+import java.util.Optional;
+
+public interface SubscriptionRepository extends JpaRepository<Subscription, String> {
+    Optional<Subscription> findFirstByName(String name);
 }

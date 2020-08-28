@@ -9,9 +9,11 @@ import com.app.manager.model.payload.response.MessageResponse;
 import com.app.manager.security.authService.UserDetailsImpl;
 import com.app.manager.security.jwt.JwtUtils;
 import com.app.manager.service.interfaceClass.RoleService;
+import com.app.manager.service.interfaceClass.SubscriptionService;
 import com.app.manager.service.interfaceClass.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +34,7 @@ public class AuthController {
     @Autowired AuthenticationManager authenticationManager;
     @Autowired UserService userService;
     @Autowired RoleService roleService;
+    @Autowired SubscriptionService subscriptionService;
     @Autowired PasswordEncoder encoder;
     @Autowired JwtUtils jwtUtils;
     @Autowired Seeder seeder;
@@ -106,7 +109,12 @@ public class AuthController {
                 encoder.encode(signUpRequest.getPassword()));
 
         var strRoles = signUpRequest.getRole();
-        var result = userService.saveUser(user, strRoles);
+        var subscription = subscriptionService.getBasicSubscription();
+        if(subscription.isEmpty())
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR");
+        var result = userService.saveUser(user, strRoles,
+                subscription.get().getId());
 
         return result.isSuccess() ?
                 ResponseEntity

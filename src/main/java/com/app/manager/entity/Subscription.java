@@ -95,7 +95,8 @@ public class Subscription {
     }
 
     public enum SubscriptionList {
-        FREE(0, "FREE");
+        FREE(0, "FREE"),
+        PREMIUM(1, "PREMIUM");
 
         private final int value;
         private final String name;
