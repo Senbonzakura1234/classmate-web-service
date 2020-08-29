@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "8b678377-9451-4234-9bea-ccbd1c18a60e",
+		"_postman_id": "44d015f4-88a4-47ad-9db2-95244cf3e822",
 		"name": "classmate project",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -20,12 +20,13 @@
 					}
 				},
 				"url": {
-					"raw": "https://classmate-api-server.herokuapp.com/api/auth/signup",
-					"protocol": "https",
+					"raw": "http://35.221.225.55/api/auth/signup",
+					"protocol": "http",
 					"host": [
-						"classmate-api-server",
-						"herokuapp",
-						"com"
+						"35",
+						"221",
+						"225",
+						"55"
 					],
 					"path": [
 						"api",
@@ -51,12 +52,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/auth/signin",
+					"raw": "http://35.221.225.55/api/auth/signin",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"221",
+						"225",
+						"55"
 					],
-					"port": "8080",
 					"path": [
 						"api",
 						"auth",
@@ -81,12 +84,13 @@
 					}
 				],
 				"url": {
-					"raw": "https://classmate-api-server.herokuapp.com/api/data/course/addToCourse",
-					"protocol": "https",
+					"raw": "http://35.221.225.55/api/data/course/addToCourse",
+					"protocol": "http",
 					"host": [
-						"classmate-api-server",
-						"herokuapp",
-						"com"
+						"35",
+						"221",
+						"225",
+						"55"
 					],
 					"path": [
 						"api",
@@ -105,13 +109,13 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzZW5ib256YWt1cmFUZWFjaGVyMSIsImlhdCI6MTU5ODUzNTI1MiwiZXhwIjoxNTk4NjIxNjUyfQ.7E_nipxdjLdAkh0yxFJUw8at5GHPUhXQjrEIcrEdLNQ9ldfjCm1tLbMajTbW3m-pUJFtJ-NXVlNZjfp-YHZfnA",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzZW5ib256YWt1cmExOTk3VGVhY2hlcjEiLCJpYXQiOjE1OTg3MDgyMzUsImV4cCI6MTU5ODc5NDYzNX0.8bfit_MsfBkUqsuUOyIEbbauS3jbQB7PWHLTvsYqedmLNL7NbS6RGqcVO2693tB-JAFdyaRmP8M1LX69p_mzRQ",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"coursecategoryid\" : \"02e19f6a-76d4-4648-90d7-11aac5d4a7de\",\r\n    \"name\" : \"course name\",\r\n    \"description\" : \"description\",\r\n    \"startdate\" : 21000000,\r\n    \"enddate\": 23000000\r\n}",
+					"raw": "{\r\n    \"coursecategoryid\" : \"2493811d-6938-43bf-ae1e-88ec8f4445cd\",\r\n    \"name\" : \"course name\",\r\n    \"description\" : \"description\",\r\n    \"startdate\" : 21000000,\r\n    \"enddate\": 23000000\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -119,12 +123,13 @@
 					}
 				},
 				"url": {
-					"raw": "https://classmate-api-server.herokuapp.com/api/data/course/add",
-					"protocol": "https",
+					"raw": "http://35.221.225.55/api/data/course/add",
+					"protocol": "http",
 					"host": [
-						"classmate-api-server",
-						"herokuapp",
-						"com"
+						"35",
+						"221",
+						"225",
+						"55"
 					],
 					"path": [
 						"api",
@@ -143,13 +148,13 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzZW5ib256YWt1cmFUZWFjaGVyMSIsImlhdCI6MTU5ODUzNTI1MiwiZXhwIjoxNTk4NjIxNjUyfQ.7E_nipxdjLdAkh0yxFJUw8at5GHPUhXQjrEIcrEdLNQ9ldfjCm1tLbMajTbW3m-pUJFtJ-NXVlNZjfp-YHZfnA",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzZW5ib256YWt1cmExOTk3VGVhY2hlcjEiLCJpYXQiOjE1OTg3MDgyMzUsImV4cCI6MTU5ODc5NDYzNX0.8bfit_MsfBkUqsuUOyIEbbauS3jbQB7PWHLTvsYqedmLNL7NbS6RGqcVO2693tB-JAFdyaRmP8M1LX69p_mzRQ",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"courseId\" : \"d238791e-320b-409f-83b7-43b0e3a298b0\",\r\n    \"name\" : \"session name\",\r\n    \"starttime\" : 200000000,\r\n    \"sessionduration\" : 10\r\n}",
+					"raw": "{\r\n    \"courseId\" : \"6042422e-0252-485d-a036-a3371f8e1d69\",\r\n    \"name\" : \"session name\",\r\n    \"content\" : \"content bla bla\",\r\n    \"starttime\" : 200000000,\r\n    \"sessionduration\" : 10\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -157,12 +162,13 @@
 					}
 				},
 				"url": {
-					"raw": "https://classmate-api-server.herokuapp.com/api/data/session/add",
-					"protocol": "https",
+					"raw": "http://35.221.225.55/api/data/session/add",
+					"protocol": "http",
 					"host": [
-						"classmate-api-server",
-						"herokuapp",
-						"com"
+						"35",
+						"221",
+						"225",
+						"55"
 					],
 					"path": [
 						"api",
@@ -186,12 +192,13 @@
 					}
 				],
 				"url": {
-					"raw": "https://classmate-api-server.herokuapp.com/api/data/session/startAttendandeCheck?id=abd4e468-fe3d-4df2-b3be-50290d57c26b",
-					"protocol": "https",
+					"raw": "http://35.221.225.55/api/data/session/startAttendandeCheck?id=abd4e468-fe3d-4df2-b3be-50290d57c26b",
+					"protocol": "http",
 					"host": [
-						"classmate-api-server",
-						"herokuapp",
-						"com"
+						"35",
+						"221",
+						"225",
+						"55"
 					],
 					"path": [
 						"api",
@@ -221,12 +228,13 @@
 					}
 				],
 				"url": {
-					"raw": "https://classmate-api-server.herokuapp.com/api/data/session/closeAttendanceCheck?id=abd4e468-fe3d-4df2-b3be-50290d57c26b",
-					"protocol": "https",
+					"raw": "http://35.221.225.55/api/data/session/closeAttendanceCheck?id=abd4e468-fe3d-4df2-b3be-50290d57c26b",
+					"protocol": "http",
 					"host": [
-						"classmate-api-server",
-						"herokuapp",
-						"com"
+						"35",
+						"221",
+						"225",
+						"55"
 					],
 					"path": [
 						"api",
@@ -251,17 +259,18 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzZW5ib256YWt1cmFUZWFjaGVyMSIsImlhdCI6MTU5ODU0NjIzNCwiZXhwIjoxNTk4NjMyNjM0fQ.sJ2-EYAHQ0vE8MuONvijG24UU3UPTAeUtRWA76kda1oifhheyNNekiHeBS4SQ4QhGgbDybB4JFV0OmMx5cnfSg",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzZW5ib256YWt1cmExOTk3IiwiaWF0IjoxNTk4NzA3Nzg2LCJleHAiOjE1OTg3OTQxODZ9.FjVMH_lvudHpq_BqUQ7Y560UbKf7Ydh00SXpd8DFuynxn9QC8H9P7mcq2d-VShstLeeb4y5dq41ZGGSeLNQYFw",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "https://classmate-api-server.herokuapp.com/api/data/course/detail?id=d238791e-320b-409f-83b7-43b0e3a298b0",
-					"protocol": "https",
+					"raw": "http://35.221.225.55/api/data/course/detail?id=af71c6e6-ab54-40d1-b110-f90460e8465e",
+					"protocol": "http",
 					"host": [
-						"classmate-api-server",
-						"herokuapp",
-						"com"
+						"35",
+						"221",
+						"225",
+						"55"
 					],
 					"path": [
 						"api",
@@ -272,7 +281,7 @@
 					"query": [
 						{
 							"key": "id",
-							"value": "d238791e-320b-409f-83b7-43b0e3a298b0"
+							"value": "af71c6e6-ab54-40d1-b110-f90460e8465e"
 						}
 					]
 				}
@@ -300,12 +309,13 @@
 					}
 				},
 				"url": {
-					"raw": "https://classmate-api-server.herokuapp.com/api/data/course/addToCourse",
-					"protocol": "https",
+					"raw": "http://35.221.225.55/api/data/course/addToCourse",
+					"protocol": "http",
 					"host": [
-						"classmate-api-server",
-						"herokuapp",
-						"com"
+						"35",
+						"221",
+						"225",
+						"55"
 					],
 					"path": [
 						"api",
