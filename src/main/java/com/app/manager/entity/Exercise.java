@@ -19,13 +19,6 @@ public class Exercise {
     )
     private String id;
 
-    @Column(name = "userId")
-    private String userId;
-
-    @ManyToOne
-    @JoinColumn(name = "userId", updatable = false, insertable = false)
-    private User user;
-
     @Column(name = "sessionId")
     private String sessionId;
 
@@ -52,6 +45,9 @@ public class Exercise {
     @Min(value = 0)
     @Column(name = "duration", nullable = false)
     private int duration;
+
+    @Column(name = "show_answer", nullable = false)
+    private boolean show_answer = false;
 
 
 
@@ -133,22 +129,6 @@ public class Exercise {
         this.deletedat = deletedat;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public String getSessionId() {
         return sessionId;
     }
@@ -203,5 +183,13 @@ public class Exercise {
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public boolean isShow_answer() {
+        return show_answer;
+    }
+
+    public void setShow_answer(boolean show_answer) {
+        this.show_answer = show_answer;
     }
 }

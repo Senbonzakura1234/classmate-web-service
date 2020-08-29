@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SessionService {
+    List<SessionResponse> findAll(SessionSpecification sessionSpecification);
     DatabaseQueryResult save(SessionRequest sessionRequest, String currentUsername);
     Optional<SessionResponse> getOne(String id);
     DatabaseQueryResult update(SessionRequest sessionRequest, String id, String currentUsername);
     DatabaseQueryResult delete(String id, String currentUsername);
-    List<SessionResponse> findAll(SessionSpecification sessionSpecification);
     DatabaseQueryResult startAttendanceCheck(String id, String currentUsername);
     DatabaseQueryResult closeAttendanceCheck(String id, String currentUsername);
 }

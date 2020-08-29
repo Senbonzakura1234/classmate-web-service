@@ -32,6 +32,24 @@ public class SessionServiceImp implements SessionService {
     @Autowired AttendanceRepository attendanceRepository;
 
     @Override
+    public List<SessionResponse> findAll(SessionSpecification sessionSpecification) {
+        try {
+            List<Session> sessions = sessionRepository.findAll(sessionSpecification);
+            List<SessionResponse> list = new ArrayList<>();
+            sessions.forEach(session -> list.add(new SessionResponse(session.getId(),
+                    session.getCourseid(), session.getName(), session.getContent(),
+                    session.getStarttime(), session.getSessionduration(),
+                    session.getAttendancestatus(), session.getStatus(), session.getCreatedat())));
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+
+    @Override
     public DatabaseQueryResult save(SessionRequest sessionRequest, String currentUsername) {
         try {
             var teacher = userRepository.findByUsername(currentUsername);
@@ -145,23 +163,6 @@ public class SessionServiceImp implements SessionService {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
                     "save course failed", HttpStatus.INTERNAL_SERVER_ERROR, "");
-        }
-    }
-
-    @Override
-    public List<SessionResponse> findAll(SessionSpecification sessionSpecification) {
-        try {
-            List<Session> sessions = sessionRepository.findAll(sessionSpecification);
-            List<SessionResponse> list = new ArrayList<>();
-            sessions.forEach(session -> list.add(new SessionResponse(session.getId(),
-                    session.getCourseid(), session.getName(), session.getContent(),
-                    session.getStarttime(), session.getSessionduration(),
-                    session.getAttendancestatus(), session.getStatus(), session.getCreatedat())));
-            return list;
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-            return new ArrayList<>();
         }
     }
 
