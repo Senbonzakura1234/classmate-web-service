@@ -29,14 +29,20 @@ public class SeederData {
     public List<SignupRequest> getUserSeeds() {
         var list = new ArrayList<SignupRequest>();
 
-        for (ERole role : ERole.values())
-            if (role != ERole.ROLE_ADMIN) for (int i = 0; i < (role == ERole.ROLE_TEACHER ? 5 : 10); i++)
-                list.add(new SignupRequest(getUsername(role.getName() + i),
-                        getEmail(role.getName() + i), getPassword(),
-                        new HashSet<>(Collections.singletonList(role.getName()))));
-
-            else list.add(new SignupRequest(getUsername(""), getEmail(""),
-                    getPassword(), new HashSet<>(Collections.singletonList(role.getName()))));
+        for (ERole role : ERole.values()) {
+            if (role != ERole.ALL && role != ERole.ROLE_USER) {
+                if (role != ERole.ROLE_ADMIN) {
+                    for (int i = 0; i < (role == ERole.ROLE_TEACHER ? 5 : 10); i++)
+                        list.add(new SignupRequest(getUsername(role.getName() + i),
+                                getEmail(role.getName() + i), getPassword(),
+                                new HashSet<>(Arrays.asList(role.getName(),
+                                        ERole.ROLE_USER.getName()))));
+                } else {
+                    list.add(new SignupRequest(getUsername(""), getEmail(""),
+                            getPassword(), new HashSet<>(Collections.singletonList(role.getName()))));
+                }
+            }
+        }
         return list;
     }
 

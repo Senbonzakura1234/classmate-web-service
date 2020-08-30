@@ -78,7 +78,7 @@ public class User {
     private String civil_id = "";
 
     @Column(name = "birthday")
-    private Long birthday;
+    private Long birthday = 0L;
 
     @Column(name = "gender", nullable = false)
     private GenderEnum gender = GenderEnum.UNKNOWN;
