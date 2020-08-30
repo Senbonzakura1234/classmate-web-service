@@ -1,6 +1,7 @@
 package com.app.manager.service.interfaceClass;
 
 import com.app.manager.context.specification.CourseSpecification;
+import com.app.manager.entity.Course;
 import com.app.manager.model.payload.request.CourseRequest;
 import com.app.manager.model.payload.response.CourseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -13,5 +14,5 @@ public interface CourseService {
     DatabaseQueryResult save(CourseRequest courseRequest, String currentUsername);
     Optional<CourseResponse> getOne(String id);
     DatabaseQueryResult update(CourseRequest courseRequest, String id, String currentUsername);
-    DatabaseQueryResult delete(String id, String currentUsername);
+    DatabaseQueryResult updateStatus(String id, Course.StatusEnum status, String currentUsername);
 }

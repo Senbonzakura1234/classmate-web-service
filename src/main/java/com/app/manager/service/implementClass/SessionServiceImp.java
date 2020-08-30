@@ -135,7 +135,8 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public DatabaseQueryResult delete(String id, String currentUsername) {
+    public DatabaseQueryResult updateStatus(String id, Session.StatusEnum status,
+                                            String currentUsername) {
         try {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
@@ -156,9 +157,12 @@ public class SessionServiceImp implements SessionService {
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, "");
 
-            sessionRepository.delete(session.get());
+            var s = session.get();
+            s.setStatus(status);
+            sessionRepository.save(s);
             return new DatabaseQueryResult(true,
-                    "delete course success", HttpStatus.OK, "");
+                    "delete course success", HttpStatus.OK,
+                    SessionResponse.castToObjectModel(s));
         }catch (Exception e){
             e.printStackTrace();
             return new DatabaseQueryResult(false,
@@ -196,7 +200,7 @@ public class SessionServiceImp implements SessionService {
             sessionRepository.save(s);
 
             var listStudentCourse = studentCourseRepository
-                    .findAllByCourseIdAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+                    .findAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
             var attendanceList = new ArrayList<Attendance>();
             listStudentCourse.forEach(studentCourse -> {
                 var user = userRepository.findById(studentCourse.getUser_id());

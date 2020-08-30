@@ -5,5 +5,6 @@ import com.app.manager.model.returnResult.DatabaseQueryResult;
 
 
 public interface StudentCourseService {
-    DatabaseQueryResult addStudentToCourse(StudentCourseRequest studentCourseRequest, String currentUsername);
+    DatabaseQueryResult addStudentToCourse(StudentCourseRequest studentCourseRequest,
+                                           String currentUsername);
 }

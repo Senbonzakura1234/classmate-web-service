@@ -1,6 +1,7 @@
 package com.app.manager.service.interfaceClass;
 
 import com.app.manager.context.specification.SessionSpecification;
+import com.app.manager.entity.Session;
 import com.app.manager.model.payload.request.SessionRequest;
 import com.app.manager.model.payload.response.SessionResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -13,7 +14,7 @@ public interface SessionService {
     DatabaseQueryResult save(SessionRequest sessionRequest, String currentUsername);
     Optional<SessionResponse> getOne(String id);
     DatabaseQueryResult update(SessionRequest sessionRequest, String id, String currentUsername);
-    DatabaseQueryResult delete(String id, String currentUsername);
+    DatabaseQueryResult updateStatus(String id, Session.StatusEnum status, String currentUsername);
     DatabaseQueryResult startAttendanceCheck(String id, String currentUsername);
     DatabaseQueryResult closeAttendanceCheck(String id, String currentUsername);
 }

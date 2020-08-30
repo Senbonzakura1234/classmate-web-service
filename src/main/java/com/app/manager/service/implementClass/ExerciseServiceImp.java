@@ -5,6 +5,7 @@ import com.app.manager.context.repository.ExerciseRepository;
 import com.app.manager.context.repository.SessionRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.context.specification.ExerciseSpecification;
+import com.app.manager.entity.Exercise;
 import com.app.manager.model.payload.request.ExerciseRequest;
 import com.app.manager.model.payload.response.ExerciseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -121,6 +122,49 @@ public class ExerciseServiceImp implements ExerciseService {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
+            return new DatabaseQueryResult(false,
+                    "update exercise failed",
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+        }
+    }
+
+    @Override
+    public DatabaseQueryResult updateStatus(String id,
+        Exercise.StatusEnum status, String currentUsername) {
+        try {
+            var teacher = userRepository.findByUsername(currentUsername);
+            if(teacher.isEmpty())
+                return new DatabaseQueryResult(false,
+                        "Teacher not found", HttpStatus.NOT_FOUND, "");
+
+            var exercise = exerciseRepository.findById(id);
+
+            if(exercise.isEmpty())
+                return new DatabaseQueryResult(false, "exercise not found",
+                        HttpStatus.NOT_FOUND, "");
+
+            var session = sessionRepository.findById(exercise.get().getSession_id());
+            if(session.isEmpty())
+                return new DatabaseQueryResult(false, "session not found",
+                        HttpStatus.NOT_FOUND, "");
+
+            var course = courseRepository.findById(session.get().getCourse_id());
+            if(course.isEmpty())
+                return new DatabaseQueryResult(false, "course not found",
+                        HttpStatus.NOT_FOUND, "");
+            if(course.get().getUser_id().equals(teacher.get().getId()))
+                return new DatabaseQueryResult(false, "Not your course",
+                        HttpStatus.BAD_REQUEST, "");
+
+            var e = exercise.get();
+            e.setStatus(status);
+            exerciseRepository.save(e);
+            return new DatabaseQueryResult(true,
+                    "update exercise success", HttpStatus.OK,
+                    ExerciseResponse.castToObjectModel(e));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            System.out.println(exception.getMessage());
             return new DatabaseQueryResult(false,
                     "update exercise failed",
                     HttpStatus.INTERNAL_SERVER_ERROR, "");

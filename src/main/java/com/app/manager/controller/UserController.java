@@ -50,6 +50,17 @@ public class UserController {
                         .or(queryUsername), currentUser));
     }
 
+    @GetMapping("/profile")
+    @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
+    public ResponseEntity<?> profile(@RequestParam(value = "id") String id){
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var profile = userService.userProfile(id, currentUser);
+        return profile.isEmpty() ? ResponseEntity.badRequest()
+                .body(new MessageResponse("Error: user not found"))
+                : ResponseEntity.ok(profile);
+    }
+
     @PostMapping("/profile/faceCheckDefinition")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> faceCheckDefinition

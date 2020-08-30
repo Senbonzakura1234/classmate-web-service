@@ -3,11 +3,19 @@ package com.app.manager.controller;
 import com.app.manager.context.specification.ExerciseSpecification;
 import com.app.manager.entity.Exercise;
 import com.app.manager.model.SearchCriteria;
+import com.app.manager.model.payload.request.ExerciseRequest;
+import com.app.manager.model.payload.response.MessageResponse;
 import com.app.manager.service.interfaceClass.ExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -48,4 +56,44 @@ public class ExerciseController {
         return ResponseEntity.ok(exerciseService.findAll(query));
     }
 
+    @GetMapping("/detail")
+    @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
+    public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {
+        var result = exerciseService.getOne(id);
+        if(result.isEmpty()) return ResponseEntity
+                .status(HttpStatus.NOT_FOUND).body(result);
+        return ResponseEntity.ok(result.get());
+    }
+
+
+    @PostMapping("/edit")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> update(@Valid @RequestBody ExerciseRequest exerciseRequest,
+                                    @RequestParam(value = "id") String id,
+                                    BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error"));
+        }
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = exerciseService.update(exerciseRequest, id, currentUser);
+        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+                ResponseEntity.status(result.getHttp_status()).body(result);
+    }
+
+    @PostMapping("/updateStatus")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> updateStatus(@RequestParam(value = "id") String id,
+            @RequestParam(value = "status") Exercise.StatusEnum status){
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = exerciseService.updateStatus(id, status, currentUser);
+        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+                ResponseEntity.status(result.getHttp_status()).body(result);
+    }
 }

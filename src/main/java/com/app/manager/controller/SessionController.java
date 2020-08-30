@@ -102,12 +102,15 @@ public class SessionController {
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/updateStatus")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> delete(@RequestParam(value = "id") String id) {
+    public ResponseEntity<?> updateStatus(
+            @RequestParam(value = "id") String id,
+            @RequestParam(value = "status") Session.StatusEnum status
+    ) {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
-        var result = sessionService.delete(id, currentUser);
+        var result = sessionService.updateStatus(id, status,currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }

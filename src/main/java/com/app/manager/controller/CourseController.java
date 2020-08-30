@@ -72,7 +72,7 @@ public class CourseController {
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {
         var result = courseService.getOne(id);
         if(result.isEmpty()) return ResponseEntity
-                .status(HttpStatus.NOT_FOUND).body("Not Found");
+                .status(HttpStatus.NOT_FOUND).body(result);
         return ResponseEntity.ok(result.get());
     }
 
@@ -116,12 +116,15 @@ public class CourseController {
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/updateStatus")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> delete(@RequestParam(value = "id") String id) {
+    public ResponseEntity<?> updateStatus(
+            @RequestParam(value = "id") String id,
+            @RequestParam(value = "status") Course.StatusEnum status
+    ) {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
-        var result = courseService.delete(id, currentUser);
+        var result = courseService.updateStatus(id, status, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }

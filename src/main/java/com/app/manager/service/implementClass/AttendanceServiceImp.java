@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
@@ -55,7 +56,7 @@ public class AttendanceServiceImp implements AttendanceService {
             var course = courseRepository.findById(session.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("Course not found"));
             var studentCourses =
-                    studentCourseRepository.findAllByCourseIdAndStatus(course.getId(),
+                    studentCourseRepository.findAllByCourse_idAndStatus(course.getId(),
                             StudentCourse.StatusEnum.SHOW);
 
             var student = userRepository.findByUsername(currentUsername)
@@ -84,7 +85,7 @@ public class AttendanceServiceImp implements AttendanceService {
                     faceCheckClientRequest);
 
             var attendance =
-                    attendanceRepository.findFirstByUserIdAndSessionId(
+                    attendanceRepository.findFirstByUser_idAndSession_id(
                             student.getId(), session.getId());
 
             if(attendance.isEmpty()){
@@ -109,6 +110,7 @@ public class AttendanceServiceImp implements AttendanceService {
                     faceCheckClientRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
             return new DatabaseQueryResult(false,
                     "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
@@ -117,13 +119,19 @@ public class AttendanceServiceImp implements AttendanceService {
 
     private Optional<FaceCheckServerResponse> faceCheck
             (FaceCheckClientRequest faceCheckClientRequest, User user){
-        var entity = new HttpEntity<>(new FaceCheckServerRequest(user.getFace_definition_id(),
-                faceCheckClientRequest.getImg_url()), new HttpHeaders());
-        var restTemplate = new RestTemplate();
+        try {
+            var entity = new HttpEntity<>(new FaceCheckServerRequest(user.getFace_definition_id(),
+                    faceCheckClientRequest.getImg_url()), new HttpHeaders());
+            var restTemplate = new RestTemplate();
 
-        var response = restTemplate
-                .exchange(faceCheckHost, HttpMethod.POST, entity, FaceCheckServerResponse.class);
-        return response.getBody() != null ?
-                Optional.of(response.getBody()) : Optional.empty();
+            var response = restTemplate
+                    .exchange(faceCheckHost, HttpMethod.POST, entity, FaceCheckServerResponse.class);
+            return response.getBody() != null ?
+                    Optional.of(response.getBody()) : Optional.empty();
+        } catch (RestClientException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return Optional.empty();
+        }
     }
 }

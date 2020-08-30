@@ -3,6 +3,7 @@ package com.app.manager.service.implementClass;
 import com.app.manager.context.repository.CourseRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.context.specification.CourseSpecification;
+import com.app.manager.entity.Course;
 import com.app.manager.model.payload.request.CourseRequest;
 import com.app.manager.model.payload.response.CourseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -110,12 +111,14 @@ public class CourseServiceImp implements CourseService {
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "save course failed", HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    "save course failed",
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
     }
 
     @Override
-    public DatabaseQueryResult delete(String id, String currentUsername) {
+    public DatabaseQueryResult updateStatus(String id, Course.StatusEnum status,
+                                            String currentUsername) {
         try {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
@@ -125,19 +128,23 @@ public class CourseServiceImp implements CourseService {
             var course = courseRepository.findById(id);
             if(course.isEmpty()){
                 return new DatabaseQueryResult(false,
-                        "delete course failed", HttpStatus.NOT_FOUND, "");
+                        "update course failed", HttpStatus.NOT_FOUND, "");
             }
             if(!course.get().getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, "");
 
-            courseRepository.delete(course.get());
+            var c = course.get();
+            c.setStatus(status);
+            courseRepository.save(c);
             return new DatabaseQueryResult(true,
-                    "delete course success", HttpStatus.OK, "");
+                    "update course success", HttpStatus.OK,
+                    CourseResponse.castToObjectModel(c));
         }catch (Exception e){
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "save course failed", HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    "update course failed",
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
     }
 }

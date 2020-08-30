@@ -16,20 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
 public class StudentCourseServiceImp implements StudentCourseService {
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired
-    StudentCourseRepository studentcourseRepository;
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired
-    UserRepository userRepository;
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired
-    CourseRepository courseRepository;
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired
-    RoleRepository roleRepository;
+    @Autowired StudentCourseRepository studentcourseRepository;
+    @Autowired UserRepository userRepository;
+    @Autowired CourseRepository courseRepository;
+    @Autowired RoleRepository roleRepository;
 
 
     @Override

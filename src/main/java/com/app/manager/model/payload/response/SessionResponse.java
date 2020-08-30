@@ -2,9 +2,6 @@ package com.app.manager.model.payload.response;
 
 import com.app.manager.entity.Session;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SessionResponse {
     private String id;
     private String course_id; //search
@@ -35,30 +32,12 @@ public class SessionResponse {
     }
 
     public static SessionResponse castToObjectModel(Session session){
-        SessionResponse sessionResponse = new SessionResponse();
-        if(session == null){
-            return sessionResponse;
-        }
-        sessionResponse.setId(session.getId());
-        sessionResponse.setCreated_at(session.getCreated_at());
-        sessionResponse.setAttendance_status(session.getAttendance_status());
-        sessionResponse.setSession_duration(session.getSession_duration());
-        sessionResponse.setName(session.getName());
-        sessionResponse.setContent(session.getContent());
-        sessionResponse.setStart_time(session.getStart_time());
-        sessionResponse.setStatus(session.getStatus());
-        sessionResponse.setCourse_id(session.getCourse_id());
-
-        return sessionResponse;
-    }
-
-    public static List<SessionResponse> castToListModels(List<Session> sessions){
-        List<SessionResponse> sessionResponses = new ArrayList<>();
-        if (sessions == null) return sessionResponses;
-        for (var item: sessions) {
-            sessionResponses.add(castToObjectModel(item));
-        }
-        return sessionResponses;
+        if(session == null) return new SessionResponse();
+        return new SessionResponse(
+                session.getId(), session.getCourse_id(), session.getName(),
+                session.getContent(), session.getStart_time(),
+                session.getSession_duration(), session.getAttendance_status(),
+                session.getStatus(), session.getCreated_at());
     }
 
     public String getId() {

@@ -1,9 +1,12 @@
 package com.app.manager.service.implementClass;
 
+import com.app.manager.context.repository.CourseRepository;
 import com.app.manager.context.repository.RoleRepository;
+import com.app.manager.context.repository.StudentCourseRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.entity.ERole;
 import com.app.manager.entity.Role;
+import com.app.manager.entity.StudentCourse;
 import com.app.manager.entity.User;
 import com.app.manager.model.payload.request.FaceDefinitionClientRequest;
 import com.app.manager.model.payload.request.FaceDefinitionServerRequest;
@@ -18,16 +21,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.function.Function;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
 public class UserServiceImp implements UserService {
     @Autowired UserRepository userRepository;
     @Autowired RoleRepository roleRepository;
+    @Autowired StudentCourseRepository studentCourseRepository;
+    @Autowired CourseRepository courseRepository;
 
     private static final String faceCheckHost = "";
 
@@ -72,7 +79,8 @@ public class UserServiceImp implements UserService {
             if (strRoles == null) {
                 var userRole = getRoleInstant(ERole.ROLE_USER)
                         .orElseThrow(() -> new RuntimeException(
-                                MessageFormat.format("Error: Cannot create role {0}.",
+                                MessageFormat.format(
+                                        "Error: Cannot create role {0}.",
                                         ERole.ROLE_USER.getName())));
                 roles.add(userRole);
             } else {
@@ -80,25 +88,29 @@ public class UserServiceImp implements UserService {
                     if (ERole.ROLE_ADMIN.getName().equals(role)) {
                         var adminRole = getRoleInstant(ERole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RuntimeException(
-                                        MessageFormat.format("Error: Cannot create role {0}.",
+                                        MessageFormat.format(
+                                                "Error: Cannot create role {0}.",
                                                 ERole.ROLE_ADMIN.getName())));
                         roles.add(adminRole);
                     } else if (ERole.ROLE_TEACHER.getName().equals(role)) {
                         var teacherRole = getRoleInstant(ERole.ROLE_TEACHER)
                                 .orElseThrow(() -> new RuntimeException(
-                                        MessageFormat.format("Error: Cannot create role {0}.",
+                                        MessageFormat.format(
+                                                "Error: Cannot create role {0}.",
                                                 ERole.ROLE_TEACHER.getName())));
                         roles.add(teacherRole);
                     } else if (ERole.ROLE_STUDENT.getName().equals(role)) {
                         var studentRole = getRoleInstant(ERole.ROLE_STUDENT)
                                 .orElseThrow(() -> new RuntimeException(
-                                        MessageFormat.format("Error: Cannot create role {0}.",
+                                        MessageFormat.format(
+                                                "Error: Cannot create role {0}.",
                                                 ERole.ROLE_STUDENT.getName())));
                         roles.add(studentRole);
                     } else {
                         var userRole = getRoleInstant(ERole.ROLE_USER)
                                 .orElseThrow(() -> new RuntimeException(
-                                        MessageFormat.format("Error: Cannot create role {0}.",
+                                        MessageFormat.format(
+                                                "Error: Cannot create role {0}.",
                                                 ERole.ROLE_USER.getName())));
                         roles.add(userRole);
                     }
@@ -108,7 +120,8 @@ public class UserServiceImp implements UserService {
             user.setRoles(roles);
             userRepository.save(user);
             return new DatabaseQueryResult(true,
-                    "User registered successfully!", HttpStatus.OK, "");
+                    "User registered successfully!",
+                    HttpStatus.OK, "");
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
@@ -121,25 +134,11 @@ public class UserServiceImp implements UserService {
     public List<UserProfileResponse> findAll(Specification<User> specification,
                                              String currentUsername) {
         try {
-            var currentUser = userRepository.
-                    findByUsername(currentUsername)
-                    .orElseThrow(() -> new RuntimeException("Internal Server Error"));
-
-            var roleTeacher = roleRepository.findByName(ERole.ROLE_TEACHER)
-                    .orElseThrow(() -> new RuntimeException("Internal Server Error"));
-
-            List<User> users = userRepository.findAll(specification);
-            List<UserProfileResponse> list = new ArrayList<>();
+            var users = userRepository.findAll(specification);
+            var list = new ArrayList<UserProfileResponse>();
 
             users.forEach(user -> list
-                    .add(user.getProfile_visibility() == User.VisibilityEnum.PUBLIC ||
-                    user.getProfile_visibility() == User.VisibilityEnum.TEACHER
-                            && currentUser.getRoles().contains(roleTeacher) ?
-                    new UserProfileResponse(
-                    user.getId(), user.getUsername(), user.getEmail(),
-                    user.getFullname(), user.getPhone(), user.getAddress(),
-                    user.getCivil_id(), user.getBirthday(), user.getGender()) :
-                    new UserProfileResponse(user.getId(), user.getUsername())));
+                    .add(new UserProfileResponse(user.getId(), user.getUsername())));
             return list;
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,31 +148,102 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public Optional<UserProfileResponse> userProfile(
+            String id, String currentUsername) {
+        try {
+            var userToSee = userRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("User Not found"));
+            if(userToSee.getUsername().equals(currentUsername))
+                return Optional.of(UserProfileResponse.castToModelPublic(userToSee));
+
+            var currentUser = userRepository.findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("User Not found"));
+            var roles = currentUser.getRoles();
+            var roleAdmin = getRoleInstant(ERole.ROLE_ADMIN)
+                    .orElseThrow(() -> new RuntimeException("Role Not found"));
+
+            if(roles.contains(roleAdmin))
+                return Optional.of(UserProfileResponse.castToModelPublic(userToSee));
+
+            if(userToSee.getProfile_visibility() == User.VisibilityEnum.PRIVATE)
+                return Optional.of(UserProfileResponse.castToModelPrivate(userToSee));
+
+            if(userToSee.getProfile_visibility() == User.VisibilityEnum.PUBLIC)
+                return Optional.of(UserProfileResponse.castToModelPublic(userToSee));
+
+            var listCourseOfUserToSee = studentCourseRepository
+                    .findAllByUser_idAndStatus(userToSee.getId(),
+                            StudentCourse.StatusEnum.SHOW);
+
+            var roleTeacher = getRoleInstant(ERole.ROLE_TEACHER)
+                    .orElseThrow(() -> new RuntimeException("Role Not found"));
+
+            if(roles.contains(roleTeacher)) for
+                (StudentCourse studentCourse : listCourseOfUserToSee) {
+                var course = courseRepository
+                        .findById(studentCourse.getCourse_id());
+                if (course.isEmpty()) continue;
+                if (course.get().getUser_id().equals(currentUser.getId()))
+                    return Optional.of(UserProfileResponse.castToModelPublic(userToSee));
+            }
+
+            var roleStudent = getRoleInstant(ERole.ROLE_STUDENT)
+                    .orElseThrow(() -> new RuntimeException("Role Not found"));
+
+            if (!roles.contains(roleStudent))
+                return Optional.of(UserProfileResponse.castToModelPrivate(userToSee));
+
+
+            var listCourseOfCurrentUser = studentCourseRepository
+                    .findAllByUser_idAndStatus(currentUser.getId(),
+                            StudentCourse.StatusEnum.SHOW);
+
+            return listCourseOfCurrentUser.stream().map(toKey)
+                    .flatMap(key -> listCourseOfUserToSee.stream()
+                            .map(toKey).filter(key::equals)).count() > 0 ?
+                    Optional.of(UserProfileResponse.castToModelPublic(userToSee))
+                    : Optional.of(UserProfileResponse.castToModelPrivate(userToSee));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public DatabaseQueryResult faceCheckDefinition
             (FaceDefinitionClientRequest faceDefinitionClientRequest, String currentUsername) {
-        var student = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        var faceDefinition = new FaceDefinitionServerRequest(
-                    faceDefinitionClientRequest.getImg_urls(),
-                    student.isFace_definition()
-                            && student.getFace_definition_id() != null
-                            && !student.getFace_definition_id().isEmpty(),
+        try {
+            var student = userRepository.findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            var faceDefinition = new FaceDefinitionServerRequest(
+                        faceDefinitionClientRequest.getImg_urls(),
                         student.isFace_definition()
-                            && student.getFace_definition_id() != null
-                            && !student.getFace_definition_id().isEmpty()?
-                        student.getFace_definition_id() : "");
+                                && student.getFace_definition_id() != null
+                                && !student.getFace_definition_id().isEmpty(),
+                            student.isFace_definition()
+                                && student.getFace_definition_id() != null
+                                && !student.getFace_definition_id().isEmpty()?
+                            student.getFace_definition_id() : "");
 
-        var result = sentNewFaceDefinition(faceDefinition);
-        if(result.isEmpty() || !result.get().isSuccess())
+            var result = sentNewFaceDefinition(faceDefinition);
+            if(result.isEmpty() || !result.get().isSuccess())
+                return new DatabaseQueryResult(false,
+                        "Setup face definition fail",
+                        HttpStatus.INTERNAL_SERVER_ERROR, "");
+
+            student.setFace_definition(true);
+            student.setFace_definition_id(faceDefinition.getDefinition_id());
+            userRepository.save(student);
+            return new DatabaseQueryResult(true,
+                    "Setup face definition success", HttpStatus.OK, "");
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
             return new DatabaseQueryResult(false,
                     "Setup face definition fail",
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
-
-        student.setFace_definition(true);
-        student.setFace_definition_id(faceDefinition.getDefinition_id());
-        userRepository.save(student);
-        return new DatabaseQueryResult(true,
-                "Setup face definition success", HttpStatus.OK, "");
+        }
     }
 
     private Optional<Role> getRoleInstant(ERole roleName){
@@ -192,13 +262,22 @@ public class UserServiceImp implements UserService {
 
     private Optional<FaceDefinitionServerResponse>
         sentNewFaceDefinition(FaceDefinitionServerRequest faceDefinitionServerRequest){
-        var entity = new HttpEntity<>(faceDefinitionServerRequest, new HttpHeaders());
-        var restTemplate = new RestTemplate();
+        try {
+            var entity = new HttpEntity<>(faceDefinitionServerRequest, new HttpHeaders());
+            var restTemplate = new RestTemplate();
 
-        var response = restTemplate
-                .exchange(faceCheckHost, HttpMethod.POST,
-                        entity, FaceDefinitionServerResponse.class);
-        return response.getBody() != null ?
-                Optional.of(response.getBody()) : Optional.empty();
+            var response = restTemplate
+                    .exchange(faceCheckHost, HttpMethod.POST,
+                            entity, FaceDefinitionServerResponse.class);
+            return response.getBody() != null ?
+                    Optional.of(response.getBody()) : Optional.empty();
+        } catch (RestClientException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return Optional.empty();
+        }
     }
+
+    private final Function<StudentCourse, List<Object>> toKey = p ->
+            Collections.singletonList(p.getCourse_id());
 }
