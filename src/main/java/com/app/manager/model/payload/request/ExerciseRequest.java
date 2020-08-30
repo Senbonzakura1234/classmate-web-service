@@ -1,7 +1,5 @@
 package com.app.manager.model.payload.request;
 
-import com.app.manager.entity.Exercise;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
@@ -22,16 +20,6 @@ public class ExerciseRequest {
 
     private boolean show_answer = false;
 
-    public static Exercise castToEntity(ExerciseRequest exerciseRequest){
-        var exercise = new Exercise();
-        exercise.setSession_id(exerciseRequest.getSession_id());
-        exercise.setTitle(exerciseRequest.getTitle());
-        exercise.setContent(exerciseRequest.getContent());
-        exercise.setAnswer(exerciseRequest.getAnswer());
-        exercise.setDuration(exerciseRequest.getDuration());
-        exercise.setShow_answer(exerciseRequest.isShow_answer());
-        return exercise;
-    }
 
     public ExerciseRequest() {
     }

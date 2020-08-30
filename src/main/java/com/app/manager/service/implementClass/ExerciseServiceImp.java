@@ -6,6 +6,7 @@ import com.app.manager.context.repository.SessionRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.context.specification.ExerciseSpecification;
 import com.app.manager.entity.Exercise;
+import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.ExerciseRequest;
 import com.app.manager.model.payload.response.ExerciseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -25,6 +26,7 @@ public class ExerciseServiceImp implements ExerciseService {
     @Autowired UserRepository userRepository;
     @Autowired SessionRepository sessionRepository;
     @Autowired CourseRepository courseRepository;
+    @Autowired CastObject castObject;
 
 
     @Override
@@ -63,7 +65,7 @@ public class ExerciseServiceImp implements ExerciseService {
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, exerciseRequest);
 
-            exerciseRepository.save(ExerciseRequest.castToEntity(exerciseRequest));
+            exerciseRepository.save(castObject.exerciseEntity(exerciseRequest));
             return new DatabaseQueryResult(true, "save exercise success",
                     HttpStatus.OK, exerciseRequest);
         } catch (Exception e) {
@@ -80,7 +82,7 @@ public class ExerciseServiceImp implements ExerciseService {
         try {
             var exercise = exerciseRepository.findById(id);
             if(exercise.isEmpty()) return Optional.empty();
-            return Optional.of(ExerciseResponse.castToObjectModel(exercise.get()));
+            return Optional.of(castObject.exerciseModel(exercise.get()));
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
@@ -116,7 +118,7 @@ public class ExerciseServiceImp implements ExerciseService {
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, exerciseRequest);
 
-            exerciseRepository.save(ExerciseRequest.castToEntity(exerciseRequest));
+            exerciseRepository.save(castObject.exerciseEntity(exerciseRequest));
             return new DatabaseQueryResult(true, "update exercise success",
                     HttpStatus.OK, exerciseRequest);
         } catch (Exception e) {
@@ -161,7 +163,7 @@ public class ExerciseServiceImp implements ExerciseService {
             exerciseRepository.save(e);
             return new DatabaseQueryResult(true,
                     "update exercise success", HttpStatus.OK,
-                    ExerciseResponse.castToObjectModel(e));
+                    castObject.exerciseModel(e));
         } catch (Exception exception) {
             exception.printStackTrace();
             System.out.println(exception.getMessage());

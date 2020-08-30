@@ -1,7 +1,5 @@
 package com.app.manager.model.payload.request;
 
-import com.app.manager.entity.Course;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -30,16 +28,6 @@ public class CourseRequest {
         this.end_date = end_date;
     }
 
-    public static Course castToEntity(CourseRequest courseRequest, String teacherId){
-        Course course = new Course();
-        course.setCourse_category_id(courseRequest.getCourse_category_id());
-        course.setDescription(courseRequest.getDescription());
-        course.setEnd_date(courseRequest.getEnd_date());
-        course.setName(courseRequest.getName());
-        course.setStart_date(courseRequest.getStart_date());
-        course.setUser_id(teacherId);
-        return course;
-    }
 
 
 

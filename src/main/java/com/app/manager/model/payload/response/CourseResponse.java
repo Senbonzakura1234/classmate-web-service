@@ -30,15 +30,6 @@ public class CourseResponse {
         this.status = status;
     }
 
-    public static CourseResponse castToObjectModel(Course course){
-        if(course == null) return new CourseResponse();
-
-        return new CourseResponse(course.getId(), course.getUser_id(),
-        course.getCourse_category_id(), course.getName(), course.getDescription(),
-        course.getStart_date(), course.getEnd_date(), course.getCreated_at(),
-                course.getStatus());
-    }
-
     public String getId() {
         return id;
     }

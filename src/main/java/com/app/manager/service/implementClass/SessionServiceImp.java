@@ -6,6 +6,7 @@ import com.app.manager.entity.Attendance;
 import com.app.manager.entity.Course;
 import com.app.manager.entity.Session;
 import com.app.manager.entity.StudentCourse;
+import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.SessionRequest;
 import com.app.manager.model.payload.response.SessionResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -22,14 +23,11 @@ import java.util.Optional;
 @Service
 public class SessionServiceImp implements SessionService {
     @Autowired SessionRepository sessionRepository;
-
     @Autowired UserRepository userRepository;
-
     @Autowired CourseRepository courseRepository;
-
     @Autowired StudentCourseRepository studentCourseRepository;
-
     @Autowired AttendanceRepository attendanceRepository;
+    @Autowired CastObject castObject;
 
     @Override
     public List<SessionResponse> findAll(SessionSpecification sessionSpecification) {
@@ -64,11 +62,11 @@ public class SessionServiceImp implements SessionService {
             if(!course.getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, "");
-            var session = SessionRequest.castToEntity(sessionRequest);
+            var session = castObject.sessionEntity(sessionRequest);
             sessionRepository.save(session);
             return new DatabaseQueryResult(true,
                     "save session success", HttpStatus.OK,
-                    SessionResponse.castToObjectModel(session));
+                    castObject.sessionModel(session));
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
@@ -83,7 +81,7 @@ public class SessionServiceImp implements SessionService {
             if(session.isEmpty()){
                 return Optional.empty();
             }
-            return Optional.of(SessionResponse.castToObjectModel(session.get()));
+            return Optional.of(castObject.sessionModel(session.get()));
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
@@ -125,7 +123,7 @@ public class SessionServiceImp implements SessionService {
             sessionRepository.save(session);
             return new DatabaseQueryResult(true,
                     "save session success", HttpStatus.OK,
-                    SessionResponse.castToObjectModel(session));
+                    castObject.sessionModel(session));
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
@@ -162,7 +160,7 @@ public class SessionServiceImp implements SessionService {
             sessionRepository.save(s);
             return new DatabaseQueryResult(true,
                     "delete course success", HttpStatus.OK,
-                    SessionResponse.castToObjectModel(s));
+                    castObject.sessionModel(s));
         }catch (Exception e){
             e.printStackTrace();
             return new DatabaseQueryResult(false,

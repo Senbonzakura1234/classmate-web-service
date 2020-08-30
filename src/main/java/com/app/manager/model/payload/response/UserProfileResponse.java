@@ -37,21 +37,6 @@ public class UserProfileResponse {
         this.gender = gender;
     }
 
-    public static UserProfileResponse castToModelPublic(User user){
-        if(user == null) return new UserProfileResponse();
-        return new UserProfileResponse(
-                user.getId(), user.getUsername(),
-                user.getEmail(), user.getFullname(),
-                user.getPhone(), user.getAddress(),
-                user.getCivil_id(), user.getBirthday(),
-                user.getGender());
-    }
-
-    public static UserProfileResponse castToModelPrivate(User user){
-        if(user == null) return new UserProfileResponse();
-        return new UserProfileResponse(user.getId(), user.getUsername());
-    }
-
     public String getId() {
         return id;
     }

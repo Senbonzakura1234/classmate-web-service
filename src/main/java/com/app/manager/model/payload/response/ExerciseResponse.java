@@ -31,15 +31,6 @@ public class ExerciseResponse {
         this.created_at = created_at;
     }
 
-    public static ExerciseResponse castToObjectModel(Exercise exercise){
-        if(exercise == null) return new ExerciseResponse();
-        return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
-                exercise.getTitle(), exercise.getContent(),
-                exercise.isShow_answer() ? exercise.getAnswer() : "",
-                exercise.getDuration(), exercise.isShow_answer(),
-                exercise.getStatus(), exercise.getCreated_at());
-    }
-
 
     public String getId() {
         return id;

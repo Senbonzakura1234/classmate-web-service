@@ -3,6 +3,7 @@ package com.app.manager.controller;
 import com.app.manager.context.specification.UserSpecification;
 import com.app.manager.model.SearchCriteria;
 import com.app.manager.model.payload.request.FaceDefinitionClientRequest;
+import com.app.manager.model.payload.request.UserProfileRequest;
 import com.app.manager.model.payload.response.MessageResponse;
 import com.app.manager.service.interfaceClass.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,29 @@ public class UserController {
         return profile.isEmpty() ? ResponseEntity.badRequest()
                 .body(new MessageResponse("Error: user not found"))
                 : ResponseEntity.ok(profile);
+    }
+
+    @PostMapping("/profile/update")
+    @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
+    public ResponseEntity<?> updateProfile
+            (@Valid @RequestBody UserProfileRequest userProfileRequest,
+             BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error"));
+        }
+
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result =
+                userService.updateProfile(userProfileRequest, currentUser);
+
+        return result.isSuccess() ? ResponseEntity.ok(result) :
+                ResponseEntity.badRequest().body(result);
     }
 
     @PostMapping("/profile/faceCheckDefinition")

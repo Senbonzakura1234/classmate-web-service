@@ -4,6 +4,7 @@ import com.app.manager.context.repository.CourseRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.context.specification.CourseSpecification;
 import com.app.manager.entity.Course;
+import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.CourseRequest;
 import com.app.manager.model.payload.response.CourseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class CourseServiceImp implements CourseService {
     @Autowired CourseRepository courseRepository;
     @Autowired UserRepository userRepository;
+    @Autowired CastObject castObject;
 
     @Override
     public List<CourseResponse> findAll(CourseSpecification courseSpecification) {
@@ -48,12 +50,12 @@ public class CourseServiceImp implements CourseService {
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false,
                         "Teacher not found", HttpStatus.NOT_FOUND, "");
-            var course = CourseRequest.castToEntity(courseRequest,
+            var course = castObject.courseEntity(courseRequest,
                     teacher.get().getId());
             courseRepository.save(course);
             return new DatabaseQueryResult(true,
                     "save course success", HttpStatus.OK,
-                    CourseResponse.castToObjectModel(course));
+                    castObject.courseModel(course));
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
@@ -69,7 +71,7 @@ public class CourseServiceImp implements CourseService {
         try {
             var course = courseRepository.findById(id);
             if(course.isEmpty()) return Optional.empty();
-            return Optional.of(CourseResponse.castToObjectModel(course.get()));
+            return Optional.of(castObject.courseModel(course.get()));
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
@@ -107,7 +109,7 @@ public class CourseServiceImp implements CourseService {
 
             return new DatabaseQueryResult(true,
                     "save course success", HttpStatus.OK,
-                    CourseResponse.castToObjectModel(course));
+                    castObject.courseModel(course));
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
@@ -139,7 +141,7 @@ public class CourseServiceImp implements CourseService {
             courseRepository.save(c);
             return new DatabaseQueryResult(true,
                     "update course success", HttpStatus.OK,
-                    CourseResponse.castToObjectModel(c));
+                    castObject.courseModel(c));
         }catch (Exception e){
             e.printStackTrace();
             return new DatabaseQueryResult(false,

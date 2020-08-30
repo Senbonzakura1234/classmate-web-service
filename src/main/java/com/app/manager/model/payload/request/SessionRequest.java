@@ -1,7 +1,5 @@
 package com.app.manager.model.payload.request;
 
-import com.app.manager.entity.Session;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -28,17 +26,6 @@ public class SessionRequest {
         this.content = content;
         this.start_time = start_time;
         this.session_duration = session_duration;
-    }
-
-    public static Session castToEntity(SessionRequest sessionRequest){
-        Session session = new Session();
-
-        session.setSession_duration(sessionRequest.getSession_duration());
-        session.setName(sessionRequest.getName());
-        session.setContent(sessionRequest.getContent());
-        session.setStart_time(sessionRequest.getStart_time());
-        session.setCourse_id(sessionRequest.getCourse_id());
-        return session;
     }
 
 

@@ -31,15 +31,6 @@ public class SessionResponse {
     public SessionResponse() {
     }
 
-    public static SessionResponse castToObjectModel(Session session){
-        if(session == null) return new SessionResponse();
-        return new SessionResponse(
-                session.getId(), session.getCourse_id(), session.getName(),
-                session.getContent(), session.getStart_time(),
-                session.getSession_duration(), session.getAttendance_status(),
-                session.getStatus(), session.getCreated_at());
-    }
-
     public String getId() {
         return id;
     }

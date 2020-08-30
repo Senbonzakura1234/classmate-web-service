@@ -8,8 +8,10 @@ import com.app.manager.entity.ERole;
 import com.app.manager.entity.Role;
 import com.app.manager.entity.StudentCourse;
 import com.app.manager.entity.User;
+import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.FaceDefinitionClientRequest;
 import com.app.manager.model.payload.request.FaceDefinitionServerRequest;
+import com.app.manager.model.payload.request.UserProfileRequest;
 import com.app.manager.model.payload.response.FaceDefinitionServerResponse;
 import com.app.manager.model.payload.response.UserProfileResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -35,6 +37,7 @@ public class UserServiceImp implements UserService {
     @Autowired RoleRepository roleRepository;
     @Autowired StudentCourseRepository studentCourseRepository;
     @Autowired CourseRepository courseRepository;
+    @Autowired CastObject castObject;
 
     private static final String faceCheckHost = "";
 
@@ -154,7 +157,7 @@ public class UserServiceImp implements UserService {
             var userToSee = userRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("User Not found"));
             if(userToSee.getUsername().equals(currentUsername))
-                return Optional.of(UserProfileResponse.castToModelPublic(userToSee));
+                return Optional.of(castObject.profilePublic(userToSee));
 
             var currentUser = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("User Not found"));
@@ -163,13 +166,13 @@ public class UserServiceImp implements UserService {
                     .orElseThrow(() -> new RuntimeException("Role Not found"));
 
             if(roles.contains(roleAdmin))
-                return Optional.of(UserProfileResponse.castToModelPublic(userToSee));
+                return Optional.of(castObject.profilePublic(userToSee));
 
             if(userToSee.getProfile_visibility() == User.VisibilityEnum.PRIVATE)
-                return Optional.of(UserProfileResponse.castToModelPrivate(userToSee));
+                return Optional.of(castObject.profilePrivate(userToSee));
 
             if(userToSee.getProfile_visibility() == User.VisibilityEnum.PUBLIC)
-                return Optional.of(UserProfileResponse.castToModelPublic(userToSee));
+                return Optional.of(castObject.profilePublic(userToSee));
 
             var listCourseOfUserToSee = studentCourseRepository
                     .findAllByUser_idAndStatus(userToSee.getId(),
@@ -184,14 +187,14 @@ public class UserServiceImp implements UserService {
                         .findById(studentCourse.getCourse_id());
                 if (course.isEmpty()) continue;
                 if (course.get().getUser_id().equals(currentUser.getId()))
-                    return Optional.of(UserProfileResponse.castToModelPublic(userToSee));
+                    return Optional.of(castObject.profilePublic(userToSee));
             }
 
             var roleStudent = getRoleInstant(ERole.ROLE_STUDENT)
                     .orElseThrow(() -> new RuntimeException("Role Not found"));
 
             if (!roles.contains(roleStudent))
-                return Optional.of(UserProfileResponse.castToModelPrivate(userToSee));
+                return Optional.of(castObject.profilePrivate(userToSee));
 
 
             var listCourseOfCurrentUser = studentCourseRepository
@@ -201,12 +204,37 @@ public class UserServiceImp implements UserService {
             return listCourseOfCurrentUser.stream().map(toKey)
                     .flatMap(key -> listCourseOfUserToSee.stream()
                             .map(toKey).filter(key::equals)).count() > 0 ?
-                    Optional.of(UserProfileResponse.castToModelPublic(userToSee))
-                    : Optional.of(UserProfileResponse.castToModelPrivate(userToSee));
+                    Optional.of(castObject.profilePublic(userToSee))
+                    : Optional.of(castObject.profilePrivate(userToSee));
         } catch (RuntimeException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
             return Optional.empty();
+        }
+    }
+
+    @Override
+    public DatabaseQueryResult updateProfile(
+            UserProfileRequest userProfileRequest, String currentUsername) {
+        try {
+            var currentUser = userRepository.findByUsername(currentUsername);
+            if(currentUser.isEmpty())
+                return new DatabaseQueryResult(false, "User not found",
+                        HttpStatus.NOT_FOUND, userProfileRequest);
+            var u = currentUser.get();
+            u.setFullname(userProfileRequest.getFullname());
+            u.setPhone(userProfileRequest.getPhone());
+            u.setAddress(userProfileRequest.getAddress());
+            u.setCivil_id(userProfileRequest.getCivil_id());
+            u.setBirthday(userProfileRequest.getBirthday());
+            u.setGender(userProfileRequest.getGender());
+            userRepository.save(u);
+            return new DatabaseQueryResult(true, "Update profile success",
+                    HttpStatus.OK, userProfileRequest);
+        } catch (Exception e) {
+            e.printStackTrace();System.out.println(e.getMessage());
+            return new DatabaseQueryResult(false, "Update profile failed",
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
     }
 

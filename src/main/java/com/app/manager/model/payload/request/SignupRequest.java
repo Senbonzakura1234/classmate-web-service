@@ -32,26 +32,26 @@ public class SignupRequest {
         role = new HashSet<>();
     }
 
-    public SignupRequest(@NotBlank(message = "Please provide username")
-                         @Size(min = 6, max = 30,
-                             message = "Username has at least 6 and max 30 characters")
-                             String username,
-                         @Email(message = "Please provide valid email")
-                         @NotBlank(message = "Please provide your email")
-                         @Size(max = 50, message = "Email too long")
-                             String email,
-                         @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).*$",
-                             message = "Password must has an uppercase, " +
-                                "an lower case and a numeric character")
-                         @NotBlank(message = "Please provide password")
-                         @Size(max = 200, message = "Password too long")
-                             String password) {
-        role = new HashSet<>();
-        role.add("Admin");
-        this.username = username;
-        this.email = HelperMethod.removeDotEmail(email);
-        this.password = password;
-    }
+//    public SignupRequest(@NotBlank(message = "Please provide username")
+//                         @Size(min = 6, max = 30,
+//                             message = "Username has at least 6 and max 30 characters")
+//                             String username,
+//                         @Email(message = "Please provide valid email")
+//                         @NotBlank(message = "Please provide your email")
+//                         @Size(max = 50, message = "Email too long")
+//                             String email,
+//                         @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).*$",
+//                             message = "Password must has an uppercase, " +
+//                                "an lower case and a numeric character")
+//                         @NotBlank(message = "Please provide password")
+//                         @Size(max = 200, message = "Password too long")
+//                             String password) {
+//        role = new HashSet<>();
+//        role.add("Admin");
+//        this.username = username;
+//        this.email = HelperMethod.removeDotEmail(email);
+//        this.password = password;
+//    }
 
     public SignupRequest(
             @NotBlank(message = "Please provide username")

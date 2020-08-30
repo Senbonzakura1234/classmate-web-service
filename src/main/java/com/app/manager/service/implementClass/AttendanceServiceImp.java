@@ -5,6 +5,7 @@ import com.app.manager.entity.Attendance;
 import com.app.manager.entity.Session;
 import com.app.manager.entity.StudentCourse;
 import com.app.manager.entity.User;
+import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.FaceCheckClientRequest;
 import com.app.manager.model.payload.request.FaceCheckServerRequest;
 import com.app.manager.model.payload.response.FaceCheckServerResponse;

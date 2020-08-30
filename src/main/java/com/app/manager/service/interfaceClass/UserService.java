@@ -2,6 +2,7 @@ package com.app.manager.service.interfaceClass;
 
 import com.app.manager.entity.User;
 import com.app.manager.model.payload.request.FaceDefinitionClientRequest;
+import com.app.manager.model.payload.request.UserProfileRequest;
 import com.app.manager.model.payload.response.UserProfileResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,6 +18,7 @@ public interface UserService {
     DatabaseQueryResult saveUser(User user, Set<String> strRoles, String subscribtionId);
     List<UserProfileResponse> findAll(Specification<User> specification, String currentUsername);
     Optional<UserProfileResponse> userProfile(String id, String currentUsername);
+    DatabaseQueryResult updateProfile(UserProfileRequest userProfileRequest, String currentUsername);
     DatabaseQueryResult faceCheckDefinition
             (FaceDefinitionClientRequest faceDefinitionClientRequest, String currentUsername);
 
