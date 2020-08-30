@@ -41,11 +41,13 @@ public class CourseController {
     ) {
         var query = new CourseSpecification();
         if(name != null){
-            query.add(new SearchCriteria("name", name, SearchCriteria.SearchOperation.MATCH));
+            query.add(new SearchCriteria("name", name,
+                    SearchCriteria.SearchOperation.MATCH));
         }
 
         if(status != null && status != Course.StatusEnum.ALL){
-            query.add(new SearchCriteria("status", status.getValue(), SearchCriteria.SearchOperation.EQUAL));
+            query.add(new SearchCriteria("status", status.getValue(),
+                    SearchCriteria.SearchOperation.EQUAL));
         }
 
         if(course_category_id != null && !course_category_id.isEmpty()){
@@ -57,11 +59,13 @@ public class CourseController {
                     SearchCriteria.SearchOperation.EQUAL));
         }
         if(start_date > 0){
-            query.add(new SearchCriteria("start_date", start_date, SearchCriteria.SearchOperation.GREATER_THAN_EQUAL));
+            query.add(new SearchCriteria("start_date", start_date,
+                    SearchCriteria.SearchOperation.GREATER_THAN_EQUAL));
         }
 
         if(end_date > 0){
-            query.add(new SearchCriteria("end_date", end_date, SearchCriteria.SearchOperation.LESS_THAN_EQUAL));
+            query.add(new SearchCriteria("end_date", end_date,
+                    SearchCriteria.SearchOperation.LESS_THAN_EQUAL));
         }
 
         return ResponseEntity.ok(courseService.findAll(query));
@@ -71,9 +75,9 @@ public class CourseController {
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {
         var result = courseService.getOne(id);
-        if(result.isEmpty()) return ResponseEntity
-                .status(HttpStatus.NOT_FOUND).body(result);
-        return ResponseEntity.ok(result.get());
+        return result.isEmpty() ? ResponseEntity
+                .status(HttpStatus.NOT_FOUND).body("Not found")
+                : ResponseEntity.ok(result.get());
     }
 
 

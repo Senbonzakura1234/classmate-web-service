@@ -66,7 +66,8 @@ public class SessionController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> save(@Valid @RequestBody SessionRequest sessionRequest, BindingResult bindingResult) {
+    public ResponseEntity<?> save(@Valid @RequestBody SessionRequest sessionRequest,
+                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors()
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)

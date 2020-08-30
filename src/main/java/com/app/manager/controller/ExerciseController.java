@@ -61,7 +61,7 @@ public class ExerciseController {
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {
         var result = exerciseService.getOne(id);
         if(result.isEmpty()) return ResponseEntity
-                .status(HttpStatus.NOT_FOUND).body(result);
+                .status(HttpStatus.NOT_FOUND).body("Not found");
         return ResponseEntity.ok(result.get());
     }
 
