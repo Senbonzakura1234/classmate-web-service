@@ -3,7 +3,6 @@ package com.app.manager.service.implementClass;
 import com.app.manager.context.repository.CourseRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.context.specification.CourseSpecification;
-import com.app.manager.entity.Course;
 import com.app.manager.model.payload.request.CourseRequest;
 import com.app.manager.model.payload.response.CourseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -16,26 +15,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
 public class CourseServiceImp implements CourseService {
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired
-    CourseRepository courseRepository;
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    @Autowired
-    UserRepository userRepository;
+    @Autowired CourseRepository courseRepository;
+    @Autowired UserRepository userRepository;
 
     @Override
     public List<CourseResponse> findAll(CourseSpecification courseSpecification) {
         try {
-            List<Course> courses = courseRepository.findAll(courseSpecification);
-            List<CourseResponse> list = new ArrayList<>();
+            var courses = courseRepository.findAll(courseSpecification);
+            var list = new ArrayList<CourseResponse>();
             courses.forEach(course -> list.add(new CourseResponse(
                     course.getId(),
-                    course.getUserid(), course.getCoursecategoryid(),
+                    course.getUser_id(), course.getCourse_category_id(),
                     course.getName(), course.getDescription(),
-                    course.getStartdate(), course.getEnddate(),
-                    course.getCreatedat(), course.getStatus())));
+                    course.getStart_date(), course.getEnd_date(),
+                    course.getCreated_at(), course.getStatus())));
            return list;
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,8 +55,11 @@ public class CourseServiceImp implements CourseService {
                     CourseResponse.castToObjectModel(course));
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
+
             return new DatabaseQueryResult(false,
-                    "save course failed", HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    "save course failed",
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
     }
 
@@ -68,12 +67,11 @@ public class CourseServiceImp implements CourseService {
     public Optional<CourseResponse> getOne(String id) {
         try {
             var course = courseRepository.findById(id);
-            if(course.isEmpty()){
-                return Optional.empty();
-            }
+            if(course.isEmpty()) return Optional.empty();
             return Optional.of(CourseResponse.castToObjectModel(course.get()));
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
             return Optional.empty();
         }
     }
@@ -95,15 +93,15 @@ public class CourseServiceImp implements CourseService {
 
             var course  = c.get();
 
-            if(!course.getUserid().equals(teacher.get().getId()))
+            if(!course.getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, "");
 
-            course.setCoursecategoryid(courseRequest.getCoursecategoryid());
+            course.setCourse_category_id(courseRequest.getCourse_category_id());
             course.setDescription(courseRequest.getDescription());
-            course.setEnddate(courseRequest.getEnddate());
+            course.setEnd_date(courseRequest.getEnd_date());
             course.setName(courseRequest.getName());
-            course.setStartdate(courseRequest.getStartdate());
+            course.setStart_date(courseRequest.getStart_date());
             courseRepository.save(course);
 
             return new DatabaseQueryResult(true,
@@ -129,7 +127,7 @@ public class CourseServiceImp implements CourseService {
                 return new DatabaseQueryResult(false,
                         "delete course failed", HttpStatus.NOT_FOUND, "");
             }
-            if(!course.get().getUserid().equals(teacher.get().getId()))
+            if(!course.get().getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, "");
 

@@ -19,15 +19,15 @@ public class Exercise {
     )
     private String id;
 
-    @Column(name = "sessionId")
-    private String sessionId;
+    @Column(name = "session_id")
+    private String session_id;
 
     @ManyToOne
-    @JoinColumn(name = "sessionId", updatable = false, insertable = false)
+    @JoinColumn(name = "session_id", updatable = false, insertable = false)
     private Session session;
 
     @OneToMany(mappedBy = "exercise")
-    private List<StudentExercise> studentExercises;
+    private List<StudentExercise> student_exercises;
 
 
 
@@ -53,22 +53,23 @@ public class Exercise {
 
 
     @Column(name = "status", nullable = false)
-    private StatusEnum status = StatusEnum.ONGOING;
+    private StatusEnum status = StatusEnum.PENDING;
 
-    @Column(name = "createdat", nullable = false)
-    private Long createdat = System.currentTimeMillis();
+    @Column(name = "created_at", nullable = false)
+    private Long created_at = System.currentTimeMillis();
 
-    @Column(name = "updatedat", nullable = false)
-    private Long updatedat = System.currentTimeMillis();
+    @Column(name = "updated_at", nullable = false)
+    private Long updated_at = System.currentTimeMillis();
 
-    @Column(name = "deletedat")
-    private Long deletedat;
+    @Column(name = "deleted_at")
+    private Long deleted_at;
 
     public Exercise() {
     }
 
     public enum StatusEnum {
         ALL(0, "All"),
+        PENDING(0, "Pending"),
         ONGOING(1, "Ongoing"),
         MARKING(2, "Marking"),
         END(3, "End");
@@ -105,36 +106,36 @@ public class Exercise {
         this.status = status;
     }
 
-    public Long getCreatedat() {
-        return createdat;
+    public Long getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedat(Long createdat) {
-        this.createdat = createdat;
+    public void setCreated_at(Long createdat) {
+        this.created_at = createdat;
     }
 
-    public Long getUpdatedat() {
-        return updatedat;
+    public Long getUpdated_at() {
+        return updated_at;
     }
 
-    public void setUpdatedat(Long updatedat) {
-        this.updatedat = updatedat;
+    public void setUpdated_at(Long updatedat) {
+        this.updated_at = updatedat;
     }
 
-    public Long getDeletedat() {
-        return deletedat;
+    public Long getDeleted_at() {
+        return deleted_at;
     }
 
-    public void setDeletedat(Long deletedat) {
-        this.deletedat = deletedat;
+    public void setDeleted_at(Long deletedat) {
+        this.deleted_at = deletedat;
     }
 
-    public String getSessionId() {
-        return sessionId;
+    public String getSession_id() {
+        return session_id;
     }
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
+    public void setSession_id(String sessionId) {
+        this.session_id = sessionId;
     }
 
     public Session getSession() {
@@ -145,12 +146,12 @@ public class Exercise {
         this.session = session;
     }
 
-    public List<StudentExercise> getStudentExercises() {
-        return studentExercises;
+    public List<StudentExercise> getStudent_exercises() {
+        return student_exercises;
     }
 
-    public void setStudentExercises(List<StudentExercise> studentExercises) {
-        this.studentExercises = studentExercises;
+    public void setStudent_exercises(List<StudentExercise> studentExercises) {
+        this.student_exercises = studentExercises;
     }
 
     public String getTitle() {

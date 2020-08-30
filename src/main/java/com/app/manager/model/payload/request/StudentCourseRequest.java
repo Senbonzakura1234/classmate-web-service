@@ -4,32 +4,32 @@ import javax.validation.constraints.NotBlank;
 
 public class StudentCourseRequest {
     @NotBlank
-    private String studentId;
+    private String student_id;
     @NotBlank
-    private String courseId;
+    private String course_id;
 
     public StudentCourseRequest() {
     }
 
-    public StudentCourseRequest(@NotBlank String studentId,
-                                @NotBlank String courseId) {
-        this.studentId = studentId;
-        this.courseId = courseId;
+    public StudentCourseRequest(@NotBlank String student_id,
+                                @NotBlank String course_id) {
+        this.student_id = student_id;
+        this.course_id = course_id;
     }
 
-    public String getStudentId() {
-        return studentId;
+    public String getStudent_id() {
+        return student_id;
     }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
+    public void setStudent_id(String student_id) {
+        this.student_id = student_id;
     }
 
-    public String getCourseId() {
-        return courseId;
+    public String getCourse_id() {
+        return course_id;
     }
 
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
+    public void setCourse_id(String course_id) {
+        this.course_id = course_id;
     }
 }

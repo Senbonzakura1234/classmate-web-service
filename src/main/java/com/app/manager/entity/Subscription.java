@@ -39,36 +39,36 @@ public class Subscription {
     private double discount;
 
     @Min(value = 0)
-    @Column(name = "maxstudent", nullable = false)
-    private int maxstudent;
+    @Column(name = "max_student", nullable = false)
+    private int max_student;
 
     @Min(value = 0)
-    @Column(name = "maxcourseduration", nullable = false)
-    private int maxcourseduration;
+    @Column(name = "max_course_duration", nullable = false)
+    private int max_course_duration;
 
     @Min(value = 0)
-    @Column(name = "maxsessionduration", nullable = false)
-    private int maxsessionduration;
+    @Column(name = "max_session_duration", nullable = false)
+    private int max_session_duration;
 
     @Min(value = 0)
-    @Column(name = "maxexercisepersession", nullable = false)
-    private int maxexercisepersession;
+    @Column(name = "max_exercise_per_session", nullable = false)
+    private int max_exercise_per_session;
 
-    @Column(name = "allowfacecheck", nullable = false)
-    private boolean allowfacecheck;
+    @Column(name = "allow_face_check", nullable = false)
+    private boolean allow_face_check;
 
 
     @Column(name = "status", nullable = false)
     private StatusEnum status = StatusEnum.SHOW;
 
-    @Column(name = "createdat", nullable = false)
-    private Long createdat = System.currentTimeMillis();
+    @Column(name = "created_at", nullable = false)
+    private Long created_at = System.currentTimeMillis();
 
-    @Column(name = "updatedat", nullable = false)
-    private Long updatedat = System.currentTimeMillis();
+    @Column(name = "updated_at", nullable = false)
+    private Long updated_at = System.currentTimeMillis();
 
-    @Column(name = "deletedat")
-    private Long deletedat;
+    @Column(name = "deleted_at")
+    private Long deleted_at;
 
     public Subscription() {
     }
@@ -163,44 +163,44 @@ public class Subscription {
         this.discount = discount;
     }
 
-    public int getMaxstudent() {
-        return maxstudent;
+    public int getMax_student() {
+        return max_student;
     }
 
-    public void setMaxstudent(int maxstudent) {
-        this.maxstudent = maxstudent;
+    public void setMax_student(int maxstudent) {
+        this.max_student = maxstudent;
     }
 
-    public int getMaxcourseduration() {
-        return maxcourseduration;
+    public int getMax_course_duration() {
+        return max_course_duration;
     }
 
-    public void setMaxcourseduration(int maxcourseduration) {
-        this.maxcourseduration = maxcourseduration;
+    public void setMax_course_duration(int maxcourseduration) {
+        this.max_course_duration = maxcourseduration;
     }
 
-    public int getMaxsessionduration() {
-        return maxsessionduration;
+    public int getMax_session_duration() {
+        return max_session_duration;
     }
 
-    public void setMaxsessionduration(int maxsessionduration) {
-        this.maxsessionduration = maxsessionduration;
+    public void setMax_session_duration(int maxsessionduration) {
+        this.max_session_duration = maxsessionduration;
     }
 
-    public int getMaxexercisepersession() {
-        return maxexercisepersession;
+    public int getMax_exercise_per_session() {
+        return max_exercise_per_session;
     }
 
-    public void setMaxexercisepersession(int maxexercisepersession) {
-        this.maxexercisepersession = maxexercisepersession;
+    public void setMax_exercise_per_session(int maxexercisepersession) {
+        this.max_exercise_per_session = maxexercisepersession;
     }
 
-    public boolean isAllowfacecheck() {
-        return allowfacecheck;
+    public boolean isAllow_face_check() {
+        return allow_face_check;
     }
 
-    public void setAllowfacecheck(boolean allowfacecheck) {
-        this.allowfacecheck = allowfacecheck;
+    public void setAllow_face_check(boolean allowfacecheck) {
+        this.allow_face_check = allowfacecheck;
     }
 
     public StatusEnum getStatus() {
@@ -211,27 +211,27 @@ public class Subscription {
         this.status = status;
     }
 
-    public Long getCreatedat() {
-        return createdat;
+    public Long getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedat(Long createdat) {
-        this.createdat = createdat;
+    public void setCreated_at(Long createdat) {
+        this.created_at = createdat;
     }
 
-    public Long getUpdatedat() {
-        return updatedat;
+    public Long getUpdated_at() {
+        return updated_at;
     }
 
-    public void setUpdatedat(Long updatedat) {
-        this.updatedat = updatedat;
+    public void setUpdated_at(Long updatedat) {
+        this.updated_at = updatedat;
     }
 
-    public Long getDeletedat() {
-        return deletedat;
+    public Long getDeleted_at() {
+        return deleted_at;
     }
 
-    public void setDeletedat(Long deletedat) {
-        this.deletedat = deletedat;
+    public void setDeleted_at(Long deletedat) {
+        this.deleted_at = deletedat;
     }
 }

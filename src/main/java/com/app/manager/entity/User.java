@@ -25,15 +25,15 @@ public class User {
     )
     private String id;
 
-    @Column(name = "subscriptionId")
-    private String subscriptionId;
+    @Column(name = "subscription_id")
+    private String subscription_id;
 
     @ManyToOne
-    @JoinColumn(name = "subscriptionId", updatable = false, insertable = false)
+    @JoinColumn(name = "subscription_id", updatable = false, insertable = false)
     private Subscription subscription;
 
     @OneToMany(mappedBy = "user")
-    private List<StudentCourse> studentCourses;
+    private List<StudentCourse> student_courses;
 
     @OneToMany(mappedBy = "user")
     private List<Course> courses;
@@ -88,11 +88,11 @@ public class User {
 
 
 
-    @Column(name = "facedefinitionid", nullable = false)
-    private String facedefinitionid = "";
+    @Column(name = "face_definition_id", nullable = false)
+    private String face_definition_id = "";
 
     @Column(name = "facedefinition", nullable = false)
-    private boolean facedefinition = false;
+    private boolean face_definition = false;
 
 
 
@@ -109,14 +109,14 @@ public class User {
     private boolean enabled = true;
 
 
-    @Column(name = "createdat", nullable = false)
-    private Long createdat = System.currentTimeMillis();
+    @Column(name = "created_at", nullable = false)
+    private Long created_at = System.currentTimeMillis();
 
-    @Column(name = "updatedat", nullable = false)
-    private Long updatedat = System.currentTimeMillis();
+    @Column(name = "updated_at", nullable = false)
+    private Long updated_at = System.currentTimeMillis();
 
-    @Column(name = "deletedat")
-    private Long deletedat;
+    @Column(name = "deleted_at")
+    private Long deleted_at;
 
     public User() {
     }
@@ -186,28 +186,28 @@ public class User {
     }
 
 
-    public Long getCreatedat() {
-        return createdat;
+    public Long getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedat(Long createdat) {
-        this.createdat = createdat;
+    public void setCreated_at(Long createdat) {
+        this.created_at = createdat;
     }
 
-    public Long getUpdatedat() {
-        return updatedat;
+    public Long getUpdated_at() {
+        return updated_at;
     }
 
-    public void setUpdatedat(Long updatedat) {
-        this.updatedat = updatedat;
+    public void setUpdated_at(Long updatedat) {
+        this.updated_at = updatedat;
     }
 
-    public Long getDeletedat() {
-        return deletedat;
+    public Long getDeleted_at() {
+        return deleted_at;
     }
 
-    public void setDeletedat(Long deletedat) {
-        this.deletedat = deletedat;
+    public void setDeleted_at(Long deletedat) {
+        this.deleted_at = deletedat;
     }
 
     public Set<Role> getRoles() {
@@ -274,12 +274,12 @@ public class User {
         this.enabled = enabled;
     }
 
-    public String getSubscriptionId() {
-        return subscriptionId;
+    public String getSubscription_id() {
+        return subscription_id;
     }
 
-    public void setSubscriptionId(String subscriptionId) {
-        this.subscriptionId = subscriptionId;
+    public void setSubscription_id(String subscriptionId) {
+        this.subscription_id = subscriptionId;
     }
 
     public Subscription getSubscription() {
@@ -290,12 +290,12 @@ public class User {
         this.subscription = subscription;
     }
 
-    public List<StudentCourse> getStudentCourses() {
-        return studentCourses;
+    public List<StudentCourse> getStudent_courses() {
+        return student_courses;
     }
 
-    public void setStudentCourses(List<StudentCourse> studentCourses) {
-        this.studentCourses = studentCourses;
+    public void setStudent_courses(List<StudentCourse> studentCourses) {
+        this.student_courses = studentCourses;
     }
 
     public List<Course> getCourses() {
@@ -370,19 +370,19 @@ public class User {
         this.profile_visibility = profile_visibility;
     }
 
-    public String getFacedefinitionid() {
-        return facedefinitionid;
+    public String getFace_definition_id() {
+        return face_definition_id;
     }
 
-    public void setFacedefinitionid(String facedefinitionid) {
-        this.facedefinitionid = facedefinitionid;
+    public void setFace_definition_id(String facedefinitionid) {
+        this.face_definition_id = facedefinitionid;
     }
 
-    public boolean isFacedefinition() {
-        return facedefinition;
+    public boolean isFace_definition() {
+        return face_definition;
     }
 
-    public void setFacedefinition(boolean facedefinition) {
-        this.facedefinition = facedefinition;
+    public void setFace_definition(boolean facedefinition) {
+        this.face_definition = facedefinition;
     }
 }

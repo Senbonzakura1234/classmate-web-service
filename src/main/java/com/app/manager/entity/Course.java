@@ -19,25 +19,25 @@ public class Course implements Serializable {
     )
     private String id;
 
-    @Column(name = "coursecategoryid")
-    private String coursecategoryid;
+    @Column(name = "course_category_id")
+    private String course_category_id;
 
     @ManyToOne
-    @JoinColumn(name = "coursecategoryid", updatable = false, insertable = false)
-    private CourseCategory coursecategory;
+    @JoinColumn(name = "course_category_id", updatable = false, insertable = false)
+    private CourseCategory course_category;
 
-    @Column(name = "userid")
-    private String userid;
+    @Column(name = "user_id")
+    private String user_id;
 
     @ManyToOne
-    @JoinColumn(name = "userid", updatable = false, insertable = false)
+    @JoinColumn(name = "user_id", updatable = false, insertable = false)
     private User user;
 
     @OneToMany(mappedBy = "course")
     private List<Session> sessions;
 
     @OneToMany(mappedBy = "course")
-    private List<StudentCourse> studentCourses;
+    private List<StudentCourse> student_courses;
 
 
     @NotBlank
@@ -47,39 +47,39 @@ public class Course implements Serializable {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "startdate", nullable = false)
-    private Long startdate = System.currentTimeMillis();
+    @Column(name = "start_date", nullable = false)
+    private Long start_date = System.currentTimeMillis();
 
-    @Column(name = "enddate", nullable = false)
-    private Long enddate = System.currentTimeMillis();
+    @Column(name = "end_date", nullable = false)
+    private Long end_date = System.currentTimeMillis();
 
-    public Long getStartdate() {
-        return startdate;
+    public Long getStart_date() {
+        return start_date;
     }
 
-    public void setStartdate(Long startdate) {
-        this.startdate = startdate;
+    public void setStart_date(Long startdate) {
+        this.start_date = startdate;
     }
 
-    public Long getEnddate() {
-        return enddate;
+    public Long getEnd_date() {
+        return end_date;
     }
 
-    public void setEnddate(Long enddate) {
-        this.enddate = enddate;
+    public void setEnd_date(Long enddate) {
+        this.end_date = enddate;
     }
 
     @Column(name = "status", nullable = false)
     private StatusEnum status = StatusEnum.PENDING;
 
-    @Column(name = "createdat", nullable = false)
-    private Long createdat = System.currentTimeMillis();
+    @Column(name = "create_dat", nullable = false)
+    private Long created_at = System.currentTimeMillis();
 
-    @Column(name = "updatedat", nullable = false)
-    private Long updatedat = System.currentTimeMillis();
+    @Column(name = "updated_at", nullable = false)
+    private Long updated_at = System.currentTimeMillis();
 
-    @Column(name = "deletedat")
-    private Long deletedat;
+    @Column(name = "deleted_at")
+    private Long deleted_at;
 
 
     public Course() {
@@ -124,52 +124,52 @@ public class Course implements Serializable {
         this.status = status;
     }
 
-    public Long getCreatedat() {
-        return createdat;
+    public Long getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedat(Long createdat) {
-        this.createdat = createdat;
+    public void setCreated_at(Long createdat) {
+        this.created_at = createdat;
     }
 
-    public Long getUpdatedat() {
-        return updatedat;
+    public Long getUpdated_at() {
+        return updated_at;
     }
 
-    public void setUpdatedat(Long updatedat) {
-        this.updatedat = updatedat;
+    public void setUpdated_at(Long updatedat) {
+        this.updated_at = updatedat;
     }
 
-    public Long getDeletedat() {
-        return deletedat;
+    public Long getDeleted_at() {
+        return deleted_at;
     }
 
-    public void setDeletedat(Long deletedat) {
-        this.deletedat = deletedat;
+    public void setDeleted_at(Long deletedat) {
+        this.deleted_at = deletedat;
     }
 
-    public String getCoursecategoryid() {
-        return coursecategoryid;
+    public String getCourse_category_id() {
+        return course_category_id;
     }
 
-    public void setCoursecategoryid(String courseCategoryId) {
-        this.coursecategoryid = courseCategoryId;
+    public void setCourse_category_id(String courseCategoryId) {
+        this.course_category_id = courseCategoryId;
     }
 
-    public CourseCategory getCoursecategory() {
-        return coursecategory;
+    public CourseCategory getCourse_category() {
+        return course_category;
     }
 
-    public void setCoursecategory(CourseCategory courseCategory) {
-        this.coursecategory = courseCategory;
+    public void setCourse_category(CourseCategory courseCategory) {
+        this.course_category = courseCategory;
     }
 
-    public String getUserid() {
-        return userid;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setUserid(String userId) {
-        this.userid = userId;
+    public void setUser_id(String userId) {
+        this.user_id = userId;
     }
 
     public User getUser() {
@@ -188,12 +188,12 @@ public class Course implements Serializable {
         this.sessions = sessions;
     }
 
-    public List<StudentCourse> getStudentCourses() {
-        return studentCourses;
+    public List<StudentCourse> getStudent_courses() {
+        return student_courses;
     }
 
-    public void setStudentCourses(List<StudentCourse> studentCourses) {
-        this.studentCourses = studentCourses;
+    public void setStudent_courses(List<StudentCourse> studentCourses) {
+        this.student_courses = studentCourses;
     }
 
     public String getName() {

@@ -27,14 +27,14 @@ public class Role {
     @Column(name = "status", nullable = false)
     private StatusEnum status = StatusEnum.SHOW;
 
-    @Column(name = "createdat", nullable = false)
-    private Long createdat = System.currentTimeMillis();
+    @Column(name = "created_at", nullable = false)
+    private Long created_at = System.currentTimeMillis();
 
-    @Column(name = "updatedat", nullable = false)
-    private Long updatedat = System.currentTimeMillis();
+    @Column(name = "updated_at", nullable = false)
+    private Long updated_at = System.currentTimeMillis();
 
-    @Column(name = "deletedat")
-    private Long deletedat;
+    @Column(name = "deleted_at")
+    private Long deleted_at;
 
 
 
@@ -83,28 +83,28 @@ public class Role {
         this.status = status;
     }
 
-    public Long getCreatedat() {
-        return createdat;
+    public Long getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedat(Long createdat) {
-        this.createdat = createdat;
+    public void setCreated_at(Long createdat) {
+        this.created_at = createdat;
     }
 
-    public Long getUpdatedat() {
-        return updatedat;
+    public Long getUpdated_at() {
+        return updated_at;
     }
 
-    public void setUpdatedat(Long updatedat) {
-        this.updatedat = updatedat;
+    public void setUpdated_at(Long updatedat) {
+        this.updated_at = updatedat;
     }
 
-    public Long getDeletedat() {
-        return deletedat;
+    public Long getDeleted_at() {
+        return deleted_at;
     }
 
-    public void setDeletedat(Long deletedat) {
-        this.deletedat = deletedat;
+    public void setDeleted_at(Long deletedat) {
+        this.deleted_at = deletedat;
     }
 
     public ERole getName() {

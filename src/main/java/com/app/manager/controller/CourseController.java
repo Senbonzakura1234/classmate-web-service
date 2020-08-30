@@ -33,10 +33,10 @@ public class CourseController {
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getAll(
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
-            @RequestParam(value = "coursecategoryid", required = false, defaultValue = "") String coursecategoryid,
-            @RequestParam(value = "userid", required = false, defaultValue = "") String userid,
-            @RequestParam(value = "startdate", required = false, defaultValue = "0") long startdate,
-            @RequestParam(value = "enddate", required = false, defaultValue = "0") long enddate,
+            @RequestParam(value = "course_category_id", required = false, defaultValue = "") String course_category_id,
+            @RequestParam(value = "user_id", required = false, defaultValue = "") String user_id,
+            @RequestParam(value = "start_date", required = false, defaultValue = "0") long start_date,
+            @RequestParam(value = "end_date", required = false, defaultValue = "0") long end_date,
             @RequestParam(value = "status", required = false) Course.StatusEnum status
     ) {
         var query = new CourseSpecification();
@@ -48,20 +48,20 @@ public class CourseController {
             query.add(new SearchCriteria("status", status.getValue(), SearchCriteria.SearchOperation.EQUAL));
         }
 
-        if(coursecategoryid != null && !coursecategoryid.isEmpty()){
-            query.add(new SearchCriteria("coursecategoryid", coursecategoryid,
+        if(course_category_id != null && !course_category_id.isEmpty()){
+            query.add(new SearchCriteria("course_category_id", course_category_id,
                     SearchCriteria.SearchOperation.EQUAL));
         }
-        if(userid != null && !userid.isEmpty()){
-            query.add(new SearchCriteria("userid", userid,
+        if(user_id != null && !user_id.isEmpty()){
+            query.add(new SearchCriteria("user_id", user_id,
                     SearchCriteria.SearchOperation.EQUAL));
         }
-        if(startdate > 0){
-            query.add(new SearchCriteria("startdate", startdate, SearchCriteria.SearchOperation.GREATER_THAN_EQUAL));
+        if(start_date > 0){
+            query.add(new SearchCriteria("start_date", start_date, SearchCriteria.SearchOperation.GREATER_THAN_EQUAL));
         }
 
-        if(enddate > 0){
-            query.add(new SearchCriteria("enddate", enddate, SearchCriteria.SearchOperation.LESS_THAN_EQUAL));
+        if(end_date > 0){
+            query.add(new SearchCriteria("end_date", end_date, SearchCriteria.SearchOperation.LESS_THAN_EQUAL));
         }
 
         return ResponseEntity.ok(courseService.findAll(query));
@@ -93,7 +93,7 @@ public class CourseController {
                 .getContext().getAuthentication().getName();
         var result = courseService.save(courseRequest, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.status(result.getHttpStatus()).body(result);
+                ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
     @PostMapping("/edit")
@@ -113,7 +113,7 @@ public class CourseController {
                 .getContext().getAuthentication().getName();
         var result = courseService.update(courseRequest, id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.status(result.getHttpStatus()).body(result);
+                ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
     @PostMapping("/delete")
@@ -123,7 +123,7 @@ public class CourseController {
                 .getContext().getAuthentication().getName();
         var result = courseService.delete(id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.status(result.getHttpStatus()).body(result);
+                ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
     @PostMapping("/addToCourse")
@@ -135,6 +135,6 @@ public class CourseController {
         var result = studentCourseService
                 .addStudentToCourse(studentCourseRequest, currentUser);
         if(result.isSuccess()) return ResponseEntity.ok(result);
-                return ResponseEntity.status(result.getHttpStatus()).body(result);
+                return ResponseEntity.status(result.getHttp_status()).body(result);
     }
 }

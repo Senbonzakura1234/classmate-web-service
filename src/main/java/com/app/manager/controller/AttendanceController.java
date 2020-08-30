@@ -43,6 +43,6 @@ public class AttendanceController {
                 .studentAttendaneCheck(faceCheckClientRequest, currentUser);
 
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.status(result.getHttpStatus()).body(result);
+                ResponseEntity.status(result.getHttp_status()).body(result);
     }
 }

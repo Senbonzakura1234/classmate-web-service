@@ -7,28 +7,28 @@ import java.util.List;
 
 public class SessionResponse {
     private String id;
-    private String courseId; //search
+    private String course_id; //search
     private String name; //search
     private String content;
-    private Long starttime;
-    private int sessionduration;
-    private Session.AttendanceStatusEnum attendancestatus;
+    private Long start_time;
+    private int session_duration;
+    private Session.AttendanceStatusEnum attendance_status;
     private Session.StatusEnum status; //search
-    private Long createdat;
+    private Long created_at;
 
-    public SessionResponse(String id, String courseId, String name,
-                           String content, Long starttime, int sessionduration,
-                           Session.AttendanceStatusEnum attendancestatus,
-                           Session.StatusEnum status, Long createdat) {
+    public SessionResponse(String id, String course_id, String name,
+                           String content, Long start_time, int session_duration,
+                           Session.AttendanceStatusEnum attendance_status,
+                           Session.StatusEnum status, Long created_at) {
         this.id = id;
-        this.courseId = courseId;
+        this.course_id = course_id;
         this.name = name;
         this.content = content;
-        this.starttime = starttime;
-        this.sessionduration = sessionduration;
-        this.attendancestatus = attendancestatus;
+        this.start_time = start_time;
+        this.session_duration = session_duration;
+        this.attendance_status = attendance_status;
         this.status = status;
-        this.createdat = createdat;
+        this.created_at = created_at;
     }
 
     public SessionResponse() {
@@ -40,14 +40,14 @@ public class SessionResponse {
             return sessionResponse;
         }
         sessionResponse.setId(session.getId());
-        sessionResponse.setCreatedat(session.getCreatedat());
-        sessionResponse.setAttendancestatus(session.getAttendancestatus());
-        sessionResponse.setSessionduration(session.getSessionduration());
+        sessionResponse.setCreated_at(session.getCreated_at());
+        sessionResponse.setAttendance_status(session.getAttendance_status());
+        sessionResponse.setSession_duration(session.getSession_duration());
         sessionResponse.setName(session.getName());
         sessionResponse.setContent(session.getContent());
-        sessionResponse.setStarttime(session.getStarttime());
+        sessionResponse.setStart_time(session.getStart_time());
         sessionResponse.setStatus(session.getStatus());
-        sessionResponse.setCourseId(session.getCourseid());
+        sessionResponse.setCourse_id(session.getCourse_id());
 
         return sessionResponse;
     }
@@ -69,12 +69,12 @@ public class SessionResponse {
         this.id = id;
     }
 
-    public String getCourseId() {
-        return courseId;
+    public String getCourse_id() {
+        return course_id;
     }
 
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
+    public void setCourse_id(String course_id) {
+        this.course_id = course_id;
     }
 
     public String getName() {
@@ -85,28 +85,28 @@ public class SessionResponse {
         this.name = name;
     }
 
-    public Long getStarttime() {
-        return starttime;
+    public Long getStart_time() {
+        return start_time;
     }
 
-    public void setStarttime(Long starttime) {
-        this.starttime = starttime;
+    public void setStart_time(Long start_time) {
+        this.start_time = start_time;
     }
 
-    public int getSessionduration() {
-        return sessionduration;
+    public int getSession_duration() {
+        return session_duration;
     }
 
-    public void setSessionduration(int sessionduration) {
-        this.sessionduration = sessionduration;
+    public void setSession_duration(int session_duration) {
+        this.session_duration = session_duration;
     }
 
-    public Session.AttendanceStatusEnum getAttendancestatus() {
-        return attendancestatus;
+    public Session.AttendanceStatusEnum getAttendance_status() {
+        return attendance_status;
     }
 
-    public void setAttendancestatus(Session.AttendanceStatusEnum attendancestatus) {
-        this.attendancestatus = attendancestatus;
+    public void setAttendance_status(Session.AttendanceStatusEnum attendance_status) {
+        this.attendance_status = attendance_status;
     }
 
     public Session.StatusEnum getStatus() {
@@ -117,12 +117,12 @@ public class SessionResponse {
         this.status = status;
     }
 
-    public Long getCreatedat() {
-        return createdat;
+    public Long getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedat(Long createdat) {
-        this.createdat = createdat;
+    public void setCreated_at(Long created_at) {
+        this.created_at = created_at;
     }
 
     public String getContent() {

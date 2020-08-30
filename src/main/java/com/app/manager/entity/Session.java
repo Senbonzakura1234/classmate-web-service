@@ -19,11 +19,11 @@ public class Session {
     )
     private String id;
 
-    @Column(name = "courseid")
-    private String courseid;
+    @Column(name = "course_id")
+    private String course_id;
 
     @ManyToOne
-    @JoinColumn(name = "courseid", updatable = false, insertable = false)
+    @JoinColumn(name = "course_id", updatable = false, insertable = false)
     private Course course;
 
 
@@ -41,32 +41,32 @@ public class Session {
     private String content = "";
 
 
-    @Column(name = "starttime", nullable = false)
-    private Long starttime = 0L;
+    @Column(name = "start_time", nullable = false)
+    private Long start_time = 0L;
 
     @Min(value = 1)
-    @Column(name = "sessionduration", nullable = false)
-    private int sessionduration = 1;
+    @Column(name = "session_duration", nullable = false)
+    private int session_duration = 1;
 
-    @Column(name = "attendancecheckstarttime", nullable = false)
-    private Long attendancecheckstarttime = 0L;
+    @Column(name = "attendance_check_start_time", nullable = false)
+    private Long attendance_check_start_time = 0L;
 
-    @Column(name = "attendancestatus", nullable = false)
-    private AttendanceStatusEnum attendancestatus = AttendanceStatusEnum.PENDING;
+    @Column(name = "attendance_status", nullable = false)
+    private AttendanceStatusEnum attendance_status = AttendanceStatusEnum.PENDING;
 
 
 
     @Column(name = "status", nullable = false)
     private StatusEnum status = StatusEnum.PENDING;
 
-    @Column(name = "createdat", nullable = false)
-    private Long createdat = System.currentTimeMillis();
+    @Column(name = "created_at", nullable = false)
+    private Long created_at = System.currentTimeMillis();
 
-    @Column(name = "updatedat", nullable = false)
-    private Long updatedat = System.currentTimeMillis();
+    @Column(name = "updated_at", nullable = false)
+    private Long updated_at = System.currentTimeMillis();
 
-    @Column(name = "deletedat")
-    private Long deletedat;
+    @Column(name = "deleted_at")
+    private Long deleted_at;
 
     public Session() {
     }
@@ -132,36 +132,36 @@ public class Session {
         this.status = status;
     }
 
-    public Long getCreatedat() {
-        return createdat;
+    public Long getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedat(Long createdat) {
-        this.createdat = createdat;
+    public void setCreated_at(Long createdat) {
+        this.created_at = createdat;
     }
 
-    public Long getUpdatedat() {
-        return updatedat;
+    public Long getUpdated_at() {
+        return updated_at;
     }
 
-    public void setUpdatedat(Long updatedat) {
-        this.updatedat = updatedat;
+    public void setUpdated_at(Long updatedat) {
+        this.updated_at = updatedat;
     }
 
-    public Long getDeletedat() {
-        return deletedat;
+    public Long getDeleted_at() {
+        return deleted_at;
     }
 
-    public void setDeletedat(Long deletedat) {
-        this.deletedat = deletedat;
+    public void setDeleted_at(Long deletedat) {
+        this.deleted_at = deletedat;
     }
 
-    public String getCourseid() {
-        return courseid;
+    public String getCourse_id() {
+        return course_id;
     }
 
-    public void setCourseid(String courseId) {
-        this.courseid = courseId;
+    public void setCourse_id(String courseId) {
+        this.course_id = courseId;
     }
 
     public Course getCourse() {
@@ -188,36 +188,36 @@ public class Session {
         this.name = name;
     }
 
-    public Long getStarttime() {
-        return starttime;
+    public Long getStart_time() {
+        return start_time;
     }
 
-    public void setStarttime(Long starttime) {
-        this.starttime = starttime;
+    public void setStart_time(Long starttime) {
+        this.start_time = starttime;
     }
 
-    public int getSessionduration() {
-        return sessionduration;
+    public int getSession_duration() {
+        return session_duration;
     }
 
-    public void setSessionduration(int attendanceduration) {
-        this.sessionduration = attendanceduration;
+    public void setSession_duration(int attendanceduration) {
+        this.session_duration = attendanceduration;
     }
 
-    public AttendanceStatusEnum getAttendancestatus() {
-        return attendancestatus;
+    public AttendanceStatusEnum getAttendance_status() {
+        return attendance_status;
     }
 
-    public void setAttendancestatus(AttendanceStatusEnum attendancechecked) {
-        this.attendancestatus = attendancechecked;
+    public void setAttendance_status(AttendanceStatusEnum attendancechecked) {
+        this.attendance_status = attendancechecked;
     }
 
-    public Long getAttendancecheckstarttime() {
-        return attendancecheckstarttime;
+    public Long getAttendance_check_start_time() {
+        return attendance_check_start_time;
     }
 
-    public void setAttendancecheckstarttime(Long attendancecheckstarttime) {
-        this.attendancecheckstarttime = attendancecheckstarttime;
+    public void setAttendance_check_start_time(Long attendancecheckstarttime) {
+        this.attendance_check_start_time = attendancecheckstarttime;
     }
 
     public String getContent() {

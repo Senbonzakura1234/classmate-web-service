@@ -37,7 +37,7 @@ public class AttendanceServiceImp implements AttendanceService {
             String currentUsername) {
         try {
             var session = sessionRepository
-                    .findById(faceCheckClientRequest.getSessionid())
+                    .findById(faceCheckClientRequest.getSession_id())
                     .orElseThrow(() -> new RuntimeException("Session not found"));
 
             if(session.getStatus() == Session.StatusEnum.END
@@ -46,13 +46,13 @@ public class AttendanceServiceImp implements AttendanceService {
                         "Out of session time", HttpStatus.BAD_REQUEST,
                         faceCheckClientRequest);
 
-            if(session.getAttendancestatus() == Session.AttendanceStatusEnum.END
-                    || session.getAttendancestatus() == Session.AttendanceStatusEnum.PENDING)
+            if(session.getAttendance_status() == Session.AttendanceStatusEnum.END
+                    || session.getAttendance_status() == Session.AttendanceStatusEnum.PENDING)
                 return new DatabaseQueryResult(false,
                         "Out of Attendance Check time", HttpStatus.BAD_REQUEST,
                         faceCheckClientRequest);
 
-            var course = courseRepository.findById(session.getCourseid())
+            var course = courseRepository.findById(session.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("Course not found"));
             var studentCourses =
                     studentCourseRepository.findAllByCourseIdAndStatus(course.getId(),
@@ -60,14 +60,14 @@ public class AttendanceServiceImp implements AttendanceService {
 
             var student = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("User not found"));
-            if(!student.isFacedefinition() || student.getFacedefinitionid() == null)
+            if(!student.isFace_definition() || student.getFace_definition_id() == null)
                 return new DatabaseQueryResult(false,
                     "You dont have face definition," +
                             "get face definition first then try again",
                     HttpStatus.BAD_REQUEST,
                     faceCheckClientRequest);
             Optional<StudentCourse> result = studentCourses.stream()
-                    .filter(studentCourse -> studentCourse.getUserId()
+                    .filter(studentCourse -> studentCourse.getUser_id()
                             .equals(student.getId())).findFirst();
 
             if(result.isEmpty())
@@ -89,8 +89,8 @@ public class AttendanceServiceImp implements AttendanceService {
 
             if(attendance.isEmpty()){
                 var newAttendance = new Attendance();
-                newAttendance.setSessionId(session.getId());
-                newAttendance.setUserId(student.getId());
+                newAttendance.setSession_id(session.getId());
+                newAttendance.setUser_id(student.getId());
                 newAttendance.setImage_uri(faceCheckClientRequest.getImg_url());
                 newAttendance.setFace_matched(true);
                 attendanceRepository.save(newAttendance);
@@ -101,7 +101,7 @@ public class AttendanceServiceImp implements AttendanceService {
             var a = attendance.get();
             a.setImage_uri(faceCheckClientRequest.getImg_url());
             a.setFace_matched(true);
-            a.setUpdatedat(System.currentTimeMillis());
+            a.setUpdated_at(System.currentTimeMillis());
             attendanceRepository.save(a);
 
             return new DatabaseQueryResult(true,
@@ -117,7 +117,7 @@ public class AttendanceServiceImp implements AttendanceService {
 
     private Optional<FaceCheckServerResponse> faceCheck
             (FaceCheckClientRequest faceCheckClientRequest, User user){
-        var entity = new HttpEntity<>(new FaceCheckServerRequest(user.getFacedefinitionid(),
+        var entity = new HttpEntity<>(new FaceCheckServerRequest(user.getFace_definition_id(),
                 faceCheckClientRequest.getImg_url()), new HttpHeaders());
         var restTemplate = new RestTemplate();
 

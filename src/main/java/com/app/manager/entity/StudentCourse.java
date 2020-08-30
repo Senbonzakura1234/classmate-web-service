@@ -16,18 +16,18 @@ public class StudentCourse {
     )
     private String id;
 
-    @Column(name = "userId")
-    private String userId;
+    @Column(name = "user_id")
+    private String user_id;
 
     @ManyToOne
-    @JoinColumn(name = "userId", updatable = false, insertable = false)
+    @JoinColumn(name = "user_id", updatable = false, insertable = false)
     private User user;
 
-    @Column(name = "courseId")
-    private String courseId;
+    @Column(name = "course_id")
+    private String course_id;
 
     @ManyToOne
-    @JoinColumn(name = "courseId", updatable = false, insertable = false)
+    @JoinColumn(name = "course_id", updatable = false, insertable = false)
     private Course course;
 
 
@@ -35,14 +35,14 @@ public class StudentCourse {
     @Column(name = "status", nullable = false)
     private StatusEnum status = StatusEnum.SHOW;
 
-    @Column(name = "createdat", nullable = false)
-    private Long createdat = System.currentTimeMillis();
+    @Column(name = "created_at", nullable = false)
+    private Long created_at = System.currentTimeMillis();
 
-    @Column(name = "updatedat", nullable = false)
-    private Long updatedat = System.currentTimeMillis();
+    @Column(name = "updated_at", nullable = false)
+    private Long updated_at = System.currentTimeMillis();
 
-    @Column(name = "deletedat")
-    private Long deletedat;
+    @Column(name = "deleted_at")
+    private Long deleted_at;
 
     public StudentCourse() {
     }
@@ -84,36 +84,36 @@ public class StudentCourse {
         this.status = status;
     }
 
-    public Long getCreatedat() {
-        return createdat;
+    public Long getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedat(Long createdat) {
-        this.createdat = createdat;
+    public void setCreated_at(Long createdat) {
+        this.created_at = createdat;
     }
 
-    public Long getUpdatedat() {
-        return updatedat;
+    public Long getUpdated_at() {
+        return updated_at;
     }
 
-    public void setUpdatedat(Long updatedat) {
-        this.updatedat = updatedat;
+    public void setUpdated_at(Long updatedat) {
+        this.updated_at = updatedat;
     }
 
-    public Long getDeletedat() {
-        return deletedat;
+    public Long getDeleted_at() {
+        return deleted_at;
     }
 
-    public void setDeletedat(Long deletedat) {
-        this.deletedat = deletedat;
+    public void setDeleted_at(Long deletedat) {
+        this.deleted_at = deletedat;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser_id(String userId) {
+        this.user_id = userId;
     }
 
     public User getUser() {
@@ -124,12 +124,12 @@ public class StudentCourse {
         this.user = user;
     }
 
-    public String getCourseId() {
-        return courseId;
+    public String getCourse_id() {
+        return course_id;
     }
 
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
+    public void setCourse_id(String courseId) {
+        this.course_id = courseId;
     }
 
     public Course getCourse() {

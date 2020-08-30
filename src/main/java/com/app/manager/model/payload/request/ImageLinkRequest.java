@@ -4,20 +4,20 @@ import javax.validation.constraints.NotBlank;
 
 public class ImageLinkRequest {
     @NotBlank
-    private String imgUri;
+    private String img_uri;
 
     public ImageLinkRequest() {
     }
 
-    public ImageLinkRequest(String imgUri) {
-        this.imgUri = imgUri;
+    public ImageLinkRequest(String img_uri) {
+        this.img_uri = img_uri;
     }
 
-    public String getImgUri() {
-        return imgUri;
+    public String getImg_uri() {
+        return img_uri;
     }
 
-    public void setImgUri(String imgUri) {
-        this.imgUri = imgUri;
+    public void setImg_uri(String img_uri) {
+        this.img_uri = img_uri;
     }
 }

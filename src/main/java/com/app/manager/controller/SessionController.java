@@ -29,8 +29,8 @@ public class SessionController {
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getAll(
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
-            @RequestParam(value = "courseid", required = false, defaultValue = "0") String courseid,
-            @RequestParam(value = "userid", required = false, defaultValue = "0") String userid,
+            @RequestParam(value = "course_id", required = false, defaultValue = "0") String course_id,
+            @RequestParam(value = "user_id", required = false, defaultValue = "0") String user_id,
             @RequestParam(value = "status", required = false) Session.StatusEnum status
     ) {
         var query = new SessionSpecification();
@@ -42,12 +42,12 @@ public class SessionController {
             query.add(new SearchCriteria("status", status.getValue(), SearchCriteria.SearchOperation.EQUAL));
         }
 
-        if(courseid != null && !courseid.isEmpty()){
-            query.add(new SearchCriteria("courseid", courseid,
+        if(course_id != null && !course_id.isEmpty()){
+            query.add(new SearchCriteria("course_id", course_id,
                     SearchCriteria.SearchOperation.EQUAL));
         }
-        if(userid != null && !userid.isEmpty()){
-            query.add(new SearchCriteria("userid", userid,
+        if(user_id != null && !user_id.isEmpty()){
+            query.add(new SearchCriteria("user_id", user_id,
                     SearchCriteria.SearchOperation.EQUAL));
         }
 
@@ -79,7 +79,7 @@ public class SessionController {
                 .getContext().getAuthentication().getName();
         var result = sessionService.save(sessionRequest, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.status(result.getHttpStatus()).body(result);
+                ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
     @PostMapping("/edit")
@@ -99,7 +99,7 @@ public class SessionController {
                 .getContext().getAuthentication().getName();
         var result = sessionService.update(sessionRequest, id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.status(result.getHttpStatus()).body(result);
+                ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
     @PostMapping("/delete")
@@ -109,7 +109,7 @@ public class SessionController {
                 .getContext().getAuthentication().getName();
         var result = sessionService.delete(id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.status(result.getHttpStatus()).body(result);
+                ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
     @PostMapping("/startAttendandeCheck")
@@ -119,7 +119,7 @@ public class SessionController {
                 .getContext().getAuthentication().getName();
         var result = sessionService.startAttendanceCheck(id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.status(result.getHttpStatus()).body(result);
+                ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
     @PostMapping("/closeAttendanceCheck")
@@ -129,6 +129,6 @@ public class SessionController {
                 .getContext().getAuthentication().getName();
         var result = sessionService.closeAttendanceCheck(id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
-                ResponseEntity.status(result.getHttpStatus()).body(result);
+                ResponseEntity.status(result.getHttp_status()).body(result);
     }
 }

@@ -104,7 +104,7 @@ public class UserServiceImp implements UserService {
                     }
                 });
             }
-            user.setSubscriptionId(subscribtionId);
+            user.setSubscription_id(subscribtionId);
             user.setRoles(roles);
             userRepository.save(user);
             return new DatabaseQueryResult(true,
@@ -131,9 +131,11 @@ public class UserServiceImp implements UserService {
             List<User> users = userRepository.findAll(specification);
             List<UserProfileResponse> list = new ArrayList<>();
 
-            users.forEach(user -> list.add(user.getProfile_visibility() == User.VisibilityEnum.PUBLIC ||
+            users.forEach(user -> list
+                    .add(user.getProfile_visibility() == User.VisibilityEnum.PUBLIC ||
                     user.getProfile_visibility() == User.VisibilityEnum.TEACHER
-                            && currentUser.getRoles().contains(roleTeacher) ? new UserProfileResponse(
+                            && currentUser.getRoles().contains(roleTeacher) ?
+                    new UserProfileResponse(
                     user.getId(), user.getUsername(), user.getEmail(),
                     user.getFullname(), user.getPhone(), user.getAddress(),
                     user.getCivil_id(), user.getBirthday(), user.getGender()) :
@@ -153,13 +155,13 @@ public class UserServiceImp implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         var faceDefinition = new FaceDefinitionServerRequest(
                     faceDefinitionClientRequest.getImg_urls(),
-                    student.isFacedefinition()
-                            && student.getFacedefinitionid() != null
-                            && !student.getFacedefinitionid().isEmpty(),
-                        student.isFacedefinition()
-                            && student.getFacedefinitionid() != null
-                            && !student.getFacedefinitionid().isEmpty()?
-                        student.getFacedefinitionid() : "");
+                    student.isFace_definition()
+                            && student.getFace_definition_id() != null
+                            && !student.getFace_definition_id().isEmpty(),
+                        student.isFace_definition()
+                            && student.getFace_definition_id() != null
+                            && !student.getFace_definition_id().isEmpty()?
+                        student.getFace_definition_id() : "");
 
         var result = sentNewFaceDefinition(faceDefinition);
         if(result.isEmpty() || !result.get().isSuccess())
@@ -167,8 +169,8 @@ public class UserServiceImp implements UserService {
                     "Setup face definition fail",
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
 
-        student.setFacedefinition(true);
-        student.setFacedefinitionid(faceDefinition.getDefinitionId());
+        student.setFace_definition(true);
+        student.setFace_definition_id(faceDefinition.getDefinition_id());
         userRepository.save(student);
         return new DatabaseQueryResult(true,
                 "Setup face definition success", HttpStatus.OK, "");

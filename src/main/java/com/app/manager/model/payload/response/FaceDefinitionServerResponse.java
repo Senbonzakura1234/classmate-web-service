@@ -1,23 +1,23 @@
 package com.app.manager.model.payload.response;
 
 public class FaceDefinitionServerResponse {
-    private String definitionId;
+    private String definition_id;
     private boolean success;
 
     public FaceDefinitionServerResponse() {
     }
 
-    public FaceDefinitionServerResponse(String definitionId, boolean success) {
-        this.definitionId = definitionId;
+    public FaceDefinitionServerResponse(String definition_id, boolean success) {
+        this.definition_id = definition_id;
         this.success = success;
     }
 
-    public String getDefinitionId() {
-        return definitionId;
+    public String getDefinition_id() {
+        return definition_id;
     }
 
-    public void setDefinitionId(String definitionId) {
-        this.definitionId = definitionId;
+    public void setDefinition_id(String definition_id) {
+        this.definition_id = definition_id;
     }
 
     public boolean isSuccess() {

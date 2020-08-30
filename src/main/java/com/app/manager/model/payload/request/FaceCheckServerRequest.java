@@ -1,24 +1,24 @@
 package com.app.manager.model.payload.request;
 
 public class FaceCheckServerRequest {
-    private String definitionId;
+    private String definition_id;
 
     private String imgUrl;
 
     public FaceCheckServerRequest() {
     }
 
-    public FaceCheckServerRequest(String definitionId, String imgUrl) {
-        this.definitionId = definitionId;
+    public FaceCheckServerRequest(String definition_id, String imgUrl) {
+        this.definition_id = definition_id;
         this.imgUrl = imgUrl;
     }
 
-    public String getDefinitionId() {
-        return definitionId;
+    public String getDefinition_id() {
+        return definition_id;
     }
 
-    public void setDefinitionId(String definitionId) {
-        this.definitionId = definitionId;
+    public void setDefinition_id(String definition_id) {
+        this.definition_id = definition_id;
     }
 
     public String getImgUrl() {

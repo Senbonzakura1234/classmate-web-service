@@ -2,62 +2,41 @@ package com.app.manager.model.payload.response;
 
 import com.app.manager.entity.Course;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CourseResponse {
     private String id;
-    private String userid; //search
-    private String coursecategoryid; //search
+    private String user_id; //search
+    private String course_category_id; //search
     private String name; //search
     private String description;
-    private Long startdate; //search
-    private Long enddate; //search
-    private Long createdat;
+    private Long start_date; //search
+    private Long end_date; //search
+    private Long created_at;
     private Course.StatusEnum status; //search
 
     public CourseResponse() {
     }
 
-    public static List<CourseResponse> castToListModels(List<Course> courses){
-        List<CourseResponse> courseResponses = new ArrayList<>();
-        if (courses == null) return courseResponses;
-        for (var item: courses) {
-            courseResponses.add(castToObjectModel(item));
-        }
-        return courseResponses;
-    }
-
-    public CourseResponse(String id, String userid, String coursecategoryid,
-                          String name, String description, Long startdate,
-                          Long enddate, Long createdat, Course.StatusEnum status) {
+    public CourseResponse(String id, String user_id, String course_category_id,
+                          String name, String description, Long start_date,
+                          Long enddate, Long created_at, Course.StatusEnum status) {
         this.id = id;
-        this.userid = userid;
-        this.coursecategoryid = coursecategoryid;
+        this.user_id = user_id;
+        this.course_category_id = course_category_id;
         this.name = name;
         this.description = description;
-        this.startdate = startdate;
-        this.enddate = enddate;
-        this.createdat = createdat;
+        this.start_date = start_date;
+        this.end_date = enddate;
+        this.created_at = created_at;
         this.status = status;
     }
 
     public static CourseResponse castToObjectModel(Course course){
-        CourseResponse courseResponse = new CourseResponse();
-        if(course == null){
-            return courseResponse;
-        }
-        courseResponse.setId(course.getId());
-        courseResponse.setCoursecategoryid(course.getCoursecategoryid());
-        courseResponse.setCreatedat(course.getCreatedat());
-        courseResponse.setDescription(course.getDescription());
-        courseResponse.setEnddate(course.getEnddate());
-        courseResponse.setName(course.getName());
-        courseResponse.setStartdate(course.getStartdate());
-        courseResponse.setUserid(course.getUserid());
-        courseResponse.setStatus(course.getStatus());
+        if(course == null) return new CourseResponse();
 
-        return courseResponse;
+        return new CourseResponse(course.getId(), course.getUser_id(),
+        course.getCourse_category_id(), course.getName(), course.getDescription(),
+        course.getStart_date(), course.getEnd_date(), course.getCreated_at(),
+                course.getStatus());
     }
 
     public String getId() {
@@ -76,20 +55,20 @@ public class CourseResponse {
         this.status = status;
     }
 
-    public String getUserid() {
-        return userid;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
-    public String getCoursecategoryid() {
-        return coursecategoryid;
+    public String getCourse_category_id() {
+        return course_category_id;
     }
 
-    public void setCoursecategoryid(String coursecategoryid) {
-        this.coursecategoryid = coursecategoryid;
+    public void setCourse_category_id(String course_category_id) {
+        this.course_category_id = course_category_id;
     }
 
     public String getName() {
@@ -108,28 +87,28 @@ public class CourseResponse {
         this.description = description;
     }
 
-    public Long getStartdate() {
-        return startdate;
+    public Long getStart_date() {
+        return start_date;
     }
 
-    public void setStartdate(Long startdate) {
-        this.startdate = startdate;
+    public void setStart_date(Long start_date) {
+        this.start_date = start_date;
     }
 
-    public Long getEnddate() {
-        return enddate;
+    public Long getEnd_date() {
+        return end_date;
     }
 
-    public void setEnddate(Long enddate) {
-        this.enddate = enddate;
+    public void setEnd_date(Long end_date) {
+        this.end_date = end_date;
     }
 
-    public Long getCreatedat() {
-        return createdat;
+    public Long getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedat(Long createdat) {
-        this.createdat = createdat;
+    public void setCreated_at(Long created_at) {
+        this.created_at = created_at;
     }
 
 

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class FaceDefinitionServerRequest {
-    private String definitionId = UUID.randomUUID().toString();
+    private String definition_id = UUID.randomUUID().toString();
 
     private List<String> img_urls;
 
@@ -23,12 +23,12 @@ public class FaceDefinitionServerRequest {
         this.oldDefinitionId = oldDefinitionId;
     }
 
-    public String getDefinitionId() {
-        return definitionId;
+    public String getDefinition_id() {
+        return definition_id;
     }
 
-    public void setDefinitionId(String definitionId) {
-        this.definitionId = definitionId;
+    public void setDefinition_id(String definition_id) {
+        this.definition_id = definition_id;
     }
 
     public List<String> getImg_urls() {

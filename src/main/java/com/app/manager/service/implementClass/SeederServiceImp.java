@@ -136,8 +136,8 @@ public class SeederServiceImp implements SeederService {
                 if (checkCourse.isPresent()) return;
 
                 course.setDescription("Teacher: " + teacherName + ", Category: " + categoryName);
-                course.setCoursecategoryid(category.get().getId());
-                course.setUserid(teacher.get().getId());
+                course.setCourse_category_id(category.get().getId());
+                course.setUser_id(teacher.get().getId());
 
 
                 course.setStatus(Course.StatusEnum.ONGOING);
@@ -166,8 +166,8 @@ public class SeederServiceImp implements SeederService {
                                 .findByUsername(signupRequest.getUsername());
                         if (student.isEmpty()) return;
                         var studentCourse = new StudentCourse();
-                        studentCourse.setUserId(student.get().getId());
-                        studentCourse.setCourseId(course.getId());
+                        studentCourse.setUser_id(student.get().getId());
+                        studentCourse.setCourse_id(course.getId());
                         studentCourseRepository.save(studentCourse);
                     } catch (Exception e) {
                         e.printStackTrace();

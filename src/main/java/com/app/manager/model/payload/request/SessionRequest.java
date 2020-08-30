@@ -8,47 +8,47 @@ import javax.validation.constraints.NotNull;
 
 public class SessionRequest {
     @NotBlank
-    private String courseId = "";
+    private String course_id = "";
     @NotBlank
     private String name = "";
     private String content = "";
     @NotNull
-    private Long starttime = 0L;
+    private Long start_time = 0L;
     @NotNull
     @Min(value = 1)
-    private int sessionduration = 1;
+    private int session_duration = 1;
 
     public SessionRequest() {
     }
 
-    public SessionRequest(@NotBlank String courseId, @NotBlank String name, String content,
-                          @NotNull Long starttime, @NotNull @Min(value = 1) int sessionduration) {
-        this.courseId = courseId;
+    public SessionRequest(@NotBlank String course_id, @NotBlank String name, String content,
+                          @NotNull Long start_time, @NotNull @Min(value = 1) int session_duration) {
+        this.course_id = course_id;
         this.name = name;
         this.content = content;
-        this.starttime = starttime;
-        this.sessionduration = sessionduration;
+        this.start_time = start_time;
+        this.session_duration = session_duration;
     }
 
     public static Session castToEntity(SessionRequest sessionRequest){
         Session session = new Session();
 
-        session.setSessionduration(sessionRequest.getSessionduration());
+        session.setSession_duration(sessionRequest.getSession_duration());
         session.setName(sessionRequest.getName());
         session.setContent(sessionRequest.getContent());
-        session.setStarttime(sessionRequest.getStarttime());
-        session.setCourseid(sessionRequest.getCourseId());
+        session.setStart_time(sessionRequest.getStart_time());
+        session.setCourse_id(sessionRequest.getCourse_id());
         return session;
     }
 
 
 
-    public String getCourseId() {
-        return courseId;
+    public String getCourse_id() {
+        return course_id;
     }
 
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
+    public void setCourse_id(String course_id) {
+        this.course_id = course_id;
     }
 
     public String getName() {
@@ -59,20 +59,20 @@ public class SessionRequest {
         this.name = name;
     }
 
-    public Long getStarttime() {
-        return starttime;
+    public Long getStart_time() {
+        return start_time;
     }
 
-    public void setStarttime(Long starttime) {
-        this.starttime = starttime;
+    public void setStart_time(Long start_time) {
+        this.start_time = start_time;
     }
 
-    public int getSessionduration() {
-        return sessionduration;
+    public int getSession_duration() {
+        return session_duration;
     }
 
-    public void setSessionduration(int sessionduration) {
-        this.sessionduration = sessionduration;
+    public void setSession_duration(int session_duration) {
+        this.session_duration = session_duration;
     }
 
     public String getContent() {

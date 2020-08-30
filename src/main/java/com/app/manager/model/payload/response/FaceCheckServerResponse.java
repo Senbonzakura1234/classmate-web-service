@@ -1,7 +1,7 @@
 package com.app.manager.model.payload.response;
 
 public class FaceCheckServerResponse {
-    private String definitionId;
+    private String definition_id;
 
     private boolean matched;
 
@@ -10,18 +10,18 @@ public class FaceCheckServerResponse {
     public FaceCheckServerResponse() {
     }
 
-    public FaceCheckServerResponse(String definitionId, boolean matched, double match_percent) {
-        this.definitionId = definitionId;
+    public FaceCheckServerResponse(String definition_id, boolean matched, double match_percent) {
+        this.definition_id = definition_id;
         this.matched = matched;
         this.match_percent = match_percent;
     }
 
-    public String getDefinitionId() {
-        return definitionId;
+    public String getDefinition_id() {
+        return definition_id;
     }
 
-    public void setDefinitionId(String definitionId) {
-        this.definitionId = definitionId;
+    public void setDefinition_id(String definition_id) {
+        this.definition_id = definition_id;
     }
 
     public boolean isMatched() {

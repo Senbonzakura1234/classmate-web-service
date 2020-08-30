@@ -115,7 +115,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"coursecategoryid\" : \"2493811d-6938-43bf-ae1e-88ec8f4445cd\",\r\n    \"name\" : \"course name\",\r\n    \"description\" : \"description\",\r\n    \"startdate\" : 21000000,\r\n    \"enddate\": 23000000\r\n}",
+					"raw": "{\r\n    \"course_category_id\" : \"2493811d-6938-43bf-ae1e-88ec8f4445cd\",\r\n    \"name\" : \"course name\",\r\n    \"description\" : \"description\",\r\n    \"start_date\" : 21000000,\r\n    \"end_date\": 23000000\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -154,7 +154,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"courseId\" : \"6042422e-0252-485d-a036-a3371f8e1d69\",\r\n    \"name\" : \"session name\",\r\n    \"content\" : \"content bla bla\",\r\n    \"starttime\" : 200000000,\r\n    \"sessionduration\" : 10\r\n}",
+					"raw": "{\r\n    \"course_id\" : \"6042422e-0252-485d-a036-a3371f8e1d69\",\r\n    \"name\" : \"session name\",\r\n    \"content\" : \"content bla bla\",\r\n    \"start_time\" : 200000000,\r\n    \"session_duration\" : 10\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -301,7 +301,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"studentId\" : \"face44db-239d-4a7f-8e06-7b0e24fef7a2\",\r\n    \"courseId\" : \"d238791e-320b-409f-83b7-43b0e3a298b0\"\r\n}",
+					"raw": "{\r\n    \"student_id\" : \"face44db-239d-4a7f-8e06-7b0e24fef7a2\",\r\n    \"course_id\" : \"d238791e-320b-409f-83b7-43b0e3a298b0\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

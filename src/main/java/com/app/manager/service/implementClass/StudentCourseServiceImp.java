@@ -43,12 +43,12 @@ public class StudentCourseServiceImp implements StudentCourseService {
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
 
-            var course = courseRepository.findById(studentCourseRequest.getCourseId());
+            var course = courseRepository.findById(studentCourseRequest.getCourse_id());
             if(course.isEmpty() || course.get().getStatus() == Course.StatusEnum.CANCEL)
                 return new DatabaseQueryResult(false, "Course not found",
                         HttpStatus.NOT_FOUND, "");
 
-            if(!course.get().getUserid().equals(teacher.get().getId()))
+            if(!course.get().getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not Your Course",
                         HttpStatus.BAD_REQUEST, "");
 
@@ -57,7 +57,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
                 return new DatabaseQueryResult(false, "Role not found",
                         HttpStatus.NOT_FOUND, "");
 
-            var student = userRepository.findById(studentCourseRequest.getStudentId());
+            var student = userRepository.findById(studentCourseRequest.getStudent_id());
             if(student.isEmpty() || !student.get().getRoles().contains(role.get()))
                 return new DatabaseQueryResult(false, "Student not found," +
                         " or user is not Student",
@@ -70,8 +70,8 @@ public class StudentCourseServiceImp implements StudentCourseService {
 
 
             var studentCourse = new StudentCourse();
-            studentCourse.setCourseId(studentCourseRequest.getCourseId());
-            studentCourse.setUserId(studentCourseRequest.getStudentId());
+            studentCourse.setCourse_id(studentCourseRequest.getCourse_id());
+            studentCourse.setUser_id(studentCourseRequest.getStudent_id());
 
             studentcourseRepository.save(studentCourse);
 
