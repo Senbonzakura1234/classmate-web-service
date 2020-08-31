@@ -4,10 +4,7 @@ import com.app.manager.context.repository.CourseRepository;
 import com.app.manager.context.repository.RoleRepository;
 import com.app.manager.context.repository.StudentCourseRepository;
 import com.app.manager.context.repository.UserRepository;
-import com.app.manager.entity.ERole;
-import com.app.manager.entity.Role;
-import com.app.manager.entity.StudentCourse;
-import com.app.manager.entity.User;
+import com.app.manager.entity.*;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.FaceDefinitionClientRequest;
 import com.app.manager.model.payload.request.FaceDefinitionServerRequest;
@@ -168,10 +165,10 @@ public class UserServiceImp implements UserService {
             if(roles.contains(roleAdmin))
                 return Optional.of(castObject.profilePublic(userToSee));
 
-            if(userToSee.getProfile_visibility() == User.VisibilityEnum.PRIVATE)
+            if(userToSee.getProfile_visibility() == EVisibility.PRIVATE)
                 return Optional.of(castObject.profilePrivate(userToSee));
 
-            if(userToSee.getProfile_visibility() == User.VisibilityEnum.PUBLIC)
+            if(userToSee.getProfile_visibility() == EVisibility.PUBLIC)
                 return Optional.of(castObject.profilePublic(userToSee));
 
             var listCourseOfUserToSee = studentCourseRepository

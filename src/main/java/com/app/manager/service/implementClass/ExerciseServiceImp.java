@@ -1,13 +1,11 @@
 package com.app.manager.service.implementClass;
 
-import com.app.manager.context.repository.CourseRepository;
-import com.app.manager.context.repository.ExerciseRepository;
-import com.app.manager.context.repository.SessionRepository;
-import com.app.manager.context.repository.UserRepository;
+import com.app.manager.context.repository.*;
 import com.app.manager.context.specification.ExerciseSpecification;
 import com.app.manager.entity.Exercise;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.ExerciseRequest;
+import com.app.manager.model.payload.request.StudentExerciseRequest;
 import com.app.manager.model.payload.response.ExerciseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.ExerciseService;
@@ -18,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
@@ -26,6 +25,9 @@ public class ExerciseServiceImp implements ExerciseService {
     @Autowired UserRepository userRepository;
     @Autowired SessionRepository sessionRepository;
     @Autowired CourseRepository courseRepository;
+    @Autowired StudentCourseRepository studentCourseRepository;
+    @Autowired StudentExerciseRepository studentExerciseRepository;
+    @Autowired FileRepository fileRepository;
     @Autowired CastObject castObject;
 
 
@@ -145,12 +147,14 @@ public class ExerciseServiceImp implements ExerciseService {
                 return new DatabaseQueryResult(false, "exercise not found",
                         HttpStatus.NOT_FOUND, "");
 
-            var session = sessionRepository.findById(exercise.get().getSession_id());
+            var session = sessionRepository
+                    .findById(exercise.get().getSession_id());
             if(session.isEmpty())
                 return new DatabaseQueryResult(false, "session not found",
                         HttpStatus.NOT_FOUND, "");
 
-            var course = courseRepository.findById(session.get().getCourse_id());
+            var course = courseRepository
+                    .findById(session.get().getCourse_id());
             if(course.isEmpty())
                 return new DatabaseQueryResult(false, "course not found",
                         HttpStatus.NOT_FOUND, "");
@@ -169,6 +173,62 @@ public class ExerciseServiceImp implements ExerciseService {
             System.out.println(exception.getMessage());
             return new DatabaseQueryResult(false,
                     "update exercise failed",
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+        }
+    }
+
+    @Override
+    public DatabaseQueryResult saveStudentExercise(
+            StudentExerciseRequest studentExerciseRequest,
+            String currentUsername) {
+        try {
+            var student = userRepository.findByUsername(currentUsername);
+            if(student.isEmpty())
+                return new DatabaseQueryResult(false, "student not found",
+                        HttpStatus.NOT_FOUND, studentExerciseRequest);
+
+            var exercise = exerciseRepository
+                    .findById(studentExerciseRequest.getExercise_id());
+            if(exercise.isEmpty())
+                return new DatabaseQueryResult(false, "exercise not found",
+                        HttpStatus.NOT_FOUND, studentExerciseRequest);
+            if(exercise.get().getStatus() != Exercise.StatusEnum.ONGOING)
+                return new DatabaseQueryResult(false, "exercise ended",
+                        HttpStatus.BAD_REQUEST, studentExerciseRequest);
+
+            var session = sessionRepository
+                    .findById(exercise.get().getSession_id());
+            if(session.isEmpty())
+                return new DatabaseQueryResult(false, "session not found",
+                        HttpStatus.NOT_FOUND, studentExerciseRequest);
+
+            var course = courseRepository
+                    .findById(session.get().getCourse_id());
+            if(course.isEmpty())
+                return new DatabaseQueryResult(false, "course not found",
+                        HttpStatus.NOT_FOUND, studentExerciseRequest);
+            if(studentCourseRepository.findFirstByCourse_idAndUser_id(
+                    course.get().getId(), student.get().getId()).isEmpty())
+                return new DatabaseQueryResult(false,
+                        "you are not in this course",
+                        HttpStatus.BAD_REQUEST, studentExerciseRequest);
+            var studentExercise = castObject.studentExerciseEntity(
+                    student.get().getId(), studentExerciseRequest);
+            studentExerciseRepository.save(studentExercise);
+            if(!studentExerciseRequest.getFileRequests().isEmpty()){
+                fileRepository.saveAll(studentExerciseRequest.getFileRequests()
+                        .stream().map(fileRequest -> castObject
+                                .fileEntity(studentExercise.getId(), fileRequest))
+                        .collect(Collectors.toList()));
+            }
+            return new DatabaseQueryResult(true,
+                    "Post Student Exercise success",
+                    HttpStatus.OK, studentExerciseRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return new DatabaseQueryResult(false,
+                    "Post Student Exercise failed",
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
     }

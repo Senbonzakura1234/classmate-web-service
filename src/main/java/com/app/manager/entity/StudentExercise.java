@@ -3,9 +3,10 @@ package com.app.manager.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "studentexercise")
+@Table(name = "[student_exercise]")
 public class StudentExercise {
     @Id
     @Column(name = "id")
@@ -29,6 +30,12 @@ public class StudentExercise {
     @ManyToOne
     @JoinColumn(name = "exercise_id", updatable = false, insertable = false)
     private Exercise exercise;
+
+    @OneToMany(mappedBy = "student_exercise")
+    private List<File> files;
+
+
+
 
     @Column(name = "content", nullable = false)
     private String content;
@@ -160,5 +167,13 @@ public class StudentExercise {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public List<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<File> files) {
+        this.files = files;
     }
 }

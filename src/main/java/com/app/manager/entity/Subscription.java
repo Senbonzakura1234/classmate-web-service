@@ -8,7 +8,7 @@ import javax.validation.constraints.Min;
 import java.util.List;
 
 @Entity
-@Table(name = "subscription")
+@Table(name = "[subscription]")
 public class Subscription {
     @Id
     @Column(name = "id")

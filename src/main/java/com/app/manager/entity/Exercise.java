@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
-@Table(name = "exercise")
+@Table(name = "[exercise]")
 public class Exercise {
     @Id
     @Column(name = "id")

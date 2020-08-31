@@ -84,7 +84,7 @@ public class User {
     private GenderEnum gender = GenderEnum.UNKNOWN;
 
     @Column(name = "profile_visibility", nullable = false)
-    private VisibilityEnum profile_visibility = VisibilityEnum.PRIVATE;
+    private EVisibility profile_visibility = EVisibility.PRIVATE;
 
 
 
@@ -139,30 +139,6 @@ public class User {
         private final String name;
 
         GenderEnum(int value, String name) {
-            this.value = value;
-            this.name = name;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-
-    public enum VisibilityEnum {
-        PUBLIC(0, "Public"),
-        COURSE(1, "Classmate and teacher only"),
-        TEACHER(2, "Teacher only"),
-        PRIVATE(3, "Private");
-
-        private final int value;
-        private final String name;
-
-        VisibilityEnum(int value, String name) {
             this.value = value;
             this.name = name;
         }
@@ -362,11 +338,11 @@ public class User {
         this.gender = gender;
     }
 
-    public VisibilityEnum getProfile_visibility() {
+    public EVisibility getProfile_visibility() {
         return profile_visibility;
     }
 
-    public void setProfile_visibility(VisibilityEnum profile_visibility) {
+    public void setProfile_visibility(EVisibility profile_visibility) {
         this.profile_visibility = profile_visibility;
     }
 

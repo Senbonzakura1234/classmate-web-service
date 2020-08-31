@@ -1,17 +1,11 @@
 package com.app.manager.model.payload;
 
-import com.app.manager.entity.Course;
-import com.app.manager.entity.Exercise;
-import com.app.manager.entity.Session;
-import com.app.manager.entity.User;
-import com.app.manager.model.payload.request.CourseRequest;
-import com.app.manager.model.payload.request.ExerciseRequest;
-import com.app.manager.model.payload.request.SessionRequest;
-import com.app.manager.model.payload.response.CourseResponse;
-import com.app.manager.model.payload.response.ExerciseResponse;
-import com.app.manager.model.payload.response.SessionResponse;
-import com.app.manager.model.payload.response.UserProfileResponse;
+import com.app.manager.entity.*;
+import com.app.manager.model.payload.request.*;
+import com.app.manager.model.payload.response.*;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class CastObject {
@@ -85,5 +79,41 @@ public class CastObject {
     public UserProfileResponse profilePrivate(User user){
         if(user == null) return new UserProfileResponse();
         return new UserProfileResponse(user.getId(), user.getUsername());
+    }
+
+    public StudentExercise studentExerciseEntity(String studentId,
+            StudentExerciseRequest studentExerciseRequest){
+        var studentExercise = new StudentExercise();
+        studentExercise.setUser_id(studentId);
+        studentExercise.setExercise_id(studentExerciseRequest.getExercise_id());
+        studentExercise.setContent(studentExerciseRequest.getContent());
+        studentExercise.setMessage(studentExerciseRequest.getMessage());
+        return studentExercise;
+    }
+    public File fileEntity(String studentExerciseId, FileRequest fileRequest){
+        var file = new File();
+        file.setStudent_exercise_id(studentExerciseId);
+        file.setName(fileRequest.getName());
+        file.setDescription(fileRequest.getDescription());
+        file.setFile_url(fileRequest.getFile_url());
+        file.setFile_size(fileRequest.getFile_size());
+        return file;
+    }
+
+    public StudentExerciseResponse studentExerciseModel(
+            StudentExercise studentExercise, List<FileResponse> fileResponses){
+        return studentExercise != null && fileResponses != null ? new StudentExerciseResponse(
+            studentExercise.getId(), studentExercise.getUser_id(),
+            studentExercise.getExercise_id(), studentExercise.getContent(),
+            studentExercise.getMessage(), studentExercise.getStatus(),
+            studentExercise.getCreated_at(), fileResponses) : new StudentExerciseResponse();
+    }
+
+    public FileResponse fileModel(File file){
+        return file != null ? new FileResponse(
+                file.getId(), file.getStudent_exercise_id(), file.getName(),
+                file.getDescription(), file.getFile_url(), file.getFile_size(),
+                file.getFile_visibility(), file.getStatus(), file.getCreated_at())
+                : new FileResponse();
     }
 }
