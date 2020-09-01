@@ -34,10 +34,8 @@ public class SessionServiceImp implements SessionService {
     public List<SessionResponse> findAll(SessionSpecification sessionSpecification) {
         try {
             List<Session> sessions = sessionRepository.findAll(sessionSpecification);
-            return sessions.stream().map(session -> new SessionResponse(session.getId(),
-                    session.getCourse_id(), session.getName(), session.getContent(),
-                    session.getStart_time(), session.getSession_duration(),
-                    session.getAttendance_status(), session.getStatus(), session.getCreated_at()))
+            return sessions.stream().map(session ->
+                    castObject.sessionModel(session))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();

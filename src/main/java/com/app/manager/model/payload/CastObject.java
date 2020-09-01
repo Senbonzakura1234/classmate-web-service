@@ -116,4 +116,18 @@ public class CastObject {
                 file.getFile_visibility(), file.getStatus(), file.getCreated_at())
                 : new FileResponse();
     }
+
+    public CourseCategory courseCategoryEntity(
+            CourseCategoryRequest courseCategoryRequest){
+        var courseCategory = new CourseCategory();
+        courseCategory.setName(courseCategoryRequest.getName());
+        courseCategory.setDescription(courseCategoryRequest.getDescription());
+        return courseCategory;
+    }
+
+    public CourseCategoryResponse courseCategoryModel(CourseCategory courseCategory){
+        return courseCategory != null ? new CourseCategoryResponse(
+                courseCategory.getId(), courseCategory.getName(),
+                courseCategory.getDescription()) : new CourseCategoryResponse();
+    }
 }

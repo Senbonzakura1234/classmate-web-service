@@ -29,12 +29,8 @@ public class CourseServiceImp implements CourseService {
     public List<CourseResponse> findAll(CourseSpecification courseSpecification) {
         try {
             var courses = courseRepository.findAll(courseSpecification);
-            return courses.stream().map(course -> new CourseResponse(
-                    course.getId(),
-                    course.getUser_id(), course.getCourse_category_id(),
-                    course.getName(), course.getDescription(),
-                    course.getStart_date(), course.getEnd_date(),
-                    course.getCreated_at(), course.getStatus()))
+            return courses.stream().map(course ->
+                    castObject.courseModel(course))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();

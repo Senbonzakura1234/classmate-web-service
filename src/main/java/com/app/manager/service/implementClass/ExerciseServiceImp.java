@@ -35,10 +35,8 @@ public class ExerciseServiceImp implements ExerciseService {
     public List<ExerciseResponse> findAll(ExerciseSpecification exerciseSpecification) {
         try {
             var exercises = exerciseRepository.findAll(exerciseSpecification);
-            return exercises.stream().map(exercise -> new ExerciseResponse(exercise.getId(),
-                    exercise.getSession_id(), exercise.getTitle(), exercise.getContent(),
-                    exercise.isShow_answer() ? exercise.getAnswer() : "", exercise.getDuration(),
-                    exercise.isShow_answer(), exercise.getStatus(), exercise.getCreated_at()))
+            return exercises.stream().map(exercise ->
+                    castObject.exerciseModel(exercise))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -230,5 +228,11 @@ public class ExerciseServiceImp implements ExerciseService {
                     "Post Student Exercise failed",
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
+    }
+
+    @Override
+    public DatabaseQueryResult updateStudentExercise(StudentExerciseRequest studentExerciseRequest,
+                                                     String currentUsername, String id) {
+        return null;
     }
 }

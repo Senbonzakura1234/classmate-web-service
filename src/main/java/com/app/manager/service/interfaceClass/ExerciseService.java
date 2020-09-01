@@ -19,4 +19,6 @@ public interface ExerciseService {
 
     DatabaseQueryResult saveStudentExercise(StudentExerciseRequest studentExerciseRequest,
                                             String currentUsername);
+    DatabaseQueryResult updateStudentExercise(StudentExerciseRequest studentExerciseRequest,
+                                              String currentUsername, String id);
 }

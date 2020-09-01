@@ -5,7 +5,6 @@ import com.app.manager.entity.Attendance;
 import com.app.manager.entity.Session;
 import com.app.manager.entity.StudentCourse;
 import com.app.manager.entity.User;
-import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.FaceCheckClientRequest;
 import com.app.manager.model.payload.request.FaceCheckServerRequest;
 import com.app.manager.model.payload.response.FaceCheckServerResponse;
@@ -32,6 +31,7 @@ public class AttendanceServiceImp implements AttendanceService {
     @Autowired StudentCourseRepository studentCourseRepository;
 
     private static final String faceCheckHost = "";
+    private static final double minimumMatchPercent = 0.8;
 
     @Override
     public DatabaseQueryResult studentAttendaneCheck
@@ -78,9 +78,11 @@ public class AttendanceServiceImp implements AttendanceService {
                     faceCheckClientRequest);
 
             // send request to host to face check
-            var faceCheckResult = faceCheck(faceCheckClientRequest, student);
+            var faceCheckResult =
+                    faceCheck(faceCheckClientRequest, student);
 
-            if(faceCheckResult.isEmpty() || !faceCheckResult.get().isMatched())
+            if(faceCheckResult.isEmpty() || faceCheckResult.get()
+                    .getMatch_percent() < minimumMatchPercent)
                 return new DatabaseQueryResult(false,
                     "Face not matched", HttpStatus.BAD_REQUEST,
                     faceCheckClientRequest);

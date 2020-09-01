@@ -1,10 +1,15 @@
 package com.app.manager.service.interfaceClass;
 
 
-import com.app.manager.entity.CourseCategory;
+import com.app.manager.model.payload.request.CourseCategoryRequest;
+import com.app.manager.model.payload.response.CourseCategoryResponse;
+import com.app.manager.model.returnResult.DatabaseQueryResult;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface CourseCategoryService {
-    Optional<CourseCategory> getBasicCategory();
+    List<CourseCategoryResponse> getAll();
+    DatabaseQueryResult save(CourseCategoryRequest courseCategoryRequest);
+    DatabaseQueryResult update(String id,
+                               CourseCategoryRequest courseCategoryRequest);
 }
