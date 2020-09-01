@@ -18,7 +18,5 @@ public interface ExerciseService {
     DatabaseQueryResult updateStatus(String id, Exercise.StatusEnum status, String currentUsername);
 
     DatabaseQueryResult saveStudentExercise(StudentExerciseRequest studentExerciseRequest,
-                                            String currentUsername);
-    DatabaseQueryResult updateStudentExercise(StudentExerciseRequest studentExerciseRequest,
-                                              String currentUsername, String id);
+                                            String currentUsername, String id);
 }

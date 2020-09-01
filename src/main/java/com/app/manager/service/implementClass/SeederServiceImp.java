@@ -136,7 +136,7 @@ public class SeederServiceImp implements SeederService {
                 if (checkCourse.isPresent()) return;
 
                 course.setDescription("Teacher: " + teacherName + ", Category: " + categoryName);
-                course.setCourse_category_id(category.get().getId());
+                course.setCoursecategory_id(category.get().getId());
                 course.setUser_id(teacher.get().getId());
 
 

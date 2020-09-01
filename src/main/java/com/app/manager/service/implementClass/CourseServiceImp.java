@@ -96,7 +96,7 @@ public class CourseServiceImp implements CourseService {
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, "");
 
-            course.setCourse_category_id(courseRequest.getCourse_category_id());
+            course.setCoursecategory_id(courseRequest.getCourse_category_id());
             course.setDescription(courseRequest.getDescription());
             course.setEnd_date(courseRequest.getEnd_date());
             course.setName(courseRequest.getName());

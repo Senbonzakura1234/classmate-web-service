@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
-@Table(name = "[course_category]")
+@Table(name = "[coursecategory]")
 public class CourseCategory {
     @Id
     @Column(name = "id")
@@ -18,7 +18,7 @@ public class CourseCategory {
     )
     private String id;
 
-    @OneToMany(mappedBy = "course_category")
+    @OneToMany(mappedBy = "coursecategory")
     private List<Course> courses;
 
 

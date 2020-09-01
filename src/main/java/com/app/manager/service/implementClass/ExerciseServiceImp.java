@@ -3,6 +3,8 @@ package com.app.manager.service.implementClass;
 import com.app.manager.context.repository.*;
 import com.app.manager.context.specification.ExerciseSpecification;
 import com.app.manager.entity.Exercise;
+import com.app.manager.entity.File;
+import com.app.manager.entity.StudentExercise;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.ExerciseRequest;
 import com.app.manager.model.payload.request.StudentExerciseRequest;
@@ -177,18 +179,18 @@ public class ExerciseServiceImp implements ExerciseService {
     @Override
     public DatabaseQueryResult saveStudentExercise(
             StudentExerciseRequest studentExerciseRequest,
-            String currentUsername) {
+            String currentUsername, String id) {
         try {
             var student = userRepository.findByUsername(currentUsername);
             if(student.isEmpty())
                 return new DatabaseQueryResult(false, "student not found",
                         HttpStatus.NOT_FOUND, studentExerciseRequest);
 
-            var exercise = exerciseRepository
-                    .findById(studentExerciseRequest.getExercise_id());
+            var exercise = exerciseRepository.findById(id);
             if(exercise.isEmpty())
                 return new DatabaseQueryResult(false, "exercise not found",
                         HttpStatus.NOT_FOUND, studentExerciseRequest);
+
             if(exercise.get().getStatus() != Exercise.StatusEnum.ONGOING)
                 return new DatabaseQueryResult(false, "exercise ended",
                         HttpStatus.BAD_REQUEST, studentExerciseRequest);
@@ -209,8 +211,37 @@ public class ExerciseServiceImp implements ExerciseService {
                 return new DatabaseQueryResult(false,
                         "you are not in this course",
                         HttpStatus.BAD_REQUEST, studentExerciseRequest);
+
+            var oldStudentExercise = studentExerciseRepository
+                    .findFirstByUser_idAndExercise_id(student.get().getId(),
+                            exercise.get().getId());
+
+            if(oldStudentExercise.isPresent()){
+                try {
+                    var s = oldStudentExercise.get();
+                    s.setStatus(StudentExercise.StatusEnum.HIDE);
+                    studentExerciseRepository.save(s);
+                    var oldFiles = fileRepository
+                            .findAllByStudentexercise_idAndStatus(
+                                    s.getId(), File.StatusEnum.SHOW);
+                    if(!oldFiles.isEmpty()){
+                        oldFiles.forEach(file -> {
+                            try {
+                                file.setStatus(File.StatusEnum.HIDE);
+                                fileRepository.save(file);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println(e.getMessage());
+                }
+            }
+
             var studentExercise = castObject.studentExerciseEntity(
-                    student.get().getId(), studentExerciseRequest);
+                    student.get().getId(), id, studentExerciseRequest);
             studentExerciseRepository.save(studentExercise);
             if(!studentExerciseRequest.getFileRequests().isEmpty()){
                 fileRepository.saveAll(studentExerciseRequest.getFileRequests()
@@ -228,11 +259,5 @@ public class ExerciseServiceImp implements ExerciseService {
                     "Post Student Exercise failed",
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
-    }
-
-    @Override
-    public DatabaseQueryResult updateStudentExercise(StudentExerciseRequest studentExerciseRequest,
-                                                     String currentUsername, String id) {
-        return null;
     }
 }

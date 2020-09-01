@@ -11,7 +11,7 @@ import java.util.List;
 public class CastObject {
     public Course courseEntity(CourseRequest courseRequest, String teacherId){
         var course = new Course();
-        course.setCourse_category_id(courseRequest.getCourse_category_id());
+        course.setCoursecategory_id(courseRequest.getCourse_category_id());
         course.setDescription(courseRequest.getDescription());
         course.setEnd_date(courseRequest.getEnd_date());
         course.setName(courseRequest.getName());
@@ -23,7 +23,7 @@ public class CastObject {
         if(course == null) return new CourseResponse();
 
         return new CourseResponse(course.getId(), course.getUser_id(),
-                course.getCourse_category_id(), course.getName(), course.getDescription(),
+                course.getCoursecategory_id(), course.getName(), course.getDescription(),
                 course.getStart_date(), course.getEnd_date(), course.getCreated_at(),
                 course.getStatus());
     }
@@ -81,18 +81,18 @@ public class CastObject {
         return new UserProfileResponse(user.getId(), user.getUsername());
     }
 
-    public StudentExercise studentExerciseEntity(String studentId,
+    public StudentExercise studentExerciseEntity(String studentId, String exerciseId,
             StudentExerciseRequest studentExerciseRequest){
         var studentExercise = new StudentExercise();
         studentExercise.setUser_id(studentId);
-        studentExercise.setExercise_id(studentExerciseRequest.getExercise_id());
+        studentExercise.setExercise_id(exerciseId);
         studentExercise.setContent(studentExerciseRequest.getContent());
         studentExercise.setMessage(studentExerciseRequest.getMessage());
         return studentExercise;
     }
     public File fileEntity(String studentExerciseId, FileRequest fileRequest){
         var file = new File();
-        file.setStudent_exercise_id(studentExerciseId);
+        file.setStudentexercise_id(studentExerciseId);
         file.setName(fileRequest.getName());
         file.setDescription(fileRequest.getDescription());
         file.setFile_url(fileRequest.getFile_url());
@@ -111,7 +111,7 @@ public class CastObject {
 
     public FileResponse fileModel(File file){
         return file != null ? new FileResponse(
-                file.getId(), file.getStudent_exercise_id(), file.getName(),
+                file.getId(), file.getStudentexercise_id(), file.getName(),
                 file.getDescription(), file.getFile_url(), file.getFile_size(),
                 file.getFile_visibility(), file.getStatus(), file.getCreated_at())
                 : new FileResponse();

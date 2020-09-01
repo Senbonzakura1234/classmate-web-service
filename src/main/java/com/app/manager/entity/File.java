@@ -19,12 +19,12 @@ public class File {
     )
     private String id;
 
-    @Column(name = "student_exercise_id")
-    private String student_exercise_id;
+    @Column(name = "studentexercise_id")
+    private String studentexercise_id;
 
     @ManyToOne
-    @JoinColumn(name = "student_exercise_id", updatable = false, insertable = false)
-    private StudentExercise student_exercise;
+    @JoinColumn(name = "studentexercise_id", updatable = false, insertable = false)
+    private StudentExercise studentexercise;
 
 
 
@@ -171,19 +171,19 @@ public class File {
         this.file_visibility = file_visibility;
     }
 
-    public String getStudent_exercise_id() {
-        return student_exercise_id;
+    public String getStudentexercise_id() {
+        return studentexercise_id;
     }
 
-    public void setStudent_exercise_id(String student_exercise_id) {
-        this.student_exercise_id = student_exercise_id;
+    public void setStudentexercise_id(String student_exercise_id) {
+        this.studentexercise_id = student_exercise_id;
     }
 
-    public StudentExercise getStudent_exercise() {
-        return student_exercise;
+    public StudentExercise getStudentexercise() {
+        return studentexercise;
     }
 
-    public void setStudent_exercise(StudentExercise student_exercise) {
-        this.student_exercise = student_exercise;
+    public void setStudentexercise(StudentExercise student_exercise) {
+        this.studentexercise = student_exercise;
     }
 }

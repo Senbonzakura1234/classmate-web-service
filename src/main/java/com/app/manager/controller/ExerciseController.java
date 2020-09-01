@@ -4,6 +4,7 @@ import com.app.manager.context.specification.ExerciseSpecification;
 import com.app.manager.entity.Exercise;
 import com.app.manager.model.SearchCriteria;
 import com.app.manager.model.payload.request.ExerciseRequest;
+import com.app.manager.model.payload.request.StudentExerciseRequest;
 import com.app.manager.model.payload.response.MessageResponse;
 import com.app.manager.service.interfaceClass.ExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,6 +94,28 @@ public class ExerciseController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = exerciseService.updateStatus(id, status, currentUser);
+        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+                ResponseEntity.status(result.getHttp_status()).body(result);
+    }
+
+    @PostMapping("/postStudentExercise")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> postExercise (
+            @Valid @RequestBody StudentExerciseRequest studentExerciseRequest,
+            @RequestParam(value = "exercise_id") String exercise_id,
+            BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error"));
+        }
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = exerciseService
+                .saveStudentExercise(studentExerciseRequest, exercise_id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }

@@ -1,12 +1,9 @@
 package com.app.manager.model.payload.request;
 
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StudentExerciseRequest {
-    @NotBlank
-    private String exercise_id;
     private String content = "";
     private String message = "";
 
@@ -15,20 +12,11 @@ public class StudentExerciseRequest {
     public StudentExerciseRequest() {
     }
 
-    public StudentExerciseRequest(@NotBlank String exercise_id,
-            String content, String message, List<FileRequest> fileRequests) {
-        this.exercise_id = exercise_id;
+    public StudentExerciseRequest(String content, String message,
+                                  List<FileRequest> fileRequests) {
         this.content = content;
         this.message = message;
         this.fileRequests = fileRequests;
-    }
-
-    public String getExercise_id() {
-        return exercise_id;
-    }
-
-    public void setExercise_id(String exercise_id) {
-        this.exercise_id = exercise_id;
     }
 
     public String getContent() {

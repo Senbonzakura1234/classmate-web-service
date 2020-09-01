@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "[student_exercise]")
+@Table(name = "[studentexercise]")
 public class StudentExercise {
     @Id
     @Column(name = "id")
@@ -31,7 +31,7 @@ public class StudentExercise {
     @JoinColumn(name = "exercise_id", updatable = false, insertable = false)
     private Exercise exercise;
 
-    @OneToMany(mappedBy = "student_exercise")
+    @OneToMany(mappedBy = "studentexercise")
     private List<File> files;
 
 

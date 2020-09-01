@@ -19,12 +19,12 @@ public class Course implements Serializable {
     )
     private String id;
 
-    @Column(name = "course_category_id")
-    private String course_category_id;
+    @Column(name = "coursecategory_id")
+    private String coursecategory_id;
 
     @ManyToOne
     @JoinColumn(name = "course_category_id", updatable = false, insertable = false)
-    private CourseCategory course_category;
+    private CourseCategory coursecategory;
 
     @Column(name = "user_id")
     private String user_id;
@@ -148,20 +148,20 @@ public class Course implements Serializable {
         this.deleted_at = deletedat;
     }
 
-    public String getCourse_category_id() {
-        return course_category_id;
+    public String getCoursecategory_id() {
+        return coursecategory_id;
     }
 
-    public void setCourse_category_id(String courseCategoryId) {
-        this.course_category_id = courseCategoryId;
+    public void setCoursecategory_id(String courseCategoryId) {
+        this.coursecategory_id = courseCategoryId;
     }
 
-    public CourseCategory getCourse_category() {
-        return course_category;
+    public CourseCategory getCoursecategory() {
+        return coursecategory;
     }
 
-    public void setCourse_category(CourseCategory courseCategory) {
-        this.course_category = courseCategory;
+    public void setCoursecategory(CourseCategory courseCategory) {
+        this.coursecategory = courseCategory;
     }
 
     public String getUser_id() {
