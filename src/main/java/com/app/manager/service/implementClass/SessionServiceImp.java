@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
@@ -33,12 +34,11 @@ public class SessionServiceImp implements SessionService {
     public List<SessionResponse> findAll(SessionSpecification sessionSpecification) {
         try {
             List<Session> sessions = sessionRepository.findAll(sessionSpecification);
-            List<SessionResponse> list = new ArrayList<>();
-            sessions.forEach(session -> list.add(new SessionResponse(session.getId(),
+            return sessions.stream().map(session -> new SessionResponse(session.getId(),
                     session.getCourse_id(), session.getName(), session.getContent(),
                     session.getStart_time(), session.getSession_duration(),
-                    session.getAttendance_status(), session.getStatus(), session.getCreated_at())));
-            return list;
+                    session.getAttendance_status(), session.getStatus(), session.getCreated_at()))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());

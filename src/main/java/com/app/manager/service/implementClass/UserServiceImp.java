@@ -26,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
@@ -135,11 +136,10 @@ public class UserServiceImp implements UserService {
                                              String currentUsername) {
         try {
             var users = userRepository.findAll(specification);
-            var list = new ArrayList<UserProfileResponse>();
 
-            users.forEach(user -> list
-                    .add(new UserProfileResponse(user.getId(), user.getUsername())));
-            return list;
+            return users.stream().map(user -> new UserProfileResponse(
+                    user.getId(), user.getUsername()))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());

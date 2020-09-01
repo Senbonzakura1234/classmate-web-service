@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
@@ -28,14 +29,13 @@ public class CourseServiceImp implements CourseService {
     public List<CourseResponse> findAll(CourseSpecification courseSpecification) {
         try {
             var courses = courseRepository.findAll(courseSpecification);
-            var list = new ArrayList<CourseResponse>();
-            courses.forEach(course -> list.add(new CourseResponse(
+            return courses.stream().map(course -> new CourseResponse(
                     course.getId(),
                     course.getUser_id(), course.getCourse_category_id(),
                     course.getName(), course.getDescription(),
                     course.getStart_date(), course.getEnd_date(),
-                    course.getCreated_at(), course.getStatus())));
-           return list;
+                    course.getCreated_at(), course.getStatus()))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());

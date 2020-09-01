@@ -35,12 +35,11 @@ public class ExerciseServiceImp implements ExerciseService {
     public List<ExerciseResponse> findAll(ExerciseSpecification exerciseSpecification) {
         try {
             var exercises = exerciseRepository.findAll(exerciseSpecification);
-            var list = new ArrayList<ExerciseResponse>();
-            exercises.forEach(exercise -> list.add(new ExerciseResponse(exercise.getId(),
+            return exercises.stream().map(exercise -> new ExerciseResponse(exercise.getId(),
                     exercise.getSession_id(), exercise.getTitle(), exercise.getContent(),
-                    exercise.isShow_answer()? exercise.getAnswer() : "", exercise.getDuration(),
-                    exercise.isShow_answer(), exercise.getStatus(), exercise.getCreated_at())));
-            return list;
+                    exercise.isShow_answer() ? exercise.getAnswer() : "", exercise.getDuration(),
+                    exercise.isShow_answer(), exercise.getStatus(), exercise.getCreated_at()))
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
