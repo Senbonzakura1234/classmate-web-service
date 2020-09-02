@@ -49,17 +49,20 @@ public class SeederServiceImp implements SeederService {
 
     @Override
     public void generateSubscription() {
-        for(var subscriptionName : Subscription.SubscriptionList.values()){
-            var subscription = subscriptionRepository.findFirstByName(subscriptionName.getName());
+        for(var eSubscription : ESubscription.values()){
+            var subscription = subscriptionRepository.findFirstByName(eSubscription.getName());
             try {
                 if (subscription.isEmpty()) {
-                    var newSubscription = new Subscription();
-                    newSubscription.setName(subscriptionName.getName());
+                    var newSubscription = new Subscription(
+                            eSubscription.getLevel(), eSubscription.getName(), eSubscription.getPrice(),
+                            eSubscription.getDiscount(), eSubscription.getMax_student(),
+                            eSubscription.getMax_course_duration(), eSubscription.getMax_session_duration(),
+                            eSubscription.getMax_exercise_per_session(), eSubscription.isAllow_face_check());
                     subscriptionRepository.save(newSubscription);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("Can create role: " + subscriptionName.getName());
+                System.out.println("Can create subscription: " + eSubscription.getName());
                 System.out.println("Reason: " + e.getMessage());
                 System.out.println("Cause by: " + e.getCause().toString());
             }
@@ -100,9 +103,9 @@ public class SeederServiceImp implements SeederService {
             var rand = new Random();
             var chance = rand.nextInt(1000);
             var subscribtionName = signupRequest.getRole()
-                    .contains(ERole.ROLE_ADMIN.getName()) ? Subscription.SubscriptionList.PREMIUM :
-                    chance % 2 == 0 ? Subscription.SubscriptionList.PREMIUM :
-                            Subscription.SubscriptionList.FREE;
+                    .contains(ERole.ROLE_ADMIN.getName()) ? ESubscription.PREMIUM :
+                    chance % 2 == 0 ? ESubscription.PREMIUM :
+                            ESubscription.FREE;
             var subscribtion = getSubscribtionInstant(subscribtionName);
             if(subscribtion.isEmpty()) return;
             System.out.println(userService.saveUser(user, signupRequest.getRole(),
@@ -140,7 +143,8 @@ public class SeederServiceImp implements SeederService {
                 course.setUser_id(teacher.get().getId());
 
 
-                course.setStatus(Course.StatusEnum.ONGOING);
+//                course.setStatus(Course.StatusEnum.ONGOING);
+
                 courseRepository.save(course);
                 System.out.println("Add course success");
             } catch (Exception e) {
@@ -192,6 +196,7 @@ public class SeederServiceImp implements SeederService {
                     try {
                         var session = new Session();
                         session.setName("Session Name " + j + ", Course " + i);
+                        session.setStart_time(course.get().getStart_date() + (j + 1L) * 86400000L);
                         var checkSession = sessionRepository
                                 .findFirstByName("Session Name " + j + ", Course " + i);
                         if(checkSession.isPresent()) return;
@@ -220,13 +225,16 @@ public class SeederServiceImp implements SeederService {
 
 
     private Optional<Subscription> getSubscribtionInstant(
-            Subscription.SubscriptionList subscriptionName){
+            ESubscription eSubscription){
         try {
             var subscription = subscriptionRepository
-                    .findFirstByName(subscriptionName.getName());
+                    .findFirstByName(eSubscription.getName());
             if(subscription.isPresent()) return subscription;
-            var newSubscription = new Subscription();
-            newSubscription.setName(subscriptionName.getName());
+            var newSubscription = new Subscription(
+                    eSubscription.getLevel(), eSubscription.getName(), eSubscription.getPrice(),
+                    eSubscription.getDiscount(), eSubscription.getMax_student(),
+                    eSubscription.getMax_course_duration(), eSubscription.getMax_session_duration(),
+                    eSubscription.getMax_exercise_per_session(), eSubscription.isAllow_face_check());
             subscriptionRepository.save(newSubscription);
             return Optional.of(newSubscription);
         } catch (Exception e) {

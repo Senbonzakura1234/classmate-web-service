@@ -48,26 +48,10 @@ public class Course implements Serializable {
     private String description;
 
     @Column(name = "start_date", nullable = false)
-    private Long start_date = System.currentTimeMillis();
+    private Long start_date = System.currentTimeMillis() + 10L * 86400000L;
 
     @Column(name = "end_date", nullable = false)
-    private Long end_date = System.currentTimeMillis();
-
-    public Long getStart_date() {
-        return start_date;
-    }
-
-    public void setStart_date(Long startdate) {
-        this.start_date = startdate;
-    }
-
-    public Long getEnd_date() {
-        return end_date;
-    }
-
-    public void setEnd_date(Long enddate) {
-        this.end_date = enddate;
-    }
+    private Long end_date = System.currentTimeMillis() + 40L * 86400000L;
 
     @Column(name = "status", nullable = false)
     private StatusEnum status = StatusEnum.PENDING;
@@ -210,5 +194,21 @@ public class Course implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getStart_date() {
+        return start_date;
+    }
+
+    public void setStart_date(Long startdate) {
+        this.start_date = startdate;
+    }
+
+    public Long getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(Long enddate) {
+        this.end_date = enddate;
     }
 }
