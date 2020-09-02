@@ -1,5 +1,6 @@
 package com.app.manager.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,23 +17,22 @@ public class Role {
     )
     private String id;
 
-
-
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private ERole name;
 
-
-
     @Column(name = "status", nullable = false)
     private StatusEnum status = StatusEnum.SHOW;
 
+    @JsonIgnore
     @Column(name = "created_at", nullable = false)
     private Long created_at = System.currentTimeMillis();
 
+    @JsonIgnore
     @Column(name = "updated_at", nullable = false)
     private Long updated_at = System.currentTimeMillis();
 
+    @JsonIgnore
     @Column(name = "deleted_at")
     private Long deleted_at;
 

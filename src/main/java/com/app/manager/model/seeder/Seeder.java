@@ -11,7 +11,6 @@ public class Seeder {
 
     public void Seed(){
         seederService.generateRoles();
-        seederService.generateSubscription();
         seederService.generateCategory();
         seederService.generateUser();
         seederService.generateCourse();

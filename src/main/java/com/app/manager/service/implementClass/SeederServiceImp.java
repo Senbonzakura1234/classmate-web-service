@@ -8,7 +8,6 @@ import com.app.manager.service.interfaceClass.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -19,7 +18,6 @@ import java.util.stream.IntStream;
 public class SeederServiceImp implements SeederService {
     @Autowired SeederData seederData;
     @Autowired RoleRepository roleRepository;
-    @Autowired SubscriptionRepository subscriptionRepository;
     @Autowired CourseCategoryRepository coursecategoryRepository;
     @Autowired UserRepository userRepository;
     @Autowired CourseRepository courseRepository;
@@ -41,28 +39,6 @@ public class SeederServiceImp implements SeederService {
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Can create role: " + eRole.getName());
-                System.out.println("Reason: " + e.getMessage());
-                System.out.println("Cause by: " + e.getCause().toString());
-            }
-        }
-    }
-
-    @Override
-    public void generateSubscription() {
-        for(var eSubscription : ESubscription.values()){
-            var subscription = subscriptionRepository.findFirstByName(eSubscription.getName());
-            try {
-                if (subscription.isEmpty()) {
-                    var newSubscription = new Subscription(
-                            eSubscription.getLevel(), eSubscription.getName(), eSubscription.getPrice(),
-                            eSubscription.getDiscount(), eSubscription.getMax_student(),
-                            eSubscription.getMax_course_duration(), eSubscription.getMax_session_duration(),
-                            eSubscription.getMax_exercise_per_session(), eSubscription.isAllow_face_check());
-                    subscriptionRepository.save(newSubscription);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Can create subscription: " + eSubscription.getName());
                 System.out.println("Reason: " + e.getMessage());
                 System.out.println("Cause by: " + e.getCause().toString());
             }
@@ -102,14 +78,13 @@ public class SeederServiceImp implements SeederService {
                     signupRequest.getPassword());
             var rand = new Random();
             var chance = rand.nextInt(1000);
-            var subscribtionName = signupRequest.getRole()
+            var subscription = signupRequest.getRole()
                     .contains(ERole.ROLE_ADMIN.getName()) ? ESubscription.PREMIUM :
                     chance % 2 == 0 ? ESubscription.PREMIUM :
                             ESubscription.FREE;
-            var subscribtion = getSubscribtionInstant(subscribtionName);
-            if(subscribtion.isEmpty()) return;
+
             System.out.println(userService.saveUser(user, signupRequest.getRole(),
-                    subscribtion.get().getId()).getDescription());
+                    subscription).getDescription());
         });
     }
 
@@ -221,26 +196,5 @@ public class SeederServiceImp implements SeederService {
                 System.out.println(e.getMessage());
             }
         });
-    }
-
-
-    private Optional<Subscription> getSubscribtionInstant(
-            ESubscription eSubscription){
-        try {
-            var subscription = subscriptionRepository
-                    .findFirstByName(eSubscription.getName());
-            if(subscription.isPresent()) return subscription;
-            var newSubscription = new Subscription(
-                    eSubscription.getLevel(), eSubscription.getName(), eSubscription.getPrice(),
-                    eSubscription.getDiscount(), eSubscription.getMax_student(),
-                    eSubscription.getMax_course_duration(), eSubscription.getMax_session_duration(),
-                    eSubscription.getMax_exercise_per_session(), eSubscription.isAllow_face_check());
-            subscriptionRepository.save(newSubscription);
-            return Optional.of(newSubscription);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-            return Optional.empty();
-        }
     }
 }

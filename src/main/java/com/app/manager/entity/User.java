@@ -25,12 +25,6 @@ public class User {
     )
     private String id;
 
-    @Column(name = "subscription_id")
-    private String subscription_id;
-
-    @ManyToOne
-    @JoinColumn(name = "subscription_id", updatable = false, insertable = false)
-    private Subscription subscription;
 
     @OneToMany(mappedBy = "user")
     private List<StudentCourse> student_courses;
@@ -87,6 +81,10 @@ public class User {
     private EVisibility profile_visibility = EVisibility.PRIVATE;
 
 
+
+
+    @Column(name = "subscription")
+    private ESubscription subscription;
 
     @Column(name = "face_definition_id", nullable = false)
     private String face_definition_id = "";
@@ -250,19 +248,12 @@ public class User {
         this.enabled = enabled;
     }
 
-    public String getSubscription_id() {
-        return subscription_id;
-    }
 
-    public void setSubscription_id(String subscriptionId) {
-        this.subscription_id = subscriptionId;
-    }
-
-    public Subscription getSubscription() {
+    public ESubscription getSubscription() {
         return subscription;
     }
 
-    public void setSubscription(Subscription subscription) {
+    public void setSubscription(ESubscription subscription) {
         this.subscription = subscription;
     }
 
