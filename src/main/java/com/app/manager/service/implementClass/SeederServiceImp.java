@@ -78,11 +78,14 @@ public class SeederServiceImp implements SeederService {
                     signupRequest.getPassword());
             var rand = new Random();
             var chance = rand.nextInt(1000);
+            var chance2 = rand.nextInt(1000);
             var subscription = signupRequest.getRole()
                     .contains(ERole.ROLE_ADMIN.getName()) ? ESubscription.ULTIMATE :
                     chance % 2 == 0 ? ESubscription.ULTIMATE :
                             ESubscription.FREE;
-
+            if(subscription == ESubscription.FREE)
+                subscription = chance2 % 2 == 0 ? ESubscription.PREMIUM :
+                    ESubscription.FREE;
             System.out.println(userService.saveUser(user, signupRequest.getRole(),
                     subscription).getDescription());
         });
