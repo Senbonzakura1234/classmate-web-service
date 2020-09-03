@@ -5,6 +5,7 @@ import com.app.manager.entity.Exercise;
 import com.app.manager.model.payload.request.ExerciseRequest;
 import com.app.manager.model.payload.request.StudentExerciseRequest;
 import com.app.manager.model.payload.response.ExerciseResponse;
+import com.app.manager.model.payload.response.StudentExerciseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface ExerciseService {
 
     DatabaseQueryResult saveStudentExercise(StudentExerciseRequest studentExerciseRequest,
                                             String currentUsername, String id);
+    List<StudentExerciseResponse> getAllStudentExercise(String sessionId, String currentUsername);
+    Optional<StudentExerciseResponse> getStudentExercise(String id, String currentUsername);
 }

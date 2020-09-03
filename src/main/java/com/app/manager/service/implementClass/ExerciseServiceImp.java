@@ -7,6 +7,7 @@ import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.ExerciseRequest;
 import com.app.manager.model.payload.request.StudentExerciseRequest;
 import com.app.manager.model.payload.response.ExerciseResponse;
+import com.app.manager.model.payload.response.StudentExerciseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.ExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -289,6 +290,95 @@ public class ExerciseServiceImp implements ExerciseService {
             return new DatabaseQueryResult(false,
                     "Post Student Exercise failed",
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
+        }
+    }
+
+    @Override
+    public List<StudentExerciseResponse> getAllStudentExercise(String exerciseId, String currentUsername) {
+        try {
+            var currentUser = userRepository.findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("Teacher not found"));
+            var exercise = exerciseRepository.findById(exerciseId)
+                    .orElseThrow(() -> new RuntimeException("Teacher not found"));
+
+            var studentExercises = studentExerciseRepository
+                    .findAllByExercise_idAndStatus(exerciseId, StudentExercise.StatusEnum.SHOW);
+
+            var role = roleRepository.findByName(ERole.ROLE_ADMIN)
+                    .orElseThrow(() -> new RuntimeException("role not found"));
+
+            if (role.getStatus() != Role.StatusEnum.HIDE && currentUser.getRoles().contains(role)) {
+                return studentExercises.stream().map(studentExercise -> {
+                    var files = fileRepository.findAllByStudentexercise_idAndStatus(
+                            studentExercise.getId(),
+                            File.StatusEnum.SHOW).stream().map(file -> castObject.fileModel(file))
+                            .collect(Collectors.toList());
+                    return castObject.studentExerciseModel(studentExercise, files);
+                }).collect(Collectors.toList());
+            }
+
+            var session = sessionRepository.findById(exercise.getSession_id())
+                    .orElseThrow(() -> new RuntimeException("Teacher not found"));
+            var course = courseRepository.findById(session.getCourse_id())
+                    .orElseThrow(() -> new RuntimeException("Teacher not found"));
+            if(currentUser.getId().equals(course.getUser_id()))
+                return studentExercises.stream().map(studentExercise -> {
+                var files = fileRepository.findAllByStudentexercise_idAndStatus(
+                        studentExercise.getId(),
+                        File.StatusEnum.SHOW).stream().map(file -> castObject.fileModel(file))
+                        .collect(Collectors.toList());
+                return castObject.studentExerciseModel(studentExercise, files);
+                }).collect(Collectors.toList());
+
+            return studentExercises.stream().map(studentExercise ->
+                    castObject.studentExerciseModelPublic(studentExercise)).collect(Collectors.toList());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public Optional<StudentExerciseResponse> getStudentExercise(String id, String currentUsername) {
+        try {
+            var currentUser = userRepository.findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            var studentExercise = studentExerciseRepository
+                    .findById(id).orElseThrow(() -> new RuntimeException("Student Exercise not found"));
+
+            var files = fileRepository.findAllByStudentexercise_idAndStatus(
+                    studentExercise.getId(),
+                    File.StatusEnum.SHOW).stream().map(file -> castObject.fileModel(file))
+                    .collect(Collectors.toList());
+
+            var role = roleRepository.findByName(ERole.ROLE_ADMIN)
+                    .orElseThrow(() -> new RuntimeException("role not found"));
+
+            if (role.getStatus() != Role.StatusEnum.HIDE && currentUser.getRoles().contains(role)){
+                return Optional.of(castObject.studentExerciseModel(studentExercise, files));
+            }
+
+            if(studentExercise.getUser_id().equals(currentUser.getId())){
+                return Optional.of(castObject.studentExerciseModel(studentExercise, files));
+            }
+
+            var exercise = exerciseRepository.findById(studentExercise.getExercise_id())
+                    .orElseThrow(() -> new RuntimeException("Exercise not found"));
+            var session = sessionRepository.findById(exercise.getSession_id())
+                    .orElseThrow(() -> new RuntimeException("Session not found"));
+            var course = courseRepository.findById(session.getCourse_id())
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+
+            if(course.getUser_id().equals(currentUser.getId())){
+                return Optional.of(castObject.studentExerciseModel(studentExercise, files));
+            }
+            return Optional.of(castObject.studentExerciseModelPublic(studentExercise));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return Optional.empty();
         }
     }
 }
