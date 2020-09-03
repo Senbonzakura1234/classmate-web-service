@@ -121,4 +121,25 @@ public class ExerciseController {
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
+
+    @GetMapping("/detail/all")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
+    public ResponseEntity<?> getListStudentExercises(@RequestParam(value = "id") String id) {
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+
+        return ResponseEntity.ok(exerciseService.getAllStudentExercise(id, currentUser));
+    }
+
+    @GetMapping("/detail/getOne")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
+    public ResponseEntity<?> getStudentExercise(@RequestParam(value = "id") String id) {
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+
+        var result = exerciseService.getStudentExercise(id, currentUser);
+
+        return result.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND")
+                : ResponseEntity.of(result);
+    }
 }

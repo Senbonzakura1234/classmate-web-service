@@ -5,6 +5,7 @@ import com.app.manager.model.payload.request.*;
 import com.app.manager.model.payload.response.*;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -105,6 +106,7 @@ public class CastObject {
         studentExercise.setMessage(studentExerciseRequest.getMessage());
         return studentExercise;
     }
+
     public File fileEntity(String studentExerciseId, FileRequest fileRequest){
         var file = new File();
         file.setStudentexercise_id(studentExerciseId);
@@ -122,6 +124,13 @@ public class CastObject {
             studentExercise.getExercise_id(), studentExercise.getContent(),
             studentExercise.getMessage(), studentExercise.getStatus(),
             studentExercise.getCreated_at(), fileResponses) : new StudentExerciseResponse();
+    }
+
+    public StudentExerciseResponse studentExerciseModelPublic(
+            StudentExercise studentExercise){
+        return new StudentExerciseResponse(studentExercise.getId(), studentExercise.getUser_id(),
+                studentExercise.getExercise_id(), "", "", studentExercise.getStatus(),
+                studentExercise.getCreated_at(), new ArrayList<>());
     }
 
     public FileResponse fileModel(File file){
