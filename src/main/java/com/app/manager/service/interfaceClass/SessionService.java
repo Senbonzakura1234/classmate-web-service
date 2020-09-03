@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface SessionService {
     List<SessionResponse> findAll(SessionSpecification sessionSpecification);
     DatabaseQueryResult save(SessionRequest sessionRequest, String currentUsername);
-    Optional<SessionResponse> getOne(String id);
+    Optional<SessionResponse> getOne(String id, String currentUsername);
     DatabaseQueryResult update(SessionRequest sessionRequest, String id, String currentUsername);
     DatabaseQueryResult updateStatus(String id, Session.StatusEnum status, String currentUsername);
     DatabaseQueryResult startAttendanceCheck(String id, String currentUsername);

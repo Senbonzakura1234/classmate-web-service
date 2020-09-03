@@ -2,9 +2,7 @@ package com.app.manager.service.implementClass;
 
 import com.app.manager.context.repository.*;
 import com.app.manager.context.specification.ExerciseSpecification;
-import com.app.manager.entity.Exercise;
-import com.app.manager.entity.File;
-import com.app.manager.entity.StudentExercise;
+import com.app.manager.entity.*;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.ExerciseRequest;
 import com.app.manager.model.payload.request.StudentExerciseRequest;
@@ -30,6 +28,7 @@ public class ExerciseServiceImp implements ExerciseService {
     @Autowired StudentCourseRepository studentCourseRepository;
     @Autowired StudentExerciseRepository studentExerciseRepository;
     @Autowired FileRepository fileRepository;
+    @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
 
 
@@ -58,6 +57,18 @@ public class ExerciseServiceImp implements ExerciseService {
             if(session.isEmpty())
                 return new DatabaseQueryResult(false, "Session not found",
                         HttpStatus.NOT_FOUND, exerciseRequest);
+
+            if(teacher.get().getSubscription() != ESubscription.PREMIUM){
+                var exerciseCount = exerciseRepository
+                        .findAllBySession_idAndStatusIsNot(
+                                session.get().getId(), Exercise.StatusEnum.CANCEL).size();
+                if(exerciseCount > teacher.get().getSubscription().getMax_exercise_per_session())
+                    return new DatabaseQueryResult(false,
+                            "Pls upgrade account to add more exercise to session",
+                            HttpStatus.BAD_REQUEST, exerciseRequest);
+            }
+
+
             var course = courseRepository.findById(session.get().getCourse_id());
             if(course.isEmpty())
             return new DatabaseQueryResult(false, "Course not found",
@@ -79,11 +90,36 @@ public class ExerciseServiceImp implements ExerciseService {
     }
 
     @Override
-    public Optional<ExerciseResponse> getOne(String id) {
+    public Optional<ExerciseResponse> getOne(String id, String currentUsername) {
         try {
-            var exercise = exerciseRepository.findById(id);
-            if(exercise.isEmpty()) return Optional.empty();
-            return Optional.of(castObject.exerciseModel(exercise.get()));
+            var currentUser = userRepository
+                    .findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("user not found"));
+            var role = roleRepository.findByName(ERole.ROLE_ADMIN)
+                    .orElseThrow(() -> new RuntimeException("role not found"));
+            if(role.getStatus() == Role.StatusEnum.HIDE) return Optional.empty();
+
+
+            var exercise = exerciseRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("exercise not found"));
+
+            var session = sessionRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("session not found"));
+
+            if (currentUser.getRoles().contains(role))
+                return Optional.of(castObject.exerciseModel(exercise));
+
+            var course = courseRepository.findById(session.getCourse_id())
+                    .orElseThrow(() -> new RuntimeException("course not found"));
+            if(course.getUser_id().equals(currentUser.getId()))
+                return Optional.of(castObject.exerciseModel(exercise));
+
+            var listStudents = studentCourseRepository
+                    .findAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+            if (listStudents.stream().anyMatch(studentCourse ->
+                    studentCourse.getUser_id().equals(currentUser.getId())))
+                return Optional.of(castObject.exerciseModel(exercise));
+            return Optional.of(castObject.exerciseModelPublic(exercise));
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
@@ -135,6 +171,10 @@ public class ExerciseServiceImp implements ExerciseService {
     public DatabaseQueryResult updateStatus(String id,
         Exercise.StatusEnum status, String currentUsername) {
         try {
+            if(status == Exercise.StatusEnum.ALL)
+                return new DatabaseQueryResult(false,
+                        "Validation error", HttpStatus.BAD_REQUEST, "");
+
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false,
@@ -163,6 +203,8 @@ public class ExerciseServiceImp implements ExerciseService {
 
             var e = exercise.get();
             e.setStatus(status);
+            if (status == Exercise.StatusEnum.ONGOING)
+                e.setExercise_start_time(System.currentTimeMillis());
             exerciseRepository.save(e);
             return new DatabaseQueryResult(true,
                     "update exercise success", HttpStatus.OK,

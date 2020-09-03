@@ -2,10 +2,7 @@ package com.app.manager.service.implementClass;
 
 import com.app.manager.context.repository.*;
 import com.app.manager.context.specification.SessionSpecification;
-import com.app.manager.entity.Attendance;
-import com.app.manager.entity.Course;
-import com.app.manager.entity.Session;
-import com.app.manager.entity.StudentCourse;
+import com.app.manager.entity.*;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.SessionRequest;
 import com.app.manager.model.payload.response.SessionResponse;
@@ -28,6 +25,7 @@ public class SessionServiceImp implements SessionService {
     @Autowired CourseRepository courseRepository;
     @Autowired StudentCourseRepository studentCourseRepository;
     @Autowired AttendanceRepository attendanceRepository;
+    @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
 
     @Override
@@ -35,7 +33,7 @@ public class SessionServiceImp implements SessionService {
         try {
             List<Session> sessions = sessionRepository.findAll(sessionSpecification);
             return sessions.stream().map(session ->
-                    castObject.sessionModel(session))
+                    castObject.sessionModelPublic(session))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,7 +49,15 @@ public class SessionServiceImp implements SessionService {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false,
-                        "Teacher not found", HttpStatus.NOT_FOUND, "");
+                        "Teacher not found",
+                        HttpStatus.NOT_FOUND, "");
+
+            if(teacher.get().getSubscription() != ESubscription.PREMIUM
+                    && sessionRequest.getSession_duration() >
+                    teacher.get().getSubscription().getMax_session_duration())
+                return new DatabaseQueryResult(false,
+                        "Please upgrade your subcription for more session time",
+                        HttpStatus.BAD_REQUEST, "");
 
             var course = courseRepository
                     .findById(sessionRequest.getCourse_id())
@@ -73,15 +79,36 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public Optional<SessionResponse> getOne(String id) {
+    public Optional<SessionResponse> getOne(String id, String currentUsername) {
         try {
-            var session = sessionRepository.findById(id);
-            if(session.isEmpty()){
-                return Optional.empty();
-            }
-            return Optional.of(castObject.sessionModel(session.get()));
+            var currentUser = userRepository
+                    .findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("user not found"));
+
+            var role = roleRepository.findByName(ERole.ROLE_ADMIN)
+                    .orElseThrow(() -> new RuntimeException("role not found"));
+            if(role.getStatus() == Role.StatusEnum.HIDE) return Optional.empty();
+            var session = sessionRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("session not found"));
+
+            if (currentUser.getRoles().contains(role))
+                return Optional.of(castObject.sessionModel(session));
+
+            var course = courseRepository.findById(session.getCourse_id())
+                    .orElseThrow(() -> new RuntimeException("course not found"));
+            if(course.getUser_id().equals(currentUser.getId()))
+            return Optional.of(castObject.sessionModel(session));
+
+            var listStudents = studentCourseRepository
+                    .findAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+            if (listStudents.stream().anyMatch(studentCourse ->
+                    studentCourse.getUser_id().equals(currentUser.getId())))
+                return Optional.of(castObject.sessionModel(session));
+            return Optional.of(castObject.sessionModelPublic(session));
+
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
             return Optional.empty();
         }
     }
@@ -94,6 +121,13 @@ public class SessionServiceImp implements SessionService {
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
+
+            if(teacher.get().getSubscription() != ESubscription.PREMIUM
+                    && sessionRequest.getSession_duration() >
+                    teacher.get().getSubscription().getMax_session_duration())
+                return new DatabaseQueryResult(false,
+                        "Please upgrade your subcription for more session time",
+                        HttpStatus.BAD_REQUEST, "");
 
             var s = sessionRepository.findById(id);
             if(s.isEmpty()){
@@ -149,9 +183,22 @@ public class SessionServiceImp implements SessionService {
                     .findById(session.get().getCourse_id())
                     .orElseThrow(() -> new RuntimeException("Course not found"));
 
-            if(!course.getUser_id().equals(teacher.get().getId()))
-                return new DatabaseQueryResult(false, "Not your course",
-                        HttpStatus.BAD_REQUEST, "");
+            var role = roleRepository.findByName(ERole.ROLE_ADMIN);
+            if(role.isEmpty() || role.get().getStatus() == Role.StatusEnum.HIDE)
+                return new DatabaseQueryResult(false, "Role not found",
+                        HttpStatus.NOT_FOUND, "");
+
+            if (!teacher.get().getRoles().contains(role.get())) {
+                if(!course.getUser_id().equals(teacher.get().getId()))
+                    return new DatabaseQueryResult(false, "Not your course",
+                            HttpStatus.BAD_REQUEST, "");
+
+                if(status != Session.StatusEnum.CANCEL){
+                    return new DatabaseQueryResult(false,
+                            "You dont have authority to change session status",
+                            HttpStatus.BAD_REQUEST, "");
+                }
+            }
 
             var s = session.get();
             s.setStatus(status);
@@ -173,6 +220,11 @@ public class SessionServiceImp implements SessionService {
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
+
+            if(!teacher.get().getSubscription().isAllow_face_check())
+                return new DatabaseQueryResult(false,
+                        "please upgrade to use this function",
+                        HttpStatus.BAD_REQUEST, "");
 
             var session = sessionRepository.findById(id);
             if(session.isEmpty()) return new DatabaseQueryResult(false,
@@ -226,6 +278,11 @@ public class SessionServiceImp implements SessionService {
         if(teacher.isEmpty())
             return new DatabaseQueryResult(false, "Teacher not found",
                     HttpStatus.NOT_FOUND, "");
+
+        if(!teacher.get().getSubscription().isAllow_face_check())
+            return new DatabaseQueryResult(false,
+                    "please upgrade to use this function",
+                    HttpStatus.BAD_REQUEST, "");
 
         var session = sessionRepository.findById(id);
         if(session.isEmpty()){

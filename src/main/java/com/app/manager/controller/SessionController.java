@@ -57,7 +57,10 @@ public class SessionController {
     @GetMapping("/detail")
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {
-        var result = sessionService.getOne(id);
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = sessionService.getOne(id, currentUser);
+
         if(result.isEmpty())  return ResponseEntity
                 .status(HttpStatus.NOT_FOUND).body("Not Found");
         return ResponseEntity.ok(result.get());
@@ -104,7 +107,7 @@ public class SessionController {
     }
 
     @PostMapping("/updateStatus")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateStatus(
             @RequestParam(value = "id") String id,
             @RequestParam(value = "status") Session.StatusEnum status

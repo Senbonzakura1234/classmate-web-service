@@ -60,7 +60,9 @@ public class ExerciseController {
     @GetMapping("/detail")
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {
-        var result = exerciseService.getOne(id);
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = exerciseService.getOne(id, currentUser);
         if(result.isEmpty()) return ResponseEntity
                 .status(HttpStatus.NOT_FOUND).body("Not found");
         return ResponseEntity.ok(result.get());

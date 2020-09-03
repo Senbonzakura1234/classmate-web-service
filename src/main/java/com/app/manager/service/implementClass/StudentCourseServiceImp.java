@@ -4,10 +4,7 @@ import com.app.manager.context.repository.CourseRepository;
 import com.app.manager.context.repository.RoleRepository;
 import com.app.manager.context.repository.StudentCourseRepository;
 import com.app.manager.context.repository.UserRepository;
-import com.app.manager.entity.Course;
-import com.app.manager.entity.ERole;
-import com.app.manager.entity.Role;
-import com.app.manager.entity.StudentCourse;
+import com.app.manager.entity.*;
 import com.app.manager.model.payload.request.StudentCourseRequest;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.StudentCourseService;
@@ -30,7 +27,6 @@ public class StudentCourseServiceImp implements StudentCourseService {
             StudentCourseRequest studentCourseRequest, String currentUsername) {
 
         try {
-
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false, "Teacher not found",
@@ -44,6 +40,17 @@ public class StudentCourseServiceImp implements StudentCourseService {
             if(!course.get().getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not Your Course",
                         HttpStatus.BAD_REQUEST, "");
+
+            if (teacher.get().getSubscription() != ESubscription.PREMIUM) {
+                var studentCount = studentcourseRepository
+                        .findAllByCourse_idAndStatus(course.get().getId(),
+                                StudentCourse.StatusEnum.SHOW).size();
+
+                if(teacher.get().getSubscription().getMax_student() <  studentCount)
+                    return new DatabaseQueryResult(false,
+                            "Your class has maxed number of students",
+                            HttpStatus.BAD_REQUEST, "");
+            }
 
             var role = roleRepository.findByName(ERole.ROLE_STUDENT);
             if(role.isEmpty() || role.get().getStatus() == Role.StatusEnum.HIDE)

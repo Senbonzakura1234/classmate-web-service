@@ -121,7 +121,7 @@ public class CourseController {
     }
 
     @PostMapping("/updateStatus")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<?> updateStatus(
             @RequestParam(value = "id") String id,
             @RequestParam(value = "status") Course.StatusEnum status

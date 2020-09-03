@@ -50,6 +50,8 @@ public class Exercise {
     private boolean show_answer = false;
 
 
+    @Column(name = "exercise_start_time", nullable = false)
+    private Long exercise_start_time = 0L;
 
 
     @Column(name = "status", nullable = false)
@@ -72,7 +74,8 @@ public class Exercise {
         PENDING(0, "Pending"),
         ONGOING(1, "Ongoing"),
         MARKING(2, "Marking"),
-        END(3, "End");
+        END(3, "End"),
+        CANCEL(4, "Cancel");
 
         private final int value;
         private final String name;
@@ -192,5 +195,13 @@ public class Exercise {
 
     public void setShow_answer(boolean show_answer) {
         this.show_answer = show_answer;
+    }
+
+    public Long getExercise_start_time() {
+        return exercise_start_time;
+    }
+
+    public void setExercise_start_time(Long exercise_start_time) {
+        this.exercise_start_time = exercise_start_time;
     }
 }

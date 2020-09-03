@@ -1,9 +1,13 @@
 package com.app.manager.service.implementClass;
 
 import com.app.manager.context.repository.CourseRepository;
+import com.app.manager.context.repository.RoleRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.context.specification.CourseSpecification;
 import com.app.manager.entity.Course;
+import com.app.manager.entity.ERole;
+import com.app.manager.entity.ESubscription;
+import com.app.manager.entity.Role;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.CourseRequest;
 import com.app.manager.model.payload.response.CourseResponse;
@@ -23,6 +27,7 @@ import java.util.stream.Collectors;
 public class CourseServiceImp implements CourseService {
     @Autowired CourseRepository courseRepository;
     @Autowired UserRepository userRepository;
+    @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
 
     @Override
@@ -45,7 +50,16 @@ public class CourseServiceImp implements CourseService {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false,
-                        "Teacher not found", HttpStatus.NOT_FOUND, "");
+                        "Teacher not found", HttpStatus.NOT_FOUND, courseRequest);
+
+            if(teacher.get().getSubscription() != ESubscription.PREMIUM
+                    && (courseRequest.getEnd_date() - courseRequest.getStart_date()) >
+                teacher.get().getSubscription().getMax_course_duration())
+                return new DatabaseQueryResult(false,
+                    "Please upgrade your subcription",
+                        HttpStatus.BAD_REQUEST, courseRequest);
+
+
             var course = castObject.courseEntity(courseRequest,
                     teacher.get().getId());
             courseRepository.save(course);
@@ -83,6 +97,13 @@ public class CourseServiceImp implements CourseService {
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
+
+            if(teacher.get().getSubscription() != ESubscription.PREMIUM
+                    && (courseRequest.getEnd_date() - courseRequest.getStart_date()) >
+                    teacher.get().getSubscription().getMax_course_duration())
+                return new DatabaseQueryResult(false,
+                        "Please upgrade your subcription",
+                        HttpStatus.BAD_REQUEST, courseRequest);
 
             var c = courseRepository.findById(id);
             if(c.isEmpty()){
@@ -128,9 +149,23 @@ public class CourseServiceImp implements CourseService {
                 return new DatabaseQueryResult(false,
                         "update course failed", HttpStatus.NOT_FOUND, "");
             }
-            if(!course.get().getUser_id().equals(teacher.get().getId()))
-                return new DatabaseQueryResult(false, "Not your course",
-                        HttpStatus.BAD_REQUEST, "");
+
+            var role = roleRepository.findByName(ERole.ROLE_ADMIN);
+            if(role.isEmpty() || role.get().getStatus() == Role.StatusEnum.HIDE)
+                return new DatabaseQueryResult(false, "Role not found",
+                        HttpStatus.NOT_FOUND, "");
+
+            if (!teacher.get().getRoles().contains(role.get())) {
+                if(!course.get().getUser_id().equals(teacher.get().getId()))
+                    return new DatabaseQueryResult(false, "Not your course",
+                            HttpStatus.BAD_REQUEST, "");
+
+                if(status != Course.StatusEnum.CANCEL){
+                    return new DatabaseQueryResult(false,
+                            "You dont have authority to change course status",
+                            HttpStatus.BAD_REQUEST, "");
+                }
+            }
 
             var c = course.get();
             c.setStatus(status);
@@ -138,6 +173,7 @@ public class CourseServiceImp implements CourseService {
             return new DatabaseQueryResult(true,
                     "update course success", HttpStatus.OK,
                     castObject.courseModel(c));
+
         }catch (Exception e){
             e.printStackTrace();
             return new DatabaseQueryResult(false,

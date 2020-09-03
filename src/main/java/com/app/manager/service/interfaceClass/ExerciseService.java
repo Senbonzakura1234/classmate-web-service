@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface ExerciseService {
     List<ExerciseResponse> findAll(ExerciseSpecification exerciseSpecification);
     DatabaseQueryResult save(ExerciseRequest exerciseRequest, String currentUsername);
-    Optional<ExerciseResponse> getOne(String id);
+    Optional<ExerciseResponse> getOne(String id, String currentUsername);
     DatabaseQueryResult update(ExerciseRequest exerciseRequest, String id, String currentUsername);
     DatabaseQueryResult updateStatus(String id, Exercise.StatusEnum status, String currentUsername);
 

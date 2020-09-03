@@ -42,14 +42,12 @@ public class AttendanceServiceImp implements AttendanceService {
                     .findById(faceCheckClientRequest.getSession_id())
                     .orElseThrow(() -> new RuntimeException("Session not found"));
 
-            if(session.getStatus() == Session.StatusEnum.END
-                    || session.getStatus() == Session.StatusEnum.PENDING)
+            if(session.getStatus() != Session.StatusEnum.ONGOING)
                 return new DatabaseQueryResult(false,
                         "Out of session time", HttpStatus.BAD_REQUEST,
                         faceCheckClientRequest);
 
-            if(session.getAttendance_status() == Session.AttendanceStatusEnum.END
-                    || session.getAttendance_status() == Session.AttendanceStatusEnum.PENDING)
+            if(session.getAttendance_status() != Session.AttendanceStatusEnum.ONGOING)
                 return new DatabaseQueryResult(false,
                         "Out of Attendance Check time", HttpStatus.BAD_REQUEST,
                         faceCheckClientRequest);

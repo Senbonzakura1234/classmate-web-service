@@ -46,6 +46,13 @@ public class CastObject {
                 exercise.getDuration(), exercise.isShow_answer(),
                 exercise.getStatus(), exercise.getCreated_at());
     }
+    public ExerciseResponse exerciseModelPublic(Exercise exercise){
+        if(exercise == null) return new ExerciseResponse();
+        return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
+                exercise.getTitle(), "", "",
+                exercise.getDuration(), exercise.isShow_answer(),
+                exercise.getStatus(), exercise.getCreated_at());
+    }
 
     public Session sessionEntity(SessionRequest sessionRequest){
         var session = new Session();
@@ -62,6 +69,14 @@ public class CastObject {
         return new SessionResponse(
                 session.getId(), session.getCourse_id(), session.getName(),
                 session.getContent(), session.getStart_time(),
+                session.getSession_duration(), session.getAttendance_status(),
+                session.getStatus(), session.getCreated_at());
+    }
+    public SessionResponse sessionModelPublic(Session session){
+        if(session == null) return new SessionResponse();
+        return new SessionResponse(
+                session.getId(), session.getCourse_id(), session.getName(),
+                "", session.getStart_time(),
                 session.getSession_duration(), session.getAttendance_status(),
                 session.getStatus(), session.getCreated_at());
     }
