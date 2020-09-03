@@ -52,7 +52,7 @@ public class CourseServiceImp implements CourseService {
                 return new DatabaseQueryResult(false,
                         "Teacher not found", HttpStatus.NOT_FOUND, courseRequest);
 
-            if(teacher.get().getSubscription() != ESubscription.PREMIUM
+            if(teacher.get().getSubscription() != ESubscription.ULTIMATE
                     && (courseRequest.getEnd_date() - courseRequest.getStart_date()) >
                 teacher.get().getSubscription().getMax_course_duration())
                 return new DatabaseQueryResult(false,
@@ -98,7 +98,7 @@ public class CourseServiceImp implements CourseService {
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
 
-            if(teacher.get().getSubscription() != ESubscription.PREMIUM
+            if(teacher.get().getSubscription() != ESubscription.ULTIMATE
                     && (courseRequest.getEnd_date() - courseRequest.getStart_date()) >
                     teacher.get().getSubscription().getMax_course_duration())
                 return new DatabaseQueryResult(false,

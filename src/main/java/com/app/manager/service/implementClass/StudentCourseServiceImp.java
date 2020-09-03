@@ -41,7 +41,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
                 return new DatabaseQueryResult(false, "Not Your Course",
                         HttpStatus.BAD_REQUEST, "");
 
-            if (teacher.get().getSubscription() != ESubscription.PREMIUM) {
+            if (teacher.get().getSubscription() != ESubscription.ULTIMATE) {
                 var studentCount = studentcourseRepository
                         .findAllByCourse_idAndStatus(course.get().getId(),
                                 StudentCourse.StatusEnum.SHOW).size();

@@ -79,8 +79,8 @@ public class SeederServiceImp implements SeederService {
             var rand = new Random();
             var chance = rand.nextInt(1000);
             var subscription = signupRequest.getRole()
-                    .contains(ERole.ROLE_ADMIN.getName()) ? ESubscription.PREMIUM :
-                    chance % 2 == 0 ? ESubscription.PREMIUM :
+                    .contains(ERole.ROLE_ADMIN.getName()) ? ESubscription.ULTIMATE :
+                    chance % 2 == 0 ? ESubscription.ULTIMATE :
                             ESubscription.FREE;
 
             System.out.println(userService.saveUser(user, signupRequest.getRole(),

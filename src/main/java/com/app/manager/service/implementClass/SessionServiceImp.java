@@ -52,7 +52,7 @@ public class SessionServiceImp implements SessionService {
                         "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
 
-            if(teacher.get().getSubscription() != ESubscription.PREMIUM
+            if(teacher.get().getSubscription() != ESubscription.ULTIMATE
                     && sessionRequest.getSession_duration() >
                     teacher.get().getSubscription().getMax_session_duration())
                 return new DatabaseQueryResult(false,
@@ -122,7 +122,7 @@ public class SessionServiceImp implements SessionService {
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
 
-            if(teacher.get().getSubscription() != ESubscription.PREMIUM
+            if(teacher.get().getSubscription() != ESubscription.ULTIMATE
                     && sessionRequest.getSession_duration() >
                     teacher.get().getSubscription().getMax_session_duration())
                 return new DatabaseQueryResult(false,

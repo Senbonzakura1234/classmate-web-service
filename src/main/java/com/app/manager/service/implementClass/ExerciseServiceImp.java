@@ -58,7 +58,7 @@ public class ExerciseServiceImp implements ExerciseService {
                 return new DatabaseQueryResult(false, "Session not found",
                         HttpStatus.NOT_FOUND, exerciseRequest);
 
-            if(teacher.get().getSubscription() != ESubscription.PREMIUM){
+            if(teacher.get().getSubscription() != ESubscription.ULTIMATE){
                 var exerciseCount = exerciseRepository
                         .findAllBySession_idAndStatusIsNot(
                                 session.get().getId(), Exercise.StatusEnum.CANCEL).size();

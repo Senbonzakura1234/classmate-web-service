@@ -2,10 +2,14 @@ package com.app.manager.entity;
 
 public enum ESubscription {
     FREE(0, "FREE", 0, 0,
-        30, 30,
-        2, 10,
+        15, 30,
+        2, 5,
             false),
-    PREMIUM(1, "PREMIUM", 20, 0,
+    PREMIUM(1, "PREMIUM", 15, 0,
+        30, 120,
+        5, 10,
+            true),
+    ULTIMATE(2, "ULTIMATE", 50, 0,
         0, 0,
         0, 0,
             true);
@@ -15,8 +19,8 @@ public enum ESubscription {
     private final double price; //dollar per month
     private final double discount;
     private final int max_student;
-    private final int max_course_duration;
-    private final int max_session_duration;
+    private final int max_course_duration; // days
+    private final int max_session_duration; // hours
     private final int max_exercise_per_session;
     private final boolean allow_face_check;
 
