@@ -41,17 +41,6 @@ public class StudentCourseServiceImp implements StudentCourseService {
                 return new DatabaseQueryResult(false, "Not Your Course",
                         HttpStatus.BAD_REQUEST, "");
 
-            if (teacher.get().getSubscription() != ESubscription.ULTIMATE) {
-                var studentCount = studentcourseRepository
-                        .findAllByCourse_idAndStatus(course.get().getId(),
-                                StudentCourse.StatusEnum.SHOW).size();
-
-                if(teacher.get().getSubscription().getMax_student() <  studentCount)
-                    return new DatabaseQueryResult(false,
-                            "Your class has maxed number of students",
-                            HttpStatus.BAD_REQUEST, "");
-            }
-
             var role = roleRepository.findByName(ERole.ROLE_STUDENT);
             if(role.isEmpty() || role.get().getStatus() == Role.StatusEnum.HIDE)
                 return new DatabaseQueryResult(false, "Role not found",

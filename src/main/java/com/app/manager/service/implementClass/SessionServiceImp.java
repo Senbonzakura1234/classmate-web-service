@@ -52,13 +52,6 @@ public class SessionServiceImp implements SessionService {
                         "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
 
-            if(teacher.get().getSubscription() != ESubscription.ULTIMATE
-                    && sessionRequest.getSession_duration() >
-                    teacher.get().getSubscription().getMax_session_duration())
-                return new DatabaseQueryResult(false,
-                        "Please upgrade your subcription for more session time",
-                        HttpStatus.BAD_REQUEST, "");
-
             var course = courseRepository
                     .findById(sessionRequest.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("Course not found"));
@@ -122,18 +115,11 @@ public class SessionServiceImp implements SessionService {
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
 
-            if(teacher.get().getSubscription() != ESubscription.ULTIMATE
-                    && sessionRequest.getSession_duration() >
-                    teacher.get().getSubscription().getMax_session_duration())
-                return new DatabaseQueryResult(false,
-                        "Please upgrade your subcription for more session time",
-                        HttpStatus.BAD_REQUEST, "");
+
 
             var s = sessionRepository.findById(id);
-            if(s.isEmpty()){
-                return new DatabaseQueryResult(false,
-                        "save course failed", HttpStatus.NOT_FOUND, "");
-            }
+            if(s.isEmpty()) return new DatabaseQueryResult(false,
+                    "save course failed", HttpStatus.NOT_FOUND, "");
 
             var course = courseRepository
                     .findById(s.get().getCourse_id())
@@ -221,11 +207,6 @@ public class SessionServiceImp implements SessionService {
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
 
-            if(!teacher.get().getSubscription().isAllow_face_check())
-                return new DatabaseQueryResult(false,
-                        "please upgrade to use this function",
-                        HttpStatus.BAD_REQUEST, "");
-
             var session = sessionRepository.findById(id);
             if(session.isEmpty()) return new DatabaseQueryResult(false,
                     "Session not found", HttpStatus.NOT_FOUND, "");
@@ -278,11 +259,6 @@ public class SessionServiceImp implements SessionService {
         if(teacher.isEmpty())
             return new DatabaseQueryResult(false, "Teacher not found",
                     HttpStatus.NOT_FOUND, "");
-
-        if(!teacher.get().getSubscription().isAllow_face_check())
-            return new DatabaseQueryResult(false,
-                    "please upgrade to use this function",
-                    HttpStatus.BAD_REQUEST, "");
 
         var session = sessionRepository.findById(id);
         if(session.isEmpty()){

@@ -6,7 +6,6 @@ import com.app.manager.context.repository.UserRepository;
 import com.app.manager.context.specification.CourseSpecification;
 import com.app.manager.entity.Course;
 import com.app.manager.entity.ERole;
-import com.app.manager.entity.ESubscription;
 import com.app.manager.entity.Role;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.CourseRequest;
@@ -52,13 +51,6 @@ public class CourseServiceImp implements CourseService {
                 return new DatabaseQueryResult(false,
                         "Teacher not found", HttpStatus.NOT_FOUND, courseRequest);
 
-            if(teacher.get().getSubscription() != ESubscription.ULTIMATE
-                    && (courseRequest.getEnd_date() - courseRequest.getStart_date()) >
-                teacher.get().getSubscription().getMax_course_duration())
-                return new DatabaseQueryResult(false,
-                    "Please upgrade your subcription",
-                        HttpStatus.BAD_REQUEST, courseRequest);
-
 
             var course = castObject.courseEntity(courseRequest,
                     teacher.get().getId());
@@ -97,13 +89,6 @@ public class CourseServiceImp implements CourseService {
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
-
-            if(teacher.get().getSubscription() != ESubscription.ULTIMATE
-                    && (courseRequest.getEnd_date() - courseRequest.getStart_date()) >
-                    teacher.get().getSubscription().getMax_course_duration())
-                return new DatabaseQueryResult(false,
-                        "Please upgrade your subcription",
-                        HttpStatus.BAD_REQUEST, courseRequest);
 
             var c = courseRepository.findById(id);
             if(c.isEmpty()){

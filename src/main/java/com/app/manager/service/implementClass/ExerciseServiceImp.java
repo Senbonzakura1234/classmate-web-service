@@ -58,17 +58,6 @@ public class ExerciseServiceImp implements ExerciseService {
                 return new DatabaseQueryResult(false, "Session not found",
                         HttpStatus.NOT_FOUND, exerciseRequest);
 
-            if(teacher.get().getSubscription() != ESubscription.ULTIMATE){
-                var exerciseCount = exerciseRepository
-                        .findAllBySession_idAndStatusIsNot(
-                                session.get().getId(), Exercise.StatusEnum.CANCEL).size();
-                if(exerciseCount > teacher.get().getSubscription().getMax_exercise_per_session())
-                    return new DatabaseQueryResult(false,
-                            "Pls upgrade account to add more exercise to session",
-                            HttpStatus.BAD_REQUEST, exerciseRequest);
-            }
-
-
             var course = courseRepository.findById(session.get().getCourse_id());
             if(course.isEmpty())
             return new DatabaseQueryResult(false, "Course not found",

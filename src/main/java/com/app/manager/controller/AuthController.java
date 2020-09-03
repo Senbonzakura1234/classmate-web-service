@@ -1,6 +1,5 @@
 package com.app.manager.controller;
 
-import com.app.manager.entity.ESubscription;
 import com.app.manager.entity.User;
 import com.app.manager.model.payload.request.LoginRequest;
 import com.app.manager.model.payload.request.SignupRequest;
@@ -107,8 +106,7 @@ public class AuthController {
                 encoder.encode(signUpRequest.getPassword()));
 
         var strRoles = signUpRequest.getRole();
-        var result = userService.saveUser(user, strRoles,
-                ESubscription.FREE);
+        var result = userService.saveUser(user, strRoles);
 
         return result.isSuccess() ?
                 ResponseEntity

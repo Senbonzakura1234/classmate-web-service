@@ -82,10 +82,6 @@ public class User {
 
 
 
-
-    @Column(name = "subscription")
-    private ESubscription subscription;
-
     @Column(name = "face_definition_id", nullable = false)
     private String face_definition_id = "";
 
@@ -246,15 +242,6 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-
-    public ESubscription getSubscription() {
-        return subscription;
-    }
-
-    public void setSubscription(ESubscription subscription) {
-        this.subscription = subscription;
     }
 
     public List<StudentCourse> getStudent_courses() {
