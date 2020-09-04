@@ -5,12 +5,18 @@ import com.app.manager.context.repository.RoleRepository;
 import com.app.manager.context.repository.StudentCourseRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.entity.*;
+import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.StudentCourseRequest;
+import com.app.manager.model.payload.response.CourseProfileResponse;
+import com.app.manager.model.payload.response.UserProfileResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.StudentCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
@@ -20,6 +26,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
     @Autowired UserRepository userRepository;
     @Autowired CourseRepository courseRepository;
     @Autowired RoleRepository roleRepository;
+    @Autowired CastObject castObject;
 
 
     @Override
@@ -71,6 +78,37 @@ public class StudentCourseServiceImp implements StudentCourseService {
             System.out.println(e.getMessage());
             return new DatabaseQueryResult(false, "Server error",
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
+        }
+    }
+
+    @Override
+    public Optional<CourseProfileResponse> getAllProfileInCourse(String courseId) {
+        try {
+            var studentCourses = studentcourseRepository
+                    .findAllByCourse_idAndStatus(courseId, StudentCourse.StatusEnum.SHOW)
+                    .stream().map(StudentCourse::getUser_id).collect(Collectors.toList());
+            var studentCoursesProfile =
+                studentCourses.stream().map(s -> {
+                try {
+                    var user = userRepository.findById(s)
+                            .orElseThrow(() -> new RuntimeException("User not found"));
+                    return castObject.profilePublic(user);
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                    return new UserProfileResponse();
+                }
+            }).collect(Collectors.toList());
+            var course = courseRepository.findById(courseId)
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+            var teacher = userRepository.findById(course.getUser_id())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            return Optional.of(new CourseProfileResponse(castObject.courseModel(course),
+                    castObject.profilePublic(teacher), studentCoursesProfile ));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return Optional.empty();
         }
     }
 }

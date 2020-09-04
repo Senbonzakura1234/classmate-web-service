@@ -144,4 +144,15 @@ public class CourseController {
         if(result.isSuccess()) return ResponseEntity.ok(result);
                 return ResponseEntity.status(result.getHttp_status()).body(result);
     }
+
+
+    @GetMapping("/allProfileInCourse")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    public ResponseEntity<?> allProfileInCourse(
+            @RequestParam(value = "course_id") String course_id){
+//        var currentUser = SecurityContextHolder
+//                .getContext().getAuthentication().getName();
+        return ResponseEntity.ok(studentCourseService
+                .getAllProfileInCourse(course_id));
+    }
 }

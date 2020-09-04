@@ -5,8 +5,10 @@ import com.app.manager.entity.Attendance;
 import com.app.manager.entity.Session;
 import com.app.manager.entity.StudentCourse;
 import com.app.manager.entity.User;
+import com.app.manager.model.payload.request.AttendanceCheckRequest;
 import com.app.manager.model.payload.request.FaceCheckClientRequest;
 import com.app.manager.model.payload.request.FaceCheckServerRequest;
+import com.app.manager.model.payload.response.AttendanceCheckResponse;
 import com.app.manager.model.payload.response.FaceCheckServerResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.AttendanceService;
@@ -19,7 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
@@ -95,6 +100,7 @@ public class AttendanceServiceImp implements AttendanceService {
                 newAttendance.setUser_id(student.getId());
                 newAttendance.setImage_uri(faceCheckClientRequest.getImg_url());
                 newAttendance.setFace_matched(true);
+                newAttendance.setStatus(Attendance.StatusEnum.ATTENDANT);
                 attendanceRepository.save(newAttendance);
                 return new DatabaseQueryResult(true,
                         "Attendance Checked", HttpStatus.OK,
@@ -103,6 +109,7 @@ public class AttendanceServiceImp implements AttendanceService {
             var a = attendance.get();
             a.setImage_uri(faceCheckClientRequest.getImg_url());
             a.setFace_matched(true);
+            a.setStatus(Attendance.StatusEnum.ATTENDANT);
             a.setUpdated_at(System.currentTimeMillis());
             attendanceRepository.save(a);
 
@@ -115,6 +122,82 @@ public class AttendanceServiceImp implements AttendanceService {
             return new DatabaseQueryResult(false,
                     "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
+        }
+    }
+
+    @Override
+    public DatabaseQueryResult teacherAttendaneCheck(
+            List<AttendanceCheckRequest> attendanceCheckRequests,
+            String currentUsername, String sessionId) {
+        try {
+            var session = sessionRepository
+                    .findById(sessionId)
+                    .orElseThrow(() -> new RuntimeException("Session not found"));
+            var course = courseRepository
+                    .findById(session.getCourse_id())
+                    .orElseThrow(() -> new RuntimeException("Session not found"));
+
+            if(!course.getUser_id().equals(currentUsername))
+                return new DatabaseQueryResult(false,
+                        "Not your course",
+                        HttpStatus.BAD_REQUEST, attendanceCheckRequests);
+
+            attendanceCheckRequests.forEach(attendanceCheckRequest -> {
+                try {
+                    var attendance =
+                            attendanceRepository.findFirstByUser_idAndSession_id(
+                                    attendanceCheckRequest.getUser_id(), sessionId);
+
+                    if(attendance.isEmpty()){
+                        var newAttendance = new Attendance();
+                        newAttendance.setSession_id(sessionId);
+                        newAttendance.setUser_id(attendanceCheckRequest.getUser_id());
+                        newAttendance.setImage_uri("");
+                        newAttendance.setFace_matched(true);
+                        newAttendance.setStatus(attendanceCheckRequest.getStatus());
+
+                        attendanceRepository.save(newAttendance);
+                        return;
+                    }
+                    var a = attendance.get();
+                    a.setImage_uri("");
+                    a.setFace_matched(true);
+                    a.setStatus(attendanceCheckRequest.getStatus());
+                    a.setUpdated_at(System.currentTimeMillis());
+                    attendanceRepository.save(a);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println(e.getMessage());
+                }
+            });
+
+            session.setAttendance_status(Session.AttendanceStatusEnum.END);
+            sessionRepository.save(session);
+            return new DatabaseQueryResult(true,
+                    "Attendance Check Success",
+                    HttpStatus.OK, attendanceCheckRequests);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return new DatabaseQueryResult(false,
+                    "Error: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+        }
+    }
+
+    @Override
+    public List<AttendanceCheckResponse> getAttendanceResult(String sessionId) {
+        try {
+            var list = attendanceRepository
+                    .findAllBySession_idAndStatusIsNot(sessionId, Attendance.StatusEnum.ALL);
+            return list.stream().map(attendance ->
+                    new AttendanceCheckResponse(attendance.getUser_id(),
+                        attendance.getSession_id(), attendance.getStatus()))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
         }
     }
 

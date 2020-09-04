@@ -323,11 +323,11 @@ public class ExerciseServiceImp implements ExerciseService {
                     .orElseThrow(() -> new RuntimeException("Teacher not found"));
             if(currentUser.getId().equals(course.getUser_id()))
                 return studentExercises.stream().map(studentExercise -> {
-                var files = fileRepository.findAllByStudentexercise_idAndStatus(
+                    var files = fileRepository.findAllByStudentexercise_idAndStatus(
                         studentExercise.getId(),
                         File.StatusEnum.SHOW).stream().map(file -> castObject.fileModel(file))
                         .collect(Collectors.toList());
-                return castObject.studentExerciseModel(studentExercise, files);
+                    return castObject.studentExerciseModel(studentExercise, files);
                 }).collect(Collectors.toList());
 
             return studentExercises.stream().map(studentExercise ->
@@ -356,13 +356,11 @@ public class ExerciseServiceImp implements ExerciseService {
             var role = roleRepository.findByName(ERole.ROLE_ADMIN)
                     .orElseThrow(() -> new RuntimeException("role not found"));
 
-            if (role.getStatus() != Role.StatusEnum.HIDE && currentUser.getRoles().contains(role)){
+            if (role.getStatus() != Role.StatusEnum.HIDE && currentUser.getRoles().contains(role))
                 return Optional.of(castObject.studentExerciseModel(studentExercise, files));
-            }
 
-            if(studentExercise.getUser_id().equals(currentUser.getId())){
+            if(studentExercise.getUser_id().equals(currentUser.getId()))
                 return Optional.of(castObject.studentExerciseModel(studentExercise, files));
-            }
 
             var exercise = exerciseRepository.findById(studentExercise.getExercise_id())
                     .orElseThrow(() -> new RuntimeException("Exercise not found"));
@@ -371,9 +369,9 @@ public class ExerciseServiceImp implements ExerciseService {
             var course = courseRepository.findById(session.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("Course not found"));
 
-            if(course.getUser_id().equals(currentUser.getId())){
+            if(course.getUser_id().equals(currentUser.getId()))
                 return Optional.of(castObject.studentExerciseModel(studentExercise, files));
-            }
+
             return Optional.of(castObject.studentExerciseModelPublic(studentExercise));
         } catch (RuntimeException e) {
             e.printStackTrace();

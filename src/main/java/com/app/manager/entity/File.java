@@ -45,7 +45,7 @@ public class File {
     private Long file_size = 0L;
 
     @Column(name = "file_visibility", nullable = false)
-    private EVisibility file_visibility = EVisibility.TEACHER;
+    private EVisibility file_visibility = EVisibility.TEACHERCOURSE;
 
 
 

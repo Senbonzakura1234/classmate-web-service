@@ -174,16 +174,20 @@ public class UserServiceImp implements UserService {
                     .findAllByUser_idAndStatus(userToSee.getId(),
                             StudentCourse.StatusEnum.SHOW);
 
+
             var roleTeacher = getRoleInstant(ERole.ROLE_TEACHER)
                     .orElseThrow(() -> new RuntimeException("Role Not found"));
 
-            if(roles.contains(roleTeacher)) for
-                (StudentCourse studentCourse : listCourseOfUserToSee) {
-                var course = courseRepository
-                        .findById(studentCourse.getCourse_id());
-                if (course.isEmpty()) continue;
-                if (course.get().getUser_id().equals(currentUser.getId()))
+            if(roles.contains(roleTeacher)) {
+                if(userToSee.getProfile_visibility() == EVisibility.TEACHER)
                     return Optional.of(castObject.profilePublic(userToSee));
+                if (listCourseOfUserToSee.stream().map(studentCourse -> courseRepository
+                        .findById(studentCourse.getCourse_id()))
+                        .filter(Optional::isPresent)
+                        .anyMatch(course -> course.get().getUser_id()
+                            .equals(currentUser.getId()))) {
+                    return Optional.of(castObject.profilePublic(userToSee));
+                }
             }
 
             var roleStudent = getRoleInstant(ERole.ROLE_STUDENT)
