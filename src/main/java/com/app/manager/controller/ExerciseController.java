@@ -4,9 +4,11 @@ import com.app.manager.context.specification.ExerciseSpecification;
 import com.app.manager.entity.Exercise;
 import com.app.manager.model.SearchCriteria;
 import com.app.manager.model.payload.request.ExerciseRequest;
+import com.app.manager.model.payload.request.MarkExerciseRequest;
 import com.app.manager.model.payload.request.StudentExerciseRequest;
 import com.app.manager.model.payload.response.MessageResponse;
 import com.app.manager.service.interfaceClass.ExerciseService;
+import com.app.manager.service.interfaceClass.StudentExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/data/exercise")
 public class ExerciseController {
     @Autowired ExerciseService exerciseService;
+    @Autowired StudentExerciseService studentExerciseService;
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
@@ -100,7 +103,7 @@ public class ExerciseController {
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
-    @PostMapping("/postStudentExercise")
+    @PostMapping("/studentExercise/save")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<?> postExercise (
             @Valid @RequestBody StudentExerciseRequest studentExerciseRequest,
@@ -116,30 +119,56 @@ public class ExerciseController {
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
-        var result = exerciseService
+        var result = studentExerciseService
                 .saveStudentExercise(studentExerciseRequest, exercise_id, currentUser);
         return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
-    @GetMapping("/detail/all")
+    @GetMapping("/studentExercise/all")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getListStudentExercises(@RequestParam(value = "id") String id) {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
 
-        return ResponseEntity.ok(exerciseService.getAllStudentExercise(id, currentUser));
+        return ResponseEntity.ok(studentExerciseService.getAllStudentExercise(id, currentUser));
     }
 
-    @GetMapping("/detail/getOne")
+    @GetMapping("/studentExercise/getOne")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getStudentExercise(@RequestParam(value = "id") String id) {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
 
-        var result = exerciseService.getStudentExercise(id, currentUser);
+        var result = studentExerciseService.getStudentExercise(id, currentUser);
 
         return result.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND")
                 : ResponseEntity.of(result);
+    }
+
+    @PostMapping("/studentExercise/mark")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> markStudentExercise(
+            @RequestParam(value = "id") String id,
+            @Valid @RequestBody MarkExerciseRequest markExerciseRequest,
+            BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error"));
+        }
+
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+
+        var result =
+                studentExerciseService.markExcercise(id, currentUser, markExerciseRequest);
+
+        return result.isSuccess()? ResponseEntity.ok(result)
+                : ResponseEntity.status(result.getHttp_status()).body(result);
     }
 }

@@ -9,9 +9,13 @@ public class StudentExerciseResponse {
     private String user_id;
     private String exercise_id;
     private String content;
-    private String message;
+    private String student_message;
     private StudentExercise.StatusEnum status;
     private Long created_at;
+    private double mark;
+    private boolean marked;
+    private String teacher_message;
+
     private List<FileResponse> fileResponses;
 
     public StudentExerciseResponse() {
@@ -19,15 +23,33 @@ public class StudentExerciseResponse {
 
     public StudentExerciseResponse(String id, String user_id,
                                    String exercise_id, String content,
-                                   String message, StudentExercise.StatusEnum status,
+                                   String student_message, StudentExercise.StatusEnum status,
                                    Long created_at, List<FileResponse> fileResponses) {
         this.id = id;
         this.user_id = user_id;
         this.exercise_id = exercise_id;
         this.content = content;
-        this.message = message;
+        this.student_message = student_message;
         this.status = status;
         this.created_at = created_at;
+        this.fileResponses = fileResponses;
+    }
+
+    public StudentExerciseResponse(String id, String user_id, String exercise_id,
+                                   String content, String student_message,
+                                   StudentExercise.StatusEnum status, Long created_at,
+                                   double mark, boolean marked, String teacher_message,
+                                   List<FileResponse> fileResponses) {
+        this.id = id;
+        this.user_id = user_id;
+        this.exercise_id = exercise_id;
+        this.content = content;
+        this.student_message = student_message;
+        this.status = status;
+        this.created_at = created_at;
+        this.mark = mark;
+        this.marked = marked;
+        this.teacher_message = teacher_message;
         this.fileResponses = fileResponses;
     }
 
@@ -63,12 +85,12 @@ public class StudentExerciseResponse {
         this.content = content;
     }
 
-    public String getMessage() {
-        return message;
+    public String getStudent_message() {
+        return student_message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setStudent_message(String student_message) {
+        this.student_message = student_message;
     }
 
     public StudentExercise.StatusEnum getStatus() {
@@ -93,5 +115,29 @@ public class StudentExerciseResponse {
 
     public void setFileResponses(List<FileResponse> fileResponses) {
         this.fileResponses = fileResponses;
+    }
+
+    public double getMark() {
+        return mark;
+    }
+
+    public void setMark(double mark) {
+        this.mark = mark;
+    }
+
+    public boolean isMarked() {
+        return marked;
+    }
+
+    public void setMarked(boolean marked) {
+        this.marked = marked;
+    }
+
+    public String getTeacher_message() {
+        return teacher_message;
+    }
+
+    public void setTeacher_message(String teacher_message) {
+        this.teacher_message = teacher_message;
     }
 }

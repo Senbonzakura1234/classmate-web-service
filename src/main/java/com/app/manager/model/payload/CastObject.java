@@ -103,7 +103,7 @@ public class CastObject {
         studentExercise.setUser_id(studentId);
         studentExercise.setExercise_id(exerciseId);
         studentExercise.setContent(studentExerciseRequest.getContent());
-        studentExercise.setMessage(studentExerciseRequest.getMessage());
+        studentExercise.setStudent_message(studentExerciseRequest.getStudent_message());
         return studentExercise;
     }
 
@@ -122,8 +122,10 @@ public class CastObject {
         return studentExercise != null && fileResponses != null ? new StudentExerciseResponse(
             studentExercise.getId(), studentExercise.getUser_id(),
             studentExercise.getExercise_id(), studentExercise.getContent(),
-            studentExercise.getMessage(), studentExercise.getStatus(),
-            studentExercise.getCreated_at(), fileResponses) : new StudentExerciseResponse();
+            studentExercise.getStudent_message(), studentExercise.getStatus(),
+            studentExercise.getCreated_at(), studentExercise.getMark(),
+            studentExercise.isMarked(), studentExercise.getTeacher_message(),
+                fileResponses) : new StudentExerciseResponse();
     }
 
     public StudentExerciseResponse studentExerciseModelPublic(

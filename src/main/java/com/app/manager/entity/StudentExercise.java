@@ -3,6 +3,8 @@ package com.app.manager.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Entity
@@ -40,8 +42,18 @@ public class StudentExercise {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "message", nullable = false)
-    private String message;
+    @Column(name = "student_message", nullable = false)
+    private String student_message;
+
+    @Min(0) @Max(10)
+    @Column(name = "mark", nullable = false)
+    private double mark;
+
+    @Column(name = "marked", nullable = false)
+    private boolean marked;
+
+    @Column(name = "teacher_message", nullable = false)
+    private String teacher_message = "";
 
 
 
@@ -161,12 +173,12 @@ public class StudentExercise {
         this.content = content;
     }
 
-    public String getMessage() {
-        return message;
+    public String getStudent_message() {
+        return student_message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setStudent_message(String message) {
+        this.student_message = message;
     }
 
     public List<File> getFiles() {
@@ -175,5 +187,29 @@ public class StudentExercise {
 
     public void setFiles(List<File> files) {
         this.files = files;
+    }
+
+    public double getMark() {
+        return mark;
+    }
+
+    public void setMark(double mark) {
+        this.mark = mark;
+    }
+
+    public boolean isMarked() {
+        return marked;
+    }
+
+    public void setMarked(boolean marked) {
+        this.marked = marked;
+    }
+
+    public String getTeacher_message() {
+        return teacher_message;
+    }
+
+    public void setTeacher_message(String teacher_message) {
+        this.teacher_message = teacher_message;
     }
 }

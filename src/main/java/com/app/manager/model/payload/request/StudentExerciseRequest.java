@@ -5,17 +5,17 @@ import java.util.List;
 
 public class StudentExerciseRequest {
     private String content = "";
-    private String message = "";
+    private String student_message = "";
 
     private List<FileRequest> fileRequests = new ArrayList<>();
 
     public StudentExerciseRequest() {
     }
 
-    public StudentExerciseRequest(String content, String message,
+    public StudentExerciseRequest(String content, String student_message,
                                   List<FileRequest> fileRequests) {
         this.content = content;
-        this.message = message;
+        this.student_message = student_message;
         this.fileRequests = fileRequests;
     }
 
@@ -27,12 +27,12 @@ public class StudentExerciseRequest {
         this.content = content;
     }
 
-    public String getMessage() {
-        return message;
+    public String getStudent_message() {
+        return student_message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setStudent_message(String student_message) {
+        this.student_message = student_message;
     }
 
     public List<FileRequest> getFileRequests() {
