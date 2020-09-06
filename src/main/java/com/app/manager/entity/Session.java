@@ -26,9 +26,8 @@ public class Session {
     @JoinColumn(name = "course_id", updatable = false, insertable = false)
     private Course course;
 
-
     @OneToMany(mappedBy = "session")
-    private List<Attendance> attendances; 
+    private List<Attendance> attendances;
 
 
 

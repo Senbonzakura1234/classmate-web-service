@@ -39,6 +39,9 @@ public class Course implements Serializable {
     @OneToMany(mappedBy = "course")
     private List<StudentCourse> student_courses;
 
+    @OneToMany(mappedBy = "course")
+    private List<Message> messages;
+
 
     @NotBlank
     @Column(name = "name", nullable = false)
@@ -210,5 +213,13 @@ public class Course implements Serializable {
 
     public void setEnd_date(Long enddate) {
         this.end_date = enddate;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }

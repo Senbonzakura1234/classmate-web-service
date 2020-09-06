@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public class UserProfileRequest {
     @NotNull private String fullname = ""; //search
+    @NotNull private String avatar_uri = "";
     @NotNull private String phone = "";
     @NotNull private String address = "";
     @NotNull private String civil_id = "";
@@ -17,11 +18,12 @@ public class UserProfileRequest {
     public UserProfileRequest() {
     }
 
-    public UserProfileRequest(@NotNull String fullname, @NotNull String phone,
-                              @NotNull String address, @NotNull String civil_id,
-                              @NotNull @Min(0L) Long birthday,
+    public UserProfileRequest(@NotNull String fullname, @NotNull String avatar_uri,
+                              @NotNull String phone, @NotNull String address,
+                              @NotNull String civil_id, @NotNull @Min(0L) Long birthday,
                               @NotNull User.GenderEnum gender) {
         this.fullname = fullname;
+        this.avatar_uri = avatar_uri;
         this.phone = phone;
         this.address = address;
         this.civil_id = civil_id;
@@ -75,5 +77,13 @@ public class UserProfileRequest {
 
     public void setGender(User.GenderEnum gender) {
         this.gender = gender;
+    }
+
+    public String getAvatar_uri() {
+        return avatar_uri;
+    }
+
+    public void setAvatar_uri(String avatar_uri) {
+        this.avatar_uri = avatar_uri;
     }
 }

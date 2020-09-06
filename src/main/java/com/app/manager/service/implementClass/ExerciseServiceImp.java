@@ -28,8 +28,6 @@ public class ExerciseServiceImp implements ExerciseService {
     @Autowired SessionRepository sessionRepository;
     @Autowired CourseRepository courseRepository;
     @Autowired StudentCourseRepository studentCourseRepository;
-    @Autowired StudentExerciseRepository studentExerciseRepository;
-    @Autowired FileRepository fileRepository;
     @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
 

@@ -3,12 +3,13 @@ package com.app.manager.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "[coursecategory]")
-public class CourseCategory {
+@Table(name = "[attachment]")
+public class Attachment {
     @Id
     @Column(name = "id")
     @GeneratedValue(generator = "UUID")
@@ -18,24 +19,36 @@ public class CourseCategory {
     )
     private String id;
 
-    @OneToMany(mappedBy = "coursecategory")
-    private List<Course> courses;
+    @Column(name = "message_id")
+    private String message_id;
+
+    @ManyToOne
+    @JoinColumn(name = "message_id", updatable = false, insertable = false)
+    private Message message;
 
 
-    @NotBlank
+
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description", nullable = false)
     private String description;
 
+    @NotBlank
+    @Column(name = "file_url", nullable = false)
+    private String file_url;
+
+    @Min(0L)
+    @NotNull
+    @Column(name = "file_size", nullable = false)
+    private Long file_size = 0L;
 
 
 
     @Column(name = "status", nullable = false)
     private StatusEnum status = StatusEnum.SHOW;
 
-    @Column(name = "create_dat", nullable = false)
+    @Column(name = "created_at", nullable = false)
     private Long created_at = System.currentTimeMillis();
 
     @Column(name = "updated_at", nullable = false)
@@ -44,13 +57,12 @@ public class CourseCategory {
     @Column(name = "deleted_at")
     private Long deleted_at;
 
-    public CourseCategory() {
+    public Attachment() {
     }
 
     public enum StatusEnum {
-        ALL(0, "All"),
-        SHOW(1, "Show"),
-        HIDE(2, "Hide");
+        SHOW(0, "Show"),
+        HIDE(1, "Hide");
 
         private final int value;
         private final String name;
@@ -63,10 +75,12 @@ public class CourseCategory {
         public int getValue() {
             return value;
         }
+
         public String getName() {
             return name;
         }
     }
+
 
     public String getId() {
         return id;
@@ -88,32 +102,40 @@ public class CourseCategory {
         return created_at;
     }
 
-    public void setCreated_at(Long createdat) {
-        this.created_at = createdat;
+    public void setCreated_at(Long created_at) {
+        this.created_at = created_at;
     }
 
     public Long getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(Long updatedat) {
-        this.updated_at = updatedat;
+    public void setUpdated_at(Long updated_at) {
+        this.updated_at = updated_at;
     }
 
     public Long getDeleted_at() {
         return deleted_at;
     }
 
-    public void setDeleted_at(Long deletedat) {
-        this.deleted_at = deletedat;
+    public void setDeleted_at(Long deleted_at) {
+        this.deleted_at = deleted_at;
     }
 
-    public List<Course> getCourses() {
-        return courses;
+    public String getMessage_id() {
+        return message_id;
     }
 
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
+    public void setMessage_id(String message_id) {
+        this.message_id = message_id;
+    }
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
     }
 
     public String getName() {
@@ -130,5 +152,21 @@ public class CourseCategory {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getFile_url() {
+        return file_url;
+    }
+
+    public void setFile_url(String file_url) {
+        this.file_url = file_url;
+    }
+
+    public Long getFile_size() {
+        return file_size;
+    }
+
+    public void setFile_size(Long file_size) {
+        this.file_size = file_size;
     }
 }

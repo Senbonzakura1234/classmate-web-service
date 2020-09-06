@@ -18,6 +18,7 @@ public class CastObject {
         course.setName(courseRequest.getName());
         course.setStart_date(courseRequest.getStart_date());
         course.setUser_id(teacherId);
+        course.setUpdated_at(System.currentTimeMillis());
         return course;
     }
     public CourseResponse courseModel(Course course){
@@ -37,6 +38,7 @@ public class CastObject {
         exercise.setAnswer(exerciseRequest.getAnswer());
         exercise.setDuration(exerciseRequest.getDuration());
         exercise.setShow_answer(exerciseRequest.isShow_answer());
+        exercise.setUpdated_at(System.currentTimeMillis());
         return exercise;
     }
     public ExerciseResponse exerciseModel(Exercise exercise){
@@ -63,6 +65,7 @@ public class CastObject {
         session.setContent(sessionRequest.getContent());
         session.setStart_time(sessionRequest.getStart_time());
         session.setCourse_id(sessionRequest.getCourse_id());
+        session.setUpdated_at(System.currentTimeMillis());
         return session;
     }
     public SessionResponse sessionModel(Session session){
@@ -88,13 +91,14 @@ public class CastObject {
         return new UserProfileResponse(
                 user.getId(), user.getUsername(),
                 user.getEmail(), user.getFullname(),
-                user.getPhone(), user.getAddress(),
-                user.getCivil_id(), user.getBirthday(),
-                user.getGender());
+                user.getPhone(), user.getAvatar_uri(),
+                user.getAddress(), user.getCivil_id(),
+                user.getBirthday(), user.getGender());
     }
     public UserProfileResponse profilePrivate(User user){
         if(user == null) return new UserProfileResponse();
-        return new UserProfileResponse(user.getId(), user.getUsername());
+        return new UserProfileResponse(user.getId(), user.getUsername(),
+                user.getAvatar_uri());
     }
 
     public StudentExercise studentExerciseEntity(String studentId, String exerciseId,
@@ -104,6 +108,7 @@ public class CastObject {
         studentExercise.setExercise_id(exerciseId);
         studentExercise.setContent(studentExerciseRequest.getContent());
         studentExercise.setStudent_message(studentExerciseRequest.getStudent_message());
+        studentExercise.setUpdated_at(System.currentTimeMillis());
         return studentExercise;
     }
 
@@ -114,7 +119,15 @@ public class CastObject {
         file.setDescription(fileRequest.getDescription());
         file.setFile_url(fileRequest.getFile_url());
         file.setFile_size(fileRequest.getFile_size());
+        file.setUpdated_at(System.currentTimeMillis());
         return file;
+    }
+    public FileResponse fileModel(File file){
+        return file != null ? new FileResponse(
+                file.getId(), file.getStudentexercise_id(), file.getName(),
+                file.getDescription(), file.getFile_url(), file.getFile_size(),
+                file.getFile_visibility(), file.getStatus(), file.getCreated_at())
+                : new FileResponse();
     }
 
     public StudentExerciseResponse studentExerciseModel(
@@ -135,19 +148,12 @@ public class CastObject {
                 studentExercise.getCreated_at(), new ArrayList<>());
     }
 
-    public FileResponse fileModel(File file){
-        return file != null ? new FileResponse(
-                file.getId(), file.getStudentexercise_id(), file.getName(),
-                file.getDescription(), file.getFile_url(), file.getFile_size(),
-                file.getFile_visibility(), file.getStatus(), file.getCreated_at())
-                : new FileResponse();
-    }
-
     public CourseCategory courseCategoryEntity(
             CourseCategoryRequest courseCategoryRequest){
         var courseCategory = new CourseCategory();
         courseCategory.setName(courseCategoryRequest.getName());
         courseCategory.setDescription(courseCategoryRequest.getDescription());
+        courseCategory.setUpdated_at(System.currentTimeMillis());
         return courseCategory;
     }
 
@@ -155,5 +161,43 @@ public class CastObject {
         return courseCategory != null ? new CourseCategoryResponse(
                 courseCategory.getId(), courseCategory.getName(),
                 courseCategory.getDescription()) : new CourseCategoryResponse();
+    }
+
+
+    public Attachment attachmentEntity(String messageId,
+                                       AttachmentRequest attachmentRequest){
+        var attachment = new Attachment();
+        attachment.setMessage_id(messageId);
+        attachment.setName(attachmentRequest.getName());
+        attachment.setDescription(attachmentRequest.getDescription());
+        attachment.setFile_url(attachmentRequest.getFile_url());
+        attachment.setFile_size(attachmentRequest.getFile_size());
+        attachment.setUpdated_at(System.currentTimeMillis());
+        return attachment;
+
+    }
+    public AttachmentResponse attachmentModel(Attachment attachment){
+        return attachment != null ?
+            new AttachmentResponse(attachment.getId(), attachment.getMessage_id(),
+            attachment.getName(), attachment.getDescription(), attachment.getFile_url(),
+            attachment.getFile_size(), attachment.getStatus(), attachment.getCreated_at())
+            : new AttachmentResponse();
+    }
+
+    public Message messageEntity(String userId, String courseId,
+                                 CourseMessageRequest courseMessageRequest){
+        var message = new Message();
+        message.setUser_id(userId);
+        message.setCourse_id(courseId);
+        message.setContent(courseMessageRequest.getContent());
+        message.setUpdated_at(System.currentTimeMillis());
+        return message;
+    }
+    public CourseMessageResponse messageModel(UserProfileResponse userProfileResponse,
+            Message message, List<AttachmentResponse> attachmentResponses){
+        return message != null ? new CourseMessageResponse(message.getId(),
+                message.isPin(), message.getUser_id(), userProfileResponse,
+                attachmentResponses, message.getCourse_id(), message.getStatus(),
+                message.getCreated_at()) : new CourseMessageResponse();
     }
 }

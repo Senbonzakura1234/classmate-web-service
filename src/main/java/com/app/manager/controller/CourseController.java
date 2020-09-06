@@ -24,16 +24,15 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/data/course")
 public class CourseController {
-    @Autowired
-    CourseService courseService;
-    @Autowired
-    StudentCourseService studentCourseService;
+    @Autowired CourseService courseService;
+    @Autowired StudentCourseService studentCourseService;
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getAll(
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
-            @RequestParam(value = "course_category_id", required = false, defaultValue = "") String course_category_id,
+            @RequestParam(value = "course_category_id", required = false, defaultValue = "")
+                    String course_category_id,
             @RequestParam(value = "user_id", required = false, defaultValue = "") String user_id,
             @RequestParam(value = "start_date", required = false, defaultValue = "0") long start_date,
             @RequestParam(value = "end_date", required = false, defaultValue = "0") long end_date,
@@ -135,8 +134,16 @@ public class CourseController {
 
     @PostMapping("/addToCourse")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> addToCourse(
+    public ResponseEntity<?> addToCourse(BindingResult bindingResult,
             @Valid @RequestBody StudentCourseRequest studentCourseRequest) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error"));
+        }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = studentCourseService

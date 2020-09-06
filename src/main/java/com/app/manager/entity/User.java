@@ -35,6 +35,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Attendance> attendances;
 
+    @OneToMany(mappedBy = "user")
+    private List<Message> messages;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -61,6 +64,9 @@ public class User {
 
     @Column(name = "fullname", nullable = false)
     private String fullname = "";
+
+    @Column(name = "avatar_uri", nullable = false)
+    private String avatar_uri = "";
 
     @Column(name = "phone", nullable = false)
     private String phone = "";
@@ -338,5 +344,21 @@ public class User {
 
     public void setFace_definition(boolean facedefinition) {
         this.face_definition = facedefinition;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    public String getAvatar_uri() {
+        return avatar_uri;
+    }
+
+    public void setAvatar_uri(String avatar_uri) {
+        this.avatar_uri = avatar_uri;
     }
 }

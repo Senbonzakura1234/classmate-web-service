@@ -137,7 +137,7 @@ public class UserServiceImp implements UserService {
             var users = userRepository.findAll(specification);
 
             return users.stream().map(user -> new UserProfileResponse(
-                    user.getId(), user.getUsername()))
+                    user.getId(), user.getUsername(), user.getAvatar_uri()))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -224,6 +224,7 @@ public class UserServiceImp implements UserService {
             var u = currentUser.get();
             u.setFullname(userProfileRequest.getFullname());
             u.setPhone(userProfileRequest.getPhone());
+            u.setAvatar_uri(userProfileRequest.getAvatar_uri());
             u.setAddress(userProfileRequest.getAddress());
             u.setCivil_id(userProfileRequest.getCivil_id());
             u.setBirthday(userProfileRequest.getBirthday());
