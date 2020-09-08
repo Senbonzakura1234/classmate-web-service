@@ -43,7 +43,7 @@ public class AttendanceController {
         var result = attendanceService
                 .studentAttendaneCheck(faceCheckClientRequest, currentUser);
 
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
@@ -67,7 +67,7 @@ public class AttendanceController {
         var result = attendanceService
                 .teacherAttendaneCheck(attendanceCheckRequests, currentUser, session_id);
 
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 

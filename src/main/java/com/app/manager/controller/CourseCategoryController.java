@@ -41,7 +41,7 @@ public class CourseCategoryController {
         }
 
         var result = courseCategoryService.save(courseCategoryRequest);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
@@ -62,7 +62,7 @@ public class CourseCategoryController {
 
         var result = courseCategoryService
                 .update(id ,courseCategoryRequest);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 }

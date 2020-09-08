@@ -95,7 +95,7 @@ public class CourseController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = courseService.save(courseRequest, currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
@@ -115,7 +115,7 @@ public class CourseController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = courseService.update(courseRequest, id, currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
@@ -128,7 +128,7 @@ public class CourseController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = courseService.updateStatus(id, status, currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 

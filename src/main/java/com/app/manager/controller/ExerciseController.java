@@ -87,7 +87,7 @@ public class ExerciseController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = exerciseService.save(exerciseRequest, currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
@@ -107,7 +107,7 @@ public class ExerciseController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = exerciseService.update(exerciseRequest, id, currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
@@ -118,7 +118,7 @@ public class ExerciseController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = exerciseService.updateStatus(id, status, currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
@@ -140,7 +140,7 @@ public class ExerciseController {
                 .getContext().getAuthentication().getName();
         var result = studentExerciseService
                 .saveStudentExercise(studentExerciseRequest, exercise_id, currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 

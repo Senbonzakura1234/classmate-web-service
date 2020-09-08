@@ -82,7 +82,7 @@ public class SessionController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = sessionService.save(sessionRequest, currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
@@ -102,7 +102,7 @@ public class SessionController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = sessionService.update(sessionRequest, id, currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
@@ -115,7 +115,7 @@ public class SessionController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = sessionService.updateStatus(id, status,currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
@@ -125,7 +125,7 @@ public class SessionController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = sessionService.startAttendanceCheck(id, currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
@@ -135,7 +135,7 @@ public class SessionController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = sessionService.closeAttendanceCheck(id, currentUser);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 }

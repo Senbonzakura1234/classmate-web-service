@@ -96,7 +96,7 @@ public class MessageController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = messageService.updateStatusMessage(id, currentUser, status);
-        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+        return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 }
