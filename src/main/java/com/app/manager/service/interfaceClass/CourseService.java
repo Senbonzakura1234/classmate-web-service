@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface CourseService {
     List<CourseResponse> findAll(CourseSpecification courseSpecification);
+    List<CourseResponse> findAllByStudent(CourseSpecification courseSpecification, String currentUsername);
+    List<CourseResponse> findAllByTeacher(CourseSpecification courseSpecification, String currentUsername);
     DatabaseQueryResult save(CourseRequest courseRequest, String currentUsername);
     Optional<CourseResponse> getOne(String id);
     DatabaseQueryResult update(CourseRequest courseRequest, String id, String currentUsername);

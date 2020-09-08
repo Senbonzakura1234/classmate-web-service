@@ -2,11 +2,13 @@ package com.app.manager.service.implementClass;
 
 import com.app.manager.context.repository.CourseRepository;
 import com.app.manager.context.repository.RoleRepository;
+import com.app.manager.context.repository.StudentCourseRepository;
 import com.app.manager.context.repository.UserRepository;
 import com.app.manager.context.specification.CourseSpecification;
 import com.app.manager.entity.Course;
 import com.app.manager.entity.ERole;
 import com.app.manager.entity.Role;
+import com.app.manager.entity.StudentCourse;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.CourseRequest;
 import com.app.manager.model.payload.response.CourseResponse;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class CourseServiceImp implements CourseService {
     @Autowired CourseRepository courseRepository;
+    @Autowired StudentCourseRepository studentCourseRepository;
     @Autowired UserRepository userRepository;
     @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
@@ -41,6 +44,36 @@ public class CourseServiceImp implements CourseService {
             System.out.println(e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public List<CourseResponse> findAllByStudent(CourseSpecification courseSpecification,
+                                                 String currentUsername) {
+        var user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("user not found"));
+
+        var courses = courseRepository.findAll(courseSpecification)
+                .stream().filter(course -> studentCourseRepository
+                .findAllByUser_idAndStatus(user.getId(), StudentCourse.StatusEnum.SHOW)
+                .stream().anyMatch(studentCourse -> studentCourse.getUser_id()
+                        .equals(course.getId()))).collect(Collectors.toList());
+
+        return courses.stream().map(course ->
+                castObject.courseModel(course))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseResponse> findAllByTeacher(CourseSpecification courseSpecification,
+                                                 String currentUsername) {
+        var user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("user not found"));
+        var courses = courseRepository.findAll(courseSpecification)
+                .stream().filter(course -> course.getUser_id().equals(user.getId()))
+                .collect(Collectors.toList());
+        return courses.stream().map(course ->
+                castObject.courseModel(course))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -70,6 +70,91 @@ public class CourseController {
         return ResponseEntity.ok(courseService.findAll(query));
     }
 
+    @GetMapping("/followingCourse")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> getAllByStudent(
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            @RequestParam(value = "course_category_id", required = false, defaultValue = "")
+                    String course_category_id,
+            @RequestParam(value = "user_id", required = false, defaultValue = "") String user_id,
+            @RequestParam(value = "start_date", required = false, defaultValue = "0") long start_date,
+            @RequestParam(value = "end_date", required = false, defaultValue = "0") long end_date,
+            @RequestParam(value = "status", required = false) Course.StatusEnum status
+    ) {
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var query = new CourseSpecification();
+        if(name != null){
+            query.add(new SearchCriteria("name", name,
+                    SearchCriteria.SearchOperation.MATCH));
+        }
+
+        if(status != null && status != Course.StatusEnum.ALL){
+            query.add(new SearchCriteria("status", status.getValue(),
+                    SearchCriteria.SearchOperation.EQUAL));
+        }
+
+        if(course_category_id != null && !course_category_id.isEmpty()){
+            query.add(new SearchCriteria("course_category_id", course_category_id,
+                    SearchCriteria.SearchOperation.EQUAL));
+        }
+        if(user_id != null && !user_id.isEmpty()){
+            query.add(new SearchCriteria("user_id", user_id,
+                    SearchCriteria.SearchOperation.EQUAL));
+        }
+        if(start_date > 0){
+            query.add(new SearchCriteria("start_date", start_date,
+                    SearchCriteria.SearchOperation.GREATER_THAN_EQUAL));
+        }
+
+        if(end_date > 0){
+            query.add(new SearchCriteria("end_date", end_date,
+                    SearchCriteria.SearchOperation.LESS_THAN_EQUAL));
+        }
+
+        return ResponseEntity.ok(courseService.findAllByStudent(query, currentUser));
+    }
+
+    @GetMapping("/yourCourse")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> getAllByTeacher(
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            @RequestParam(value = "course_category_id", required = false, defaultValue = "")
+                    String course_category_id,
+            @RequestParam(value = "start_date", required = false, defaultValue = "0") long start_date,
+            @RequestParam(value = "end_date", required = false, defaultValue = "0") long end_date,
+            @RequestParam(value = "status", required = false) Course.StatusEnum status
+    ) {
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var query = new CourseSpecification();
+        if(name != null){
+            query.add(new SearchCriteria("name", name,
+                    SearchCriteria.SearchOperation.MATCH));
+        }
+
+        if(status != null && status != Course.StatusEnum.ALL){
+            query.add(new SearchCriteria("status", status.getValue(),
+                    SearchCriteria.SearchOperation.EQUAL));
+        }
+
+        if(course_category_id != null && !course_category_id.isEmpty()){
+            query.add(new SearchCriteria("course_category_id", course_category_id,
+                    SearchCriteria.SearchOperation.EQUAL));
+        }
+        if(start_date > 0){
+            query.add(new SearchCriteria("start_date", start_date,
+                    SearchCriteria.SearchOperation.GREATER_THAN_EQUAL));
+        }
+
+        if(end_date > 0){
+            query.add(new SearchCriteria("end_date", end_date,
+                    SearchCriteria.SearchOperation.LESS_THAN_EQUAL));
+        }
+
+        return ResponseEntity.ok(courseService.findAllByTeacher(query, currentUser));
+    }
+
     @GetMapping("/detail")
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {
