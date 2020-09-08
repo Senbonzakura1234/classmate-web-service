@@ -163,6 +163,7 @@ public class SeederServiceImp implements SeederService {
                 IntStream.range(0, 2).forEach(j -> {
                     try {
                         var session = new Session();
+                        session.setCourse_id(course.get().getId());
                         session.setName("Session Name " + j + ", Course " + i);
                         session.setStart_time(course.get().getStart_date() + (j + 1L) * 86400000L);
                         var checkSession = sessionRepository
