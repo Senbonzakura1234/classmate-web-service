@@ -62,7 +62,7 @@ public class ExerciseServiceImp implements ExerciseService {
             if(course.isEmpty())
             return new DatabaseQueryResult(false, "Course not found",
                     HttpStatus.NOT_FOUND, exerciseRequest);
-            if(course.get().getUser_id().equals(teacher.get().getId()))
+            if(!course.get().getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, exerciseRequest);
 
@@ -140,7 +140,7 @@ public class ExerciseServiceImp implements ExerciseService {
             if(course.isEmpty())
                 return new DatabaseQueryResult(false, "course not found",
                         HttpStatus.NOT_FOUND, exerciseRequest);
-            if(course.get().getUser_id().equals(teacher.get().getId()))
+            if(!course.get().getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, exerciseRequest);
 
@@ -186,7 +186,7 @@ public class ExerciseServiceImp implements ExerciseService {
             if(course.isEmpty())
                 return new DatabaseQueryResult(false, "course not found",
                         HttpStatus.NOT_FOUND, "");
-            if(course.get().getUser_id().equals(teacher.get().getId()))
+            if(!course.get().getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, "");
 
