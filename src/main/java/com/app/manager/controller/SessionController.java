@@ -29,8 +29,7 @@ public class SessionController {
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getAll(
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
-            @RequestParam(value = "course_id", required = false, defaultValue = "0") String course_id,
-            @RequestParam(value = "user_id", required = false, defaultValue = "0") String user_id,
+            @RequestParam(value = "course_id", required = false, defaultValue = "") String course_id,
             @RequestParam(value = "status", required = false) Session.StatusEnum status
     ) {
         var query = new SessionSpecification();
@@ -44,10 +43,6 @@ public class SessionController {
 
         if(course_id != null && !course_id.isEmpty()){
             query.add(new SearchCriteria("course_id", course_id,
-                    SearchCriteria.SearchOperation.EQUAL));
-        }
-        if(user_id != null && !user_id.isEmpty()){
-            query.add(new SearchCriteria("user_id", user_id,
                     SearchCriteria.SearchOperation.EQUAL));
         }
 
