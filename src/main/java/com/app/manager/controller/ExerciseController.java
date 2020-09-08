@@ -72,6 +72,25 @@ public class ExerciseController {
     }
 
 
+    @PostMapping("/save")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> save(@Valid @RequestBody ExerciseRequest exerciseRequest,
+                                    BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error"));
+        }
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = exerciseService.save(exerciseRequest, currentUser);
+        return result.isSuccess() ? ResponseEntity.ok(result.getDescription()) :
+                ResponseEntity.status(result.getHttp_status()).body(result);
+    }
+
     @PostMapping("/edit")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> update(@Valid @RequestBody ExerciseRequest exerciseRequest,
