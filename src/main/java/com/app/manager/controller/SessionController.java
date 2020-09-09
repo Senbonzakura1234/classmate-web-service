@@ -20,7 +20,8 @@ import javax.validation.Valid;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/data/session")
+@RequestMapping(value = "/api/data/session",
+        consumes = "application/json", produces = "application/json")
 public class SessionController {
     @Autowired
     SessionService sessionService;

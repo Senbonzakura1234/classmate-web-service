@@ -25,7 +25,8 @@ import java.util.List;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping(value = "/api/test",
+        consumes = "application/json", produces = "application/json")
 public class TestController {
     @Autowired
     CourseRepository courseRepository;

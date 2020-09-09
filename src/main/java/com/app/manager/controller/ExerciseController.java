@@ -23,7 +23,8 @@ import javax.validation.Valid;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/data/exercise")
+@RequestMapping(value = "/api/data/exercise",
+        consumes = "application/json", produces = "application/json")
 public class ExerciseController {
     @Autowired ExerciseService exerciseService;
     @Autowired StudentExerciseService studentExerciseService;

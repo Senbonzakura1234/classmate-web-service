@@ -22,7 +22,8 @@ import javax.validation.Valid;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/data/course")
+@RequestMapping(value = "/api/data/course",
+        consumes = "application/json", produces = "application/json")
 public class CourseController {
     @Autowired CourseService courseService;
     @Autowired StudentCourseService studentCourseService;

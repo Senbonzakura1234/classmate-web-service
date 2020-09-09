@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
 public class PostServiceImp implements PostService {
-    @Autowired
-    PostRepository postRepository;
+    @Autowired PostRepository postRepository;
     @Autowired AttachmentRepository attachmentRepository;
     @Autowired UserRepository userRepository;
     @Autowired SessionRepository sessionRepository;
@@ -48,9 +47,8 @@ public class PostServiceImp implements PostService {
                 .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
                 .equals(currentUser.getId()))) return new ArrayList<>();
 
-            var collect =
-                postRepository.findAllByCourse_idAndStatusAndPinEquals(
-                    courseId, Post.StatusEnum.SHOW, false).stream().map(post -> {
+            return postRepository.findAllByCourse_idAndStatus(
+                    courseId, Post.StatusEnum.SHOW).stream().map(post -> {
                 try {
                     var user = userRepository.findById(post.getId());
                     if (user.isEmpty()) return new PostResponse();
@@ -66,23 +64,46 @@ public class PostServiceImp implements PostService {
                     return new PostResponse();
                 }
             }).collect(Collectors.toList());
-
-            currentPinned(course.getId()).ifPresent(post -> {
-                var user = userRepository.findById(post.getId());
-                user.ifPresent(value -> {
-                    var profile = castObject.profilePrivate(value);
-                    var attachments = attachmentRepository
-                            .findAllByPost_idAndStatus(post.getId(), Attachment.StatusEnum.SHOW)
-                            .stream().map(attachment -> castObject.attachmentModel(attachment))
-                            .collect(Collectors.toList());
-                    collect.add(0, castObject.postModel(profile, post, attachments));
-                });
-            });
-            return collect;
         } catch (RuntimeException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
             return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public Optional<PostResponse> getOne(String id, String currentUsername) {
+        try {
+            var currentUser = userRepository.findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            var post = postRepository.findFirstByIdAndStatus(id, Post.StatusEnum.SHOW)
+                    .orElseThrow(() -> new RuntimeException("post not found"));
+            var course = courseRepository.findById(post.getCourse_id())
+                    .orElseThrow(() -> new RuntimeException("course not found"));
+            var role = roleRepository.findByName(ERole.ROLE_ADMIN)
+                    .orElseThrow(() -> new RuntimeException("role not found"));
+
+            if (!currentUser.getRoles().contains(role) ||
+                !course.getUser_id().equals(currentUser.getId()) ||
+                studentCourseRepository.findAllByCourse_idAndStatus
+                (course.getUser_id(), StudentCourse.StatusEnum.SHOW)
+                .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
+                .equals(currentUser.getId())))
+            return Optional.empty();
+
+            var user = userRepository.findById(post.getId());
+            if (user.isEmpty()) return Optional.empty();
+            var profile = castObject.profilePrivate(user.get());
+            var attachments = attachmentRepository
+                    .findAllByPost_idAndStatus(post.getId(), Attachment.StatusEnum.SHOW)
+                    .stream().map(attachment -> castObject.attachmentModel(attachment))
+                    .collect(Collectors.toList());
+
+            return Optional.of(castObject.postModel(profile, post, attachments));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return Optional.empty();
         }
     }
 
@@ -128,28 +149,29 @@ public class PostServiceImp implements PostService {
 
     @Override
     public DatabaseQueryResult edit(PostRequest postRequest,
-                                    String messageId, String currentUsername) {
+                                    String postId, String currentUsername) {
         try {
             var currentUser = userRepository.findByUsername(currentUsername);
             if(currentUser.isEmpty()) return new DatabaseQueryResult(
                 false, "User not found",
                 HttpStatus.NOT_FOUND, postRequest);
-            var message = postRepository.findById(messageId);
+            var post = postRepository
+                    .findFirstByIdAndStatus(postId, Post.StatusEnum.SHOW);
 
-            if(message.isEmpty()) return new DatabaseQueryResult(
+            if(post.isEmpty()) return new DatabaseQueryResult(
                 false, "post not found",
                 HttpStatus.NOT_FOUND, postRequest);
 
-            if(!message.get().getUser_id().equals(currentUser.get().getId()))
+            if(!post.get().getUser_id().equals(currentUser.get().getId()))
                 return new DatabaseQueryResult(
                     false, "Not your post",
                     HttpStatus.BAD_REQUEST, postRequest);
-            var m = message.get();
-            m.setContent(postRequest.getContent());
-            m.setUpdated_at(System.currentTimeMillis());
-            postRepository.save(m);
+            var p = post.get();
+            p.setContent(postRequest.getContent());
+            p.setUpdated_at(System.currentTimeMillis());
+            postRepository.save(p);
             attachmentRepository.findAllByPost_idAndStatus
-                (m.getId(), Attachment.StatusEnum.SHOW).forEach(attachment -> {
+                (p.getId(), Attachment.StatusEnum.SHOW).forEach(attachment -> {
                 attachment.setUpdated_at(System.currentTimeMillis());
                 attachment.setDeleted_at(System.currentTimeMillis());
                 attachment.setStatus(Attachment.StatusEnum.HIDE);
@@ -157,7 +179,7 @@ public class PostServiceImp implements PostService {
             });
             postRequest.getAttachmentRequests().forEach(
                 attachmentRequest -> attachmentRepository
-                .save(castObject.attachmentEntity(m.getId(), attachmentRequest)));
+                .save(castObject.attachmentEntity(p.getId(), attachmentRequest)));
             return new DatabaseQueryResult(true, "edit post success",
                     HttpStatus.OK, postRequest);
         } catch (Exception e) {
@@ -170,27 +192,35 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public DatabaseQueryResult updatePin(String messageId, String currentUsername) {
+    public DatabaseQueryResult updatePin(String postId, String currentUsername) {
         try {
             var currentUser = userRepository.findByUsername(currentUsername);
             if(currentUser.isEmpty()) return new DatabaseQueryResult(
                     false, "User not found",
                     HttpStatus.NOT_FOUND, "");
-            var message = postRepository.findById(messageId);
 
-            if(message.isEmpty()) return new DatabaseQueryResult(
+            var post = postRepository
+                    .findFirstByIdAndStatus(postId, Post.StatusEnum.SHOW);
+            if(post.isEmpty()) return new DatabaseQueryResult(
                     false, "post not found",
                     HttpStatus.NOT_FOUND, "");
 
-            if(!message.get().getUser_id().equals(currentUser.get().getId()))
+            var course = courseRepository
+                    .findById(post.get().getCourse_id());
+            if(course.isEmpty()) return new DatabaseQueryResult(
+                    false, "course not found",
+                    HttpStatus.NOT_FOUND, "");
+
+            if(!course.get().getUser_id().equals(currentUser.get().getId()))
                 return new DatabaseQueryResult(
-                        false, "Not your post",
+                        false, "Not your course",
                         HttpStatus.BAD_REQUEST, "");
-            var m = message.get();
-            var isPin = m.isPin();
-            if(!isPin) removeOldPin(m.getCourse_id());
-            m.setPin(!isPin);
-            postRepository.save(m);
+            var p = post.get();
+            var isPin = p.isPin();
+            if(!isPin) removeOldPin(p.getCourse_id());
+            p.setPin(!isPin);
+            p.setUpdated_at(System.currentTimeMillis());
+            postRepository.save(p);
             return new DatabaseQueryResult(true, "pin post success",
                     HttpStatus.OK, "");
         } catch (Exception e) {
@@ -203,39 +233,64 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public DatabaseQueryResult updateStatus(String messageId, String currentUsername,
-                                            Post.StatusEnum status) {
+    public DatabaseQueryResult delete(String postId, String currentUsername) {
         try {
             var currentUser = userRepository.findByUsername(currentUsername);
             if(currentUser.isEmpty()) return new DatabaseQueryResult(
                     false, "User not found",
                     HttpStatus.NOT_FOUND, "");
-            var message = postRepository.findById(messageId);
 
-            if(message.isEmpty()) return new DatabaseQueryResult(
+            var post = postRepository
+                    .findFirstByIdAndStatus(postId, Post.StatusEnum.SHOW);
+            if(post.isEmpty()) return new DatabaseQueryResult(
                     false, "post not found",
                     HttpStatus.NOT_FOUND, "");
 
-            if(!message.get().getUser_id().equals(currentUser.get().getId()))
-                return new DatabaseQueryResult(
-                        false, "Not your post",
-                        HttpStatus.BAD_REQUEST, "");
-            var m = message.get();
-            m.setPin(false);
-            m.setStatus(Post.StatusEnum.HIDE);
-            m.setUpdated_at(System.currentTimeMillis());
-            m.setDeleted_at(System.currentTimeMillis());
-            postRepository.save(m);
+            var course = courseRepository
+                    .findById(post.get().getCourse_id());
+            if(course.isEmpty()) return new DatabaseQueryResult(
+                    false, "course not found",
+                    HttpStatus.NOT_FOUND, "");
 
-            attachmentRepository.findAllByPost_idAndStatus
-                    (m.getId(), Attachment.StatusEnum.SHOW).forEach(attachment -> {
-                attachment.setUpdated_at(System.currentTimeMillis());
-                attachment.setDeleted_at(System.currentTimeMillis());
-                attachment.setStatus(Attachment.StatusEnum.HIDE);
-                attachmentRepository.save(attachment);
-            });
+            if(!post.get().getUser_id().equals(currentUser.get().getId())
+                && !course.get().getUser_id().equals(currentUser.get().getId()))
+                return new DatabaseQueryResult(false,
+                    "you have no authority to delete this post",
+                    HttpStatus.BAD_REQUEST, "");
+
+            var p = post.get();
+            p.setStatus(Post.StatusEnum.HIDE);
+            p.setUpdated_at(System.currentTimeMillis());
+            p.setDeleted_at(System.currentTimeMillis());
+            postRepository.save(p);
+
             return new DatabaseQueryResult(true,
-                    "remove post success",
+                    "delete post success",
+                    HttpStatus.OK, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return new DatabaseQueryResult(
+                    false, "Error: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+        }
+    }
+
+    @Override
+    public DatabaseQueryResult updateStatus(String postId, Post.StatusEnum status) {
+        try {
+            var post = postRepository.findById(postId);
+            if(post.isEmpty()) return new DatabaseQueryResult(false,
+                    "post not found", HttpStatus.NOT_FOUND, "");
+
+            var p = post.get();
+            p.setStatus(status);
+            p.setUpdated_at(System.currentTimeMillis());
+            p.setDeleted_at(0L);
+            postRepository.save(p);
+
+            return new DatabaseQueryResult(true,
+                    "update status success",
                     HttpStatus.OK, "");
         } catch (Exception e) {
             e.printStackTrace();
@@ -248,10 +303,10 @@ public class PostServiceImp implements PostService {
 
     private void removeOldPin (String courseId){
         try {
-            currentPinned(courseId).ifPresent(message -> {
-                message.setUpdated_at(System.currentTimeMillis());
-                message.setPin(false);
-                postRepository.save(message);
+            currentPinned(courseId).ifPresent(post -> {
+                post.setUpdated_at(System.currentTimeMillis());
+                post.setPin(false);
+                postRepository.save(post);
             });
         } catch (Exception e) {
             e.printStackTrace();

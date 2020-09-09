@@ -200,4 +200,21 @@ public class CastObject {
                 attachmentResponses, post.getCourse_id(), post.getStatus(),
                 post.getCreated_at()) : new PostResponse();
     }
+
+    public Comment commentEntity(String userId, String postId,
+                                 CommentRequest commentRequest){
+        var comment = new Comment();
+        comment.setUser_id(userId);
+        comment.setPost_id(postId);
+        comment.setContent(commentRequest.getContent());
+        comment.setUpdated_at(System.currentTimeMillis());
+        return comment;
+    }
+    public CommentResponse commentModel(UserProfileResponse userProfileResponse,
+                                        Comment comment){
+        return comment != null ? new CommentResponse(comment.getUser_id(),
+                userProfileResponse, comment.getPost_id(), comment.getContent(),
+                comment.isPin(), comment.getStatus(), comment.getCreated_at()) :
+                new CommentResponse();
+    }
 }

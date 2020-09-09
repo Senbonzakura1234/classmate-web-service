@@ -20,7 +20,8 @@ import javax.validation.Valid;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/data/user")
+@RequestMapping(value = "/api/data/user",
+        consumes = "application/json", produces = "application/json")
 public class UserController {
     @Autowired
     UserService userService;
@@ -59,7 +60,7 @@ public class UserController {
         var profile = userService.userProfile(id, currentUser);
         return profile.isEmpty() ? ResponseEntity.badRequest()
                 .body(new MessageResponse("Error: user not found",  ""))
-                : ResponseEntity.ok(profile);
+                : ResponseEntity.ok(profile.get());
     }
 
     @PostMapping("/profile/update")
