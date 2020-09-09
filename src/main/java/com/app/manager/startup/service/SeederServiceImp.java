@@ -1,9 +1,8 @@
-package com.app.manager.service.implementClass;
+package com.app.manager.startup.service;
 
 import com.app.manager.context.repository.*;
 import com.app.manager.entity.*;
 import com.app.manager.model.seeder.SeederData;
-import com.app.manager.service.interfaceClass.SeederService;
 import com.app.manager.service.interfaceClass.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

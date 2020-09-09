@@ -5,7 +5,6 @@ import com.app.manager.model.payload.request.LoginRequest;
 import com.app.manager.model.payload.request.SignupRequest;
 import com.app.manager.model.payload.response.JwtResponse;
 import com.app.manager.model.payload.response.MessageResponse;
-import com.app.manager.model.seeder.Seeder;
 import com.app.manager.security.authService.UserDetailsImpl;
 import com.app.manager.security.jwt.JwtUtils;
 import com.app.manager.service.interfaceClass.RoleService;
@@ -34,7 +33,6 @@ public class AuthController {
     @Autowired RoleService roleService;
     @Autowired PasswordEncoder encoder;
     @Autowired JwtUtils jwtUtils;
-    @Autowired Seeder seeder;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest,
