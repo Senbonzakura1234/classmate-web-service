@@ -184,20 +184,20 @@ public class CastObject {
             : new AttachmentResponse();
     }
 
-    public Message messageEntity(String userId, String courseId,
-                                 CourseMessageRequest courseMessageRequest){
-        var message = new Message();
-        message.setUser_id(userId);
-        message.setCourse_id(courseId);
-        message.setContent(courseMessageRequest.getContent());
-        message.setUpdated_at(System.currentTimeMillis());
-        return message;
+    public Post postEntity(String userId, String courseId,
+                           PostRequest postRequest){
+        var post = new Post();
+        post.setUser_id(userId);
+        post.setCourse_id(courseId);
+        post.setContent(postRequest.getContent());
+        post.setUpdated_at(System.currentTimeMillis());
+        return post;
     }
-    public CourseMessageResponse messageModel(UserProfileResponse userProfileResponse,
-            Message message, List<AttachmentResponse> attachmentResponses){
-        return message != null ? new CourseMessageResponse(message.getId(),
-                message.isPin(), message.getUser_id(), userProfileResponse,
-                attachmentResponses, message.getCourse_id(), message.getStatus(),
-                message.getCreated_at()) : new CourseMessageResponse();
+    public PostResponse postModel(UserProfileResponse userProfileResponse,
+                                  Post post, List<AttachmentResponse> attachmentResponses){
+        return post != null ? new PostResponse(post.getId(),
+                post.isPin(), post.getUser_id(), userProfileResponse,
+                attachmentResponses, post.getCourse_id(), post.getStatus(),
+                post.getCreated_at()) : new PostResponse();
     }
 }

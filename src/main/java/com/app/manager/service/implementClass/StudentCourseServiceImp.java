@@ -37,27 +37,27 @@ public class StudentCourseServiceImp implements StudentCourseService {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false, "Teacher not found",
-                        HttpStatus.NOT_FOUND, "");
+                        HttpStatus.NOT_FOUND, studentCourseRequest);
 
             var course = courseRepository.findById(studentCourseRequest.getCourse_id());
             if(course.isEmpty() || course.get().getStatus() == Course.StatusEnum.CANCEL)
                 return new DatabaseQueryResult(false, "Course not found",
-                        HttpStatus.NOT_FOUND, "");
+                        HttpStatus.NOT_FOUND, studentCourseRequest);
 
             if(!course.get().getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not Your Course",
-                        HttpStatus.BAD_REQUEST, "");
+                        HttpStatus.BAD_REQUEST, studentCourseRequest);
 
             var role = roleRepository.findByName(ERole.ROLE_STUDENT);
             if(role.isEmpty() || role.get().getStatus() == Role.StatusEnum.HIDE)
                 return new DatabaseQueryResult(false, "Role not found",
-                        HttpStatus.NOT_FOUND, "");
+                        HttpStatus.NOT_FOUND, studentCourseRequest);
 
             var student = userRepository.findById(studentCourseRequest.getStudent_id());
             if(student.isEmpty() || !student.get().getRoles().contains(role.get()))
                 return new DatabaseQueryResult(false, "Student not found," +
                         " or user is not Student",
-                        HttpStatus.NOT_FOUND, "");
+                        HttpStatus.NOT_FOUND, studentCourseRequest);
 
 //            if(student.get().isFacedefinition())
 //                return new DatabaseQueryResult(false,
@@ -77,7 +77,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
             e.printStackTrace();
             System.out.println(e.getMessage());
             return new DatabaseQueryResult(false, "Server error",
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR, studentCourseRequest);
         }
     }
 

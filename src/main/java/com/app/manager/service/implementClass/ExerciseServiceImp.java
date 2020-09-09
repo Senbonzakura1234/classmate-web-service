@@ -74,7 +74,7 @@ public class ExerciseServiceImp implements ExerciseService {
             System.out.println(e.getMessage());
             return new DatabaseQueryResult(false,
                     "save exercise failed",
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR, exerciseRequest);
         }
     }
 
@@ -123,36 +123,43 @@ public class ExerciseServiceImp implements ExerciseService {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false,
-                        "Teacher not found", HttpStatus.NOT_FOUND, exerciseRequest);
+                        "Teacher not found",
+                        HttpStatus.NOT_FOUND, exerciseRequest);
 
             var exercise = exerciseRepository.findById(id);
 
             if(exercise.isEmpty())
-                return new DatabaseQueryResult(false, "exercise not found",
+                return new DatabaseQueryResult(false,
+                        "exercise not found",
                         HttpStatus.NOT_FOUND, exerciseRequest);
 
             var session = sessionRepository.findById(exercise.get().getSession_id());
             if(session.isEmpty())
-                return new DatabaseQueryResult(false, "session not found",
+                return new DatabaseQueryResult(false,
+                        "session not found",
                         HttpStatus.NOT_FOUND, exerciseRequest);
 
             var course = courseRepository.findById(session.get().getCourse_id());
             if(course.isEmpty())
-                return new DatabaseQueryResult(false, "course not found",
+                return new DatabaseQueryResult(false,
+                        "course not found",
                         HttpStatus.NOT_FOUND, exerciseRequest);
             if(!course.get().getUser_id().equals(teacher.get().getId()))
-                return new DatabaseQueryResult(false, "Not your course",
+                return new DatabaseQueryResult(false,
+                        "Not your course",
                         HttpStatus.BAD_REQUEST, exerciseRequest);
 
             exerciseRepository.save(castObject.exerciseEntity(exerciseRequest));
-            return new DatabaseQueryResult(true, "update exercise success",
+            return new DatabaseQueryResult(true,
+                    "update exercise success",
                     HttpStatus.OK, exerciseRequest);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
             return new DatabaseQueryResult(false,
                     "update exercise failed",
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    exerciseRequest);
         }
     }
 

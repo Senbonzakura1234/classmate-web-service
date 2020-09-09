@@ -121,7 +121,7 @@ public class UserServiceImp implements UserService {
             userRepository.save(user);
             return new DatabaseQueryResult(true,
                     "User registered successfully!",
-                    HttpStatus.OK, "");
+                    HttpStatus.OK, castObject.profilePublic(user));
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
@@ -235,7 +235,7 @@ public class UserServiceImp implements UserService {
         } catch (Exception e) {
             e.printStackTrace();System.out.println(e.getMessage());
             return new DatabaseQueryResult(false, "Update profile failed",
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR, userProfileRequest);
         }
     }
 
@@ -259,19 +259,22 @@ public class UserServiceImp implements UserService {
             if(result.isEmpty() || !result.get().isSuccess())
                 return new DatabaseQueryResult(false,
                         "Setup face definition fail",
-                        HttpStatus.INTERNAL_SERVER_ERROR, "");
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        faceDefinitionClientRequest);
 
             student.setFace_definition(true);
             student.setFace_definition_id(faceDefinition.getDefinition_id());
             userRepository.save(student);
             return new DatabaseQueryResult(true,
-                    "Setup face definition success", HttpStatus.OK, "");
+                    "Setup face definition success", HttpStatus.OK,
+                    faceDefinitionClientRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
             return new DatabaseQueryResult(false,
                     "Setup face definition fail",
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    faceDefinitionClientRequest);
         }
     }
 

@@ -58,7 +58,7 @@ public class UserController {
                 .getContext().getAuthentication().getName();
         var profile = userService.userProfile(id, currentUser);
         return profile.isEmpty() ? ResponseEntity.badRequest()
-                .body(new MessageResponse("Error: user not found"))
+                .body(new MessageResponse("Error: user not found",  ""))
                 : ResponseEntity.ok(profile);
     }
 
@@ -73,7 +73,8 @@ public class UserController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error"));
+                    .body(new MessageResponse("Error: Validate Error",
+                            bindingResult.getAllErrors()));
         }
 
         var currentUser = SecurityContextHolder
@@ -96,12 +97,13 @@ public class UserController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error"));
+                    .body(new MessageResponse("Error: Validate Error",
+                            bindingResult.getAllErrors()));
         }
         if(faceDefinitionClientRequest.getImg_urls().isEmpty())
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Null Imagelist"));
+                    .body(new MessageResponse("Error: Null Imagelist",  ""));
 
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();

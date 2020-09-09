@@ -1,6 +1,6 @@
 package com.app.manager.startup;
 
-import com.app.manager.startup.service.SeederService;
+import com.app.manager.startup.startupService.SeederService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -13,7 +13,7 @@ public class ApplicationStartup {
 
     @EventListener(ApplicationReadyEvent.class)
     public void Startup(){
-        Seeder();
+//        Seeder();
     }
 
     private void Seeder(){

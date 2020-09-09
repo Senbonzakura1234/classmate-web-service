@@ -40,7 +40,7 @@ public class Course implements Serializable {
     private List<StudentCourse> student_courses;
 
     @OneToMany(mappedBy = "course")
-    private List<Message> messages;
+    private List<Post> posts;
 
 
     @NotBlank
@@ -215,11 +215,11 @@ public class Course implements Serializable {
         this.end_date = enddate;
     }
 
-    public List<Message> getMessages() {
-        return messages;
+    public List<Post> getMessages() {
+        return posts;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setMessages(List<Post> posts) {
+        this.posts = posts;
     }
 }

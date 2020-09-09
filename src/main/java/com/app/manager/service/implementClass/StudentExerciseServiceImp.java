@@ -112,12 +112,14 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
             System.out.println(e.getMessage());
             return new DatabaseQueryResult(false,
                     "Post Student Exercise failed",
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    studentExerciseRequest);
         }
     }
 
     @Override
-    public List<StudentExerciseResponse> getAllStudentExercise(String exerciseId, String currentUsername) {
+    public List<StudentExerciseResponse> getAllStudentExercise(
+            String exerciseId, String currentUsername) {
         try {
             var currentUser = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("Teacher not found"));
@@ -163,7 +165,8 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
     }
 
     @Override
-    public Optional<StudentExerciseResponse> getStudentExercise(String id, String currentUsername) {
+    public Optional<StudentExerciseResponse> getStudentExercise(
+            String id, String currentUsername) {
         try {
             var currentUser = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("User not found"));
@@ -255,7 +258,7 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
             System.out.println(e.getMessage());
             return new DatabaseQueryResult(false,
                     "Error: " + e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR, markExerciseRequest);
         }
     }
 }

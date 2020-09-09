@@ -121,7 +121,8 @@ public class AttendanceServiceImp implements AttendanceService {
             System.out.println(e.getMessage());
             return new DatabaseQueryResult(false,
                     "Error: " + e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    faceCheckClientRequest);
         }
     }
 
@@ -181,7 +182,8 @@ public class AttendanceServiceImp implements AttendanceService {
             System.out.println(e.getMessage());
             return new DatabaseQueryResult(false,
                     "Error: " + e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    attendanceCheckRequests);
         }
     }
 

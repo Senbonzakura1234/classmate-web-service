@@ -3,13 +3,10 @@ package com.app.manager.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "[attachment]")
-public class Attachment {
+@Table(name = "[comment]")
+public class Comment {
     @Id
     @Column(name = "id")
     @GeneratedValue(generator = "UUID")
@@ -18,6 +15,13 @@ public class Attachment {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     private String id;
+
+    @Column(name = "user_id")
+    private String user_id;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", updatable = false, insertable = false)
+    private User user;
 
     @Column(name = "post_id")
     private String post_id;
@@ -28,20 +32,12 @@ public class Attachment {
 
 
 
-    @Column(name = "name", nullable = false)
-    private String name;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+    @Column(name = "content", nullable = false)
+    private String content;
 
-    @NotBlank
-    @Column(name = "file_url", nullable = false)
-    private String file_url;
-
-    @Min(0L)
-    @NotNull
-    @Column(name = "file_size", nullable = false)
-    private Long file_size = 0L;
+    @Column(name = "pin", nullable = false)
+    private boolean pin = false;
 
 
 
@@ -57,7 +53,7 @@ public class Attachment {
     @Column(name = "deleted_at")
     private Long deleted_at;
 
-    public Attachment() {
+    public Comment() {
     }
 
     public enum StatusEnum {
@@ -122,6 +118,22 @@ public class Attachment {
         this.deleted_at = deleted_at;
     }
 
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public String getMessage_id() {
         return post_id;
     }
@@ -138,35 +150,19 @@ public class Attachment {
         this.post = post;
     }
 
-    public String getName() {
-        return name;
+    public String getContent() {
+        return content;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getDescription() {
-        return description;
+    public boolean isPin() {
+        return pin;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getFile_url() {
-        return file_url;
-    }
-
-    public void setFile_url(String file_url) {
-        this.file_url = file_url;
-    }
-
-    public Long getFile_size() {
-        return file_size;
-    }
-
-    public void setFile_size(Long file_size) {
-        this.file_size = file_size;
+    public void setPin(boolean pin) {
+        this.pin = pin;
     }
 }

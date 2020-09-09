@@ -50,7 +50,7 @@ public class SessionServiceImp implements SessionService {
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false,
                         "Teacher not found",
-                        HttpStatus.NOT_FOUND, "");
+                        HttpStatus.NOT_FOUND, sessionRequest);
 
             var course = courseRepository
                     .findById(sessionRequest.getCourse_id())
@@ -58,16 +58,18 @@ public class SessionServiceImp implements SessionService {
 
             if(!course.getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
-                        HttpStatus.BAD_REQUEST, "");
+                        HttpStatus.BAD_REQUEST, sessionRequest);
             var session = castObject.sessionEntity(sessionRequest);
             sessionRepository.save(session);
             return new DatabaseQueryResult(true,
                     "save session success", HttpStatus.OK,
-                    castObject.sessionModel(session));
+                    sessionRequest);
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "save session failed", HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    "save session failed",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    sessionRequest);
         }
     }
 
@@ -113,25 +115,28 @@ public class SessionServiceImp implements SessionService {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false, "Teacher not found",
-                        HttpStatus.NOT_FOUND, "");
+                        HttpStatus.NOT_FOUND, sessionRequest);
 
 
 
             var s = sessionRepository.findById(id);
             if(s.isEmpty()) return new DatabaseQueryResult(false,
-                    "save course failed", HttpStatus.NOT_FOUND, "");
+                    "save course failed",
+                    HttpStatus.NOT_FOUND, sessionRequest);
 
             var course = courseRepository
                     .findById(s.get().getCourse_id())
                     .orElseThrow(() -> new RuntimeException("Course not found"));
 
             if(!course.getUser_id().equals(teacher.get().getId()))
-                return new DatabaseQueryResult(false, "Not your course",
-                        HttpStatus.BAD_REQUEST, "");
+                return new DatabaseQueryResult(false,
+                        "Not your course",
+                        HttpStatus.BAD_REQUEST, sessionRequest);
 
             if(course.getStatus() != Course.StatusEnum.ONGOING)
-                return new DatabaseQueryResult(false, "Course is not ongoing",
-                        HttpStatus.BAD_REQUEST, "");
+                return new DatabaseQueryResult(false,
+                        "Course is not ongoing",
+                        HttpStatus.BAD_REQUEST, sessionRequest);
 
             var session  = s.get();
             session.setSession_duration(sessionRequest.getSession_duration());
@@ -140,13 +145,13 @@ public class SessionServiceImp implements SessionService {
             session.setCourse_id(sessionRequest.getCourse_id());
             sessionRepository.save(session);
             return new DatabaseQueryResult(true,
-                    "save session success", HttpStatus.OK,
-                    castObject.sessionModel(session));
+                    "save session success",
+                    HttpStatus.OK, sessionRequest);
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
-                    "save session failed", HttpStatus.INTERNAL_SERVER_ERROR,
-                    sessionRequest);
+                    "save session failed",
+                    HttpStatus.INTERNAL_SERVER_ERROR, sessionRequest);
         }
     }
 

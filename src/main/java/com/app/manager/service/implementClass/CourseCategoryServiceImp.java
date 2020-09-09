@@ -51,7 +51,7 @@ public class CourseCategoryServiceImp implements CourseCategoryService {
             System.out.println(e.getMessage());
             return new DatabaseQueryResult(
                     false, "save course category failed",
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR, courseCategoryRequest);
         }
     }
 
@@ -76,7 +76,7 @@ public class CourseCategoryServiceImp implements CourseCategoryService {
             System.out.println(e.getMessage());
             return new DatabaseQueryResult(
                     false, "save course category failed",
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR, courseCategoryRequest);
         }
     }
 }

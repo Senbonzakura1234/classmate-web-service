@@ -1,4 +1,4 @@
-package com.app.manager.startup.service;
+package com.app.manager.startup.startupService;
 
 import com.app.manager.context.repository.*;
 import com.app.manager.entity.*;

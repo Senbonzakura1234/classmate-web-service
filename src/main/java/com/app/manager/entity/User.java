@@ -36,7 +36,10 @@ public class User {
     private List<Attendance> attendances;
 
     @OneToMany(mappedBy = "user")
-    private List<Message> messages;
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "user_role",
@@ -346,12 +349,12 @@ public class User {
         this.face_definition = facedefinition;
     }
 
-    public List<Message> getMessages() {
-        return messages;
+    public List<Post> getMessages() {
+        return posts;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setMessages(List<Post> posts) {
+        this.posts = posts;
     }
 
     public String getAvatar_uri() {
@@ -360,5 +363,13 @@ public class User {
 
     public void setAvatar_uri(String avatar_uri) {
         this.avatar_uri = avatar_uri;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

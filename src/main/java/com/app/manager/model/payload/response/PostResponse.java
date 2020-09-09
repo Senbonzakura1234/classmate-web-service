@@ -1,27 +1,27 @@
 package com.app.manager.model.payload.response;
 
-import com.app.manager.entity.Message;
+import com.app.manager.entity.Post;
 
 import java.util.List;
 
-public class CourseMessageResponse {
+public class PostResponse {
     private String id;
     private boolean pin;
     private String user_id;
     private UserProfileResponse userProfileResponse = new UserProfileResponse();
     private List<AttachmentResponse> attachmentResponses;
     private String session_id;
-    private Message.StatusEnum status;
+    private Post.StatusEnum status;
     private Long created_at;
 
-    public CourseMessageResponse() {
+    public PostResponse() {
     }
 
-    public CourseMessageResponse(String id, boolean pin, String user_id,
-                                 UserProfileResponse userProfileResponse,
-                                 List<AttachmentResponse> attachmentResponses,
-                                 String session_id, Message.StatusEnum status,
-                                 Long created_at) {
+    public PostResponse(String id, boolean pin, String user_id,
+                        UserProfileResponse userProfileResponse,
+                        List<AttachmentResponse> attachmentResponses,
+                        String session_id, Post.StatusEnum status,
+                        Long created_at) {
         this.id = id;
         this.pin = pin;
         this.user_id = user_id;
@@ -64,11 +64,11 @@ public class CourseMessageResponse {
         this.session_id = session_id;
     }
 
-    public Message.StatusEnum getStatus() {
+    public Post.StatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(Message.StatusEnum status) {
+    public void setStatus(Post.StatusEnum status) {
         this.status = status;
     }
 

@@ -4,17 +4,17 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseMessageRequest {
+public class PostRequest {
     @NotBlank
     private String content;
 
     private List<AttachmentRequest> attachmentRequests = new ArrayList<>();
 
-    public CourseMessageRequest() {
+    public PostRequest() {
     }
 
-    public CourseMessageRequest(@NotBlank String content,
-                                List<AttachmentRequest> attachmentRequests) {
+    public PostRequest(@NotBlank String content,
+                       List<AttachmentRequest> attachmentRequests) {
         this.content = content;
         this.attachmentRequests = attachmentRequests;
     }

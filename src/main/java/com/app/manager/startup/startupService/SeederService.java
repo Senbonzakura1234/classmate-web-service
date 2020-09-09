@@ -1,4 +1,4 @@
-package com.app.manager.startup.service;
+package com.app.manager.startup.startupService;
 
 public interface SeederService {
     void generateRoles();

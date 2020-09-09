@@ -49,31 +49,43 @@ public class CourseServiceImp implements CourseService {
     @Override
     public List<CourseResponse> findAllByStudent(CourseSpecification courseSpecification,
                                                  String currentUsername) {
-        var user = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new RuntimeException("user not found"));
+        try {
+            var user = userRepository.findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("user not found"));
 
-        var courses = courseRepository.findAll(courseSpecification)
-                .stream().filter(course -> studentCourseRepository
-                .findAllByUser_idAndStatus(user.getId(), StudentCourse.StatusEnum.SHOW)
-                .stream().anyMatch(studentCourse -> studentCourse.getUser_id()
-                        .equals(course.getId()))).collect(Collectors.toList());
+            var courses = courseRepository.findAll(courseSpecification)
+                    .stream().filter(course -> studentCourseRepository
+                    .findAllByUser_idAndStatus(user.getId(), StudentCourse.StatusEnum.SHOW)
+                    .stream().anyMatch(studentCourse -> studentCourse.getUser_id()
+                            .equals(course.getId()))).collect(Collectors.toList());
 
-        return courses.stream().map(course ->
-                castObject.courseModel(course))
-                .collect(Collectors.toList());
+            return courses.stream().map(course ->
+                    castObject.courseModel(course))
+                    .collect(Collectors.toList());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     @Override
     public List<CourseResponse> findAllByTeacher(CourseSpecification courseSpecification,
                                                  String currentUsername) {
-        var user = userRepository.findByUsername(currentUsername)
-                .orElseThrow(() -> new RuntimeException("user not found"));
-        var courses = courseRepository.findAll(courseSpecification)
-                .stream().filter(course -> course.getUser_id().equals(user.getId()))
-                .collect(Collectors.toList());
-        return courses.stream().map(course ->
-                castObject.courseModel(course))
-                .collect(Collectors.toList());
+        try {
+            var user = userRepository.findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("user not found"));
+            var courses = courseRepository.findAll(courseSpecification)
+                    .stream().filter(course -> course.getUser_id().equals(user.getId()))
+                    .collect(Collectors.toList());
+            return courses.stream().map(course ->
+                    castObject.courseModel(course))
+                    .collect(Collectors.toList());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -82,22 +94,25 @@ public class CourseServiceImp implements CourseService {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false,
-                        "Teacher not found", HttpStatus.NOT_FOUND, courseRequest);
+                        "Teacher not found",
+                        HttpStatus.NOT_FOUND, courseRequest);
 
 
             var course = castObject.courseEntity(courseRequest,
                     teacher.get().getId());
             courseRepository.save(course);
             return new DatabaseQueryResult(true,
-                    "save course success", HttpStatus.OK,
-                    castObject.courseModel(course));
+                    "save course success",
+                    HttpStatus.OK,
+                    courseRequest);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
 
             return new DatabaseQueryResult(false,
                     "save course failed",
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    courseRequest);
         }
     }
 
@@ -121,19 +136,20 @@ public class CourseServiceImp implements CourseService {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false, "Teacher not found",
-                        HttpStatus.NOT_FOUND, "");
+                        HttpStatus.NOT_FOUND, courseRequest);
 
             var c = courseRepository.findById(id);
             if(c.isEmpty()){
                 return new DatabaseQueryResult(false,
-                        "save course failed", HttpStatus.NOT_FOUND, "");
+                        "save course failed",
+                        HttpStatus.NOT_FOUND, courseRequest);
             }
 
             var course  = c.get();
 
             if(!course.getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
-                        HttpStatus.BAD_REQUEST, "");
+                        HttpStatus.BAD_REQUEST, courseRequest);
 
             course.setCoursecategory_id(courseRequest.getCourse_category_id());
             course.setDescription(courseRequest.getDescription());
@@ -143,13 +159,14 @@ public class CourseServiceImp implements CourseService {
             courseRepository.save(course);
 
             return new DatabaseQueryResult(true,
-                    "save course success", HttpStatus.OK,
-                    castObject.courseModel(course));
+                    "save course success",
+                    HttpStatus.OK, courseRequest);
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
                     "save course failed",
-                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    courseRequest);
         }
     }
 

@@ -7,8 +7,8 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
-@Table(name = "[message]")
-public class Message {
+@Table(name = "[post]")
+public class Post {
     @Id
     @Column(name = "id")
     @GeneratedValue(generator = "UUID")
@@ -33,8 +33,12 @@ public class Message {
     private Course course;
 
 
-    @OneToMany(mappedBy = "message")
+    @OneToMany(mappedBy = "post")
     private List<Attachment> attachments;
+
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments;
 
 
 
@@ -60,7 +64,7 @@ public class Message {
     @Column(name = "deleted_at")
     private Long deleted_at;
 
-    public Message() {
+    public Post() {
     }
 
     public enum StatusEnum {
@@ -179,5 +183,13 @@ public class Message {
 
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

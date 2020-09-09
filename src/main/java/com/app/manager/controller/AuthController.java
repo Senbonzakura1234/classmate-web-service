@@ -3,8 +3,8 @@ package com.app.manager.controller;
 import com.app.manager.entity.User;
 import com.app.manager.model.payload.request.LoginRequest;
 import com.app.manager.model.payload.request.SignupRequest;
-import com.app.manager.model.payload.response.JwtResponse;
 import com.app.manager.model.payload.response.MessageResponse;
+import com.app.manager.model.payload.response.JwtResponse;
 import com.app.manager.security.authService.UserDetailsImpl;
 import com.app.manager.security.jwt.JwtUtils;
 import com.app.manager.service.interfaceClass.RoleService;
@@ -14,6 +14,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,58 +45,64 @@ public class AuthController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error"));
+                    .body(new MessageResponse("Error: Validate Error",
+                            bindingResult.getAllErrors()));
         }
 
-        var authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        try {
+            var authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        var jwt = jwtUtils.generateJwtToken(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            var jwt = jwtUtils.generateJwtToken(authentication);
 
-        var userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        var roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+            var userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            var roles = userDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getEmail(),
+                    roles));
+        } catch (AuthenticationException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest()
+                .body(new MessageResponse(
+                "Signin failed",  ""));
+        }
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest,
                                           BindingResult bindingResult) {
-//        seeder.Seed(); // uncomment this to seed data, comment it again when done seeding
-
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors()
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .forEach(System.out::println);
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Validate Error"));
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Error: Validate Error",
+                            bindingResult.getAllErrors()));
         }
 
-        var checkUsername = userService.checkExistUsername(signUpRequest.getUsername());
+        var checkUsername = userService
+                .checkExistUsername(signUpRequest.getUsername());
         if (checkUsername.isEmpty() || checkUsername.get()) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse(
-                            checkUsername.isEmpty()? "Error: Sever error!" :
-                                    "Error: Username is already in use!"
-                    ));
+                    .body(new MessageResponse(checkUsername.isEmpty()? "Error: Sever error!" :
+                        "Error: Username is already in use!",  ""));
         }
-        var checkEmail = userService.checkExistEmail(signUpRequest.getEmail());
+        var checkEmail = userService
+                .checkExistEmail(signUpRequest.getEmail());
         if (checkEmail.isEmpty() || checkEmail.get()) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse(
-                            checkEmail.isEmpty()? "Error: Sever error!" :
-                                    "Error: Email is already in use!"
-                    ));
+                    .body(new MessageResponse(checkEmail.isEmpty()? "Error: Sever error!" :
+                        "Error: Email is already in use!",  ""));
         }
 
         // Create new user's account
@@ -107,11 +114,8 @@ public class AuthController {
         var result = userService.saveUser(user, strRoles);
 
         return result.isSuccess() ?
-                ResponseEntity
-                    .ok(new MessageResponse("User registered successfully!")) :
-                ResponseEntity
-                    .badRequest()
-                    .body(result);
+                ResponseEntity.ok(result) :
+                ResponseEntity.badRequest().body(result);
     }
 
     @GetMapping("/getRoleList")

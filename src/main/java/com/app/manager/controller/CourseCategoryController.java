@@ -37,7 +37,8 @@ public class CourseCategoryController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error"));
+                    .body(new MessageResponse("Error: Validate Error",
+                            bindingResult.getAllErrors()));
         }
 
         var result = courseCategoryService.save(courseCategoryRequest);
@@ -57,7 +58,8 @@ public class CourseCategoryController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error"));
+                    .body(new MessageResponse("Error: Validate Error",
+                            bindingResult.getAllErrors()));
         }
 
         var result = courseCategoryService
