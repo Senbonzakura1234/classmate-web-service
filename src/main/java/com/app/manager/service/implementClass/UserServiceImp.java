@@ -13,6 +13,8 @@ import com.app.manager.model.payload.response.FaceDefinitionServerResponse;
 import com.app.manager.model.payload.response.UserProfileResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpEntity;
@@ -37,6 +39,7 @@ public class UserServiceImp implements UserService {
     @Autowired CourseRepository courseRepository;
     @Autowired CastObject castObject;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
     private static final String faceCheckHost = "";
 
     @Override
@@ -45,7 +48,8 @@ public class UserServiceImp implements UserService {
             return userRepository.findByUsername(username);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return Optional.empty();
         }
     }
@@ -56,7 +60,8 @@ public class UserServiceImp implements UserService {
             return Optional.of(userRepository.existsByUsername(username));
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return Optional.empty();
         }
     }
@@ -67,7 +72,8 @@ public class UserServiceImp implements UserService {
             return Optional.of(userRepository.existsByEmail(email));
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return Optional.empty();
         }
     }
@@ -141,7 +147,8 @@ public class UserServiceImp implements UserService {
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new ArrayList<>();
         }
     }
@@ -208,7 +215,8 @@ public class UserServiceImp implements UserService {
                     : Optional.of(castObject.profilePrivate(userToSee));
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return Optional.empty();
         }
     }
@@ -233,7 +241,9 @@ public class UserServiceImp implements UserService {
             return new DatabaseQueryResult(true, "Update profile success",
                     HttpStatus.OK, userProfileRequest);
         } catch (Exception e) {
-            e.printStackTrace();System.out.println(e.getMessage());
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(false, "Update profile failed",
                     HttpStatus.INTERNAL_SERVER_ERROR, userProfileRequest);
         }
@@ -270,7 +280,8 @@ public class UserServiceImp implements UserService {
                     faceDefinitionClientRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(false,
                     "Setup face definition fail",
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -287,7 +298,8 @@ public class UserServiceImp implements UserService {
             return Optional.of(newRole);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return Optional.empty();
         }
     }
@@ -305,7 +317,8 @@ public class UserServiceImp implements UserService {
                     Optional.of(response.getBody()) : Optional.empty();
         } catch (RestClientException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return Optional.empty();
         }
     }

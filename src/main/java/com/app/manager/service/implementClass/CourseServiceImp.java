@@ -14,6 +14,8 @@ import com.app.manager.model.payload.request.CourseRequest;
 import com.app.manager.model.payload.response.CourseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.CourseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,9 @@ public class CourseServiceImp implements CourseService {
     @Autowired UserRepository userRepository;
     @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
-
+    
+    private static final Logger logger = LoggerFactory.getLogger(CourseServiceImp.class);
+    
     @Override
     public List<CourseResponse> findAll(CourseSpecification courseSpecification) {
         try {
@@ -41,7 +45,8 @@ public class CourseServiceImp implements CourseService {
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new ArrayList<>();
         }
     }
@@ -64,7 +69,8 @@ public class CourseServiceImp implements CourseService {
                     .collect(Collectors.toList());
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new ArrayList<>();
         }
     }
@@ -83,7 +89,8 @@ public class CourseServiceImp implements CourseService {
                     .collect(Collectors.toList());
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new ArrayList<>();
         }
     }
@@ -107,7 +114,8 @@ public class CourseServiceImp implements CourseService {
                     courseRequest);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
 
             return new DatabaseQueryResult(false,
                     "save course failed",
@@ -124,7 +132,8 @@ public class CourseServiceImp implements CourseService {
             return Optional.of(castObject.courseModel(course.get()));
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return Optional.empty();
         }
     }

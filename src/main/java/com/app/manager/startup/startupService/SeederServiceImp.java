@@ -2,9 +2,13 @@ package com.app.manager.startup.startupService;
 
 import com.app.manager.context.repository.*;
 import com.app.manager.entity.*;
+import com.app.manager.model.returnResult.MigrationQueryResult;
 import com.app.manager.model.seeder.SeederData;
 import com.app.manager.service.interfaceClass.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -23,6 +27,34 @@ public class SeederServiceImp implements SeederService {
     @Autowired StudentCourseRepository studentCourseRepository;
     @Autowired SessionRepository sessionRepository;
     @Autowired UserService userService;
+    @Autowired
+    HistoryRepository historyRepository;
+
+    private static final Logger logger = LoggerFactory.getLogger(SeederServiceImp.class);
+
+    @Override
+    public MigrationQueryResult checkMigrationHistory() {
+        try {
+            var history = historyRepository.findAll();
+            if(history.isEmpty())
+                return new MigrationQueryResult(History.EMigration.SEEDABLE,
+                    "history not found", HttpStatus.NOT_FOUND,
+                    "");
+
+            return new MigrationQueryResult(history.stream()
+                    .findFirst().get().getStatus(), "History found",
+                    HttpStatus.OK, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
+
+            return new MigrationQueryResult
+                    (History.EMigration.UNSEEDABLE,
+                    "Error",
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
+        }
+    }
 
     @Override
     public void generateRoles() {
@@ -37,9 +69,9 @@ public class SeederServiceImp implements SeederService {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("Can create role: " + eRole.getName());
-                System.out.println("Reason: " + e.getMessage());
-                System.out.println("Cause by: " + e.getCause().toString());
+                logger.info("Can create role: " + eRole.getName());
+                logger.info("Reason: " + e.getMessage());
+                logger.info("Cause by: " + e.getCause().toString());
             }
         }
     }
@@ -58,9 +90,9 @@ public class SeederServiceImp implements SeederService {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("Can create role: " + name);
-                System.out.println("Reason: " + e.getMessage());
-                System.out.println("Cause by: " + e.getCause().toString());
+                logger.info("Can create role: " + name);
+                logger.info("Reason: " + e.getMessage());
+                logger.info("Cause by: " + e.getCause().toString());
             }
         }
     }
@@ -75,7 +107,7 @@ public class SeederServiceImp implements SeederService {
             var user = new User(signupRequest.getUsername(),
                     signupRequest.getEmail(),
                     signupRequest.getPassword());
-            System.out.println(userService.saveUser(user, signupRequest.getRole())
+            logger.info(userService.saveUser(user, signupRequest.getRole())
                     .getDescription());
         });
     }
@@ -113,10 +145,10 @@ public class SeederServiceImp implements SeederService {
 //                course.setStatus(Course.StatusEnum.ONGOING);
 
                 courseRepository.save(course);
-                System.out.println("Add course success");
+                logger.info("Add course success");
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println(e.getMessage());
+                logger.info(e.getMessage());
             }
         });
     }
@@ -142,14 +174,14 @@ public class SeederServiceImp implements SeederService {
                         studentCourseRepository.save(studentCourse);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        System.out.println(e.getMessage());
+                        logger.info(e.getMessage());
                     }
                 });
-                System.out.println("Add student to course " + course.getName());
+                logger.info("Add student to course " + course.getName());
             });
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
         }
     }
 
@@ -178,16 +210,30 @@ public class SeederServiceImp implements SeederService {
                                 " Cras aliquam est sit amet ipsum porta ultricies." +
                                 " Aliquam rhoncus lectus quis laoreet aliquet.");
                         sessionRepository.save(session);
-                        System.out.println("Add sesion success");
+                        logger.info("Add sesion success");
                     } catch (Exception e) {
                         e.printStackTrace();
-                        System.out.println(e.getMessage());
+                        logger.info(e.getMessage());
                     }
                 });
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println(e.getMessage());
+                logger.info(e.getMessage());
             }
         });
+    }
+
+    @Override
+    public void updateMigrationHistory(History.EMigration result) {
+        try {
+            historyRepository.deleteAll();
+            var history = new History();
+            history.setStatus(result);
+            historyRepository.save(history);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
+        }
     }
 }

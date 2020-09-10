@@ -10,6 +10,8 @@ import com.app.manager.model.payload.request.CommentRequest;
 import com.app.manager.model.payload.response.CommentResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.CommentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,8 @@ public class CommentServiceImp implements CommentService {
     @Autowired StudentCourseRepository studentCourseRepository;
     @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
+
+    private static final Logger logger = LoggerFactory.getLogger(CommentServiceImp.class);
 
     @Override
     public List<CommentResponse> getAllByPost(String postId, String currentUsername) {
@@ -96,7 +100,8 @@ public class CommentServiceImp implements CommentService {
                     HttpStatus.OK, commentRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(false,
                     "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -135,7 +140,8 @@ public class CommentServiceImp implements CommentService {
                     HttpStatus.OK, commentRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(false,
                     "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -189,7 +195,8 @@ public class CommentServiceImp implements CommentService {
                     HttpStatus.OK, "");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(false,
                     "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -240,7 +247,8 @@ public class CommentServiceImp implements CommentService {
                     HttpStatus.BAD_REQUEST, "");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(
                     false, "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
@@ -264,7 +272,8 @@ public class CommentServiceImp implements CommentService {
                     HttpStatus.OK, "");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(
                     false, "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
@@ -280,7 +289,8 @@ public class CommentServiceImp implements CommentService {
             });
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
         }
     }
 

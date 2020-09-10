@@ -12,6 +12,8 @@ import com.app.manager.model.payload.response.AttendanceCheckResponse;
 import com.app.manager.model.payload.response.FaceCheckServerResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.AttendanceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +37,7 @@ public class AttendanceServiceImp implements AttendanceService {
     @Autowired CourseRepository courseRepository;
     @Autowired StudentCourseRepository studentCourseRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(AttendanceServiceImp.class);
     private static final String faceCheckHost = "";
     private static final double minimumMatchPercent = 0.8;
 
@@ -118,7 +121,8 @@ public class AttendanceServiceImp implements AttendanceService {
                     faceCheckClientRequest);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(false,
                     "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -168,7 +172,8 @@ public class AttendanceServiceImp implements AttendanceService {
                     attendanceRepository.save(a);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    System.out.println(e.getMessage());
+                    logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
                 }
             });
 
@@ -179,7 +184,8 @@ public class AttendanceServiceImp implements AttendanceService {
                     HttpStatus.OK, attendanceCheckRequests);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(false,
                     "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -198,7 +204,8 @@ public class AttendanceServiceImp implements AttendanceService {
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new ArrayList<>();
         }
     }
@@ -216,7 +223,8 @@ public class AttendanceServiceImp implements AttendanceService {
                     Optional.of(response.getBody()) : Optional.empty();
         } catch (RestClientException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return Optional.empty();
         }
     }

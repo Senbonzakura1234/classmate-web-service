@@ -1,16 +1,22 @@
 package com.app.manager.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Date;
 
 import static java.lang.Math.abs;
 
 public class HelperMethod {
+    private static final Logger logger = LoggerFactory.getLogger(HelperMethod.class);
+
     public static String getDateString(Long timeStamp){
         try {
             return (new Date(timeStamp)).toString();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return "";
         }
     }

@@ -7,6 +7,8 @@ import com.app.manager.model.payload.request.PostRequest;
 import com.app.manager.model.payload.response.PostResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.PostService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class PostServiceImp implements PostService {
     @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
 
+    private static final Logger logger = LoggerFactory.getLogger(PostServiceImp.class);
 
     @Override
     public List<PostResponse> getAllByCourse(String courseId, String currentUsername) {
@@ -60,13 +63,15 @@ public class PostServiceImp implements PostService {
                     return castObject.postModel(profile, post, attachments);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    System.out.println(e.getMessage());
+                    logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
                     return new PostResponse();
                 }
             }).collect(Collectors.toList());
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new ArrayList<>();
         }
     }
@@ -102,7 +107,8 @@ public class PostServiceImp implements PostService {
             return Optional.of(castObject.postModel(profile, post, attachments));
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return Optional.empty();
         }
     }
@@ -140,7 +146,8 @@ public class PostServiceImp implements PostService {
                     HttpStatus.OK, postRequest);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(
             false, "Error: " + e.getMessage(),
             HttpStatus.INTERNAL_SERVER_ERROR, postRequest);
@@ -184,7 +191,8 @@ public class PostServiceImp implements PostService {
                     HttpStatus.OK, postRequest);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(
                     false, "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR, postRequest);
@@ -225,7 +233,8 @@ public class PostServiceImp implements PostService {
                     HttpStatus.OK, "");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(
                     false, "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
@@ -269,7 +278,8 @@ public class PostServiceImp implements PostService {
                     HttpStatus.OK, "");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(
                     false, "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
@@ -294,7 +304,8 @@ public class PostServiceImp implements PostService {
                     HttpStatus.OK, "");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(
                     false, "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
@@ -310,7 +321,8 @@ public class PostServiceImp implements PostService {
             });
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
         }
     }
 

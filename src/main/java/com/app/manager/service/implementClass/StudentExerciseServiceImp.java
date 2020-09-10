@@ -8,6 +8,8 @@ import com.app.manager.model.payload.request.StudentExerciseRequest;
 import com.app.manager.model.payload.response.StudentExerciseResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.StudentExerciseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
     @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
 
+    private static final Logger logger = LoggerFactory.getLogger(StudentExerciseServiceImp.class);
 
     @Override
     public DatabaseQueryResult saveStudentExercise(
@@ -91,7 +94,8 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    System.out.println(e.getMessage());
+                    logger.info(e.getMessage());
+                    logger.info(e.getCause().getMessage());
                 }
             }
 
@@ -109,7 +113,8 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                     HttpStatus.OK, studentExerciseRequest);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+                    logger.info(e.getMessage());
+                    logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(false,
                     "Post Student Exercise failed",
                     HttpStatus.INTERNAL_SERVER_ERROR,
@@ -159,7 +164,8 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                     castObject.studentExerciseModelPublic(studentExercise)).collect(Collectors.toList());
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+                    logger.info(e.getMessage());
+                    logger.info(e.getCause().getMessage());
             return new ArrayList<>();
         }
     }
@@ -202,7 +208,8 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
             return Optional.of(castObject.studentExerciseModelPublic(studentExercise));
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+                    logger.info(e.getMessage());
+                    logger.info(e.getCause().getMessage());
             return Optional.empty();
         }
     }
@@ -255,7 +262,8 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                     "mark exercise success", HttpStatus.OK, markExerciseRequest);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+                    logger.info(e.getMessage());
+                    logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(false,
                     "Error: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR, markExerciseRequest);

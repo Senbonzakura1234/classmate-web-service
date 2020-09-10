@@ -11,6 +11,8 @@ import com.app.manager.model.payload.response.CourseProfileResponse;
 import com.app.manager.model.payload.response.UserProfileResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.StudentCourseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
     @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
 
+    private static final Logger logger = LoggerFactory.getLogger(StudentCourseServiceImp.class);
 
     @Override
     public DatabaseQueryResult addStudentToCourse(
@@ -75,7 +78,8 @@ public class StudentCourseServiceImp implements StudentCourseService {
                     HttpStatus.OK, studentCourseRequest);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(false, "Server error",
                     HttpStatus.INTERNAL_SERVER_ERROR, studentCourseRequest);
         }
@@ -107,7 +111,8 @@ public class StudentCourseServiceImp implements StudentCourseService {
                     castObject.profilePublic(teacher), studentCoursesProfile ));
         } catch (RuntimeException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
             return Optional.empty();
         }
     }
