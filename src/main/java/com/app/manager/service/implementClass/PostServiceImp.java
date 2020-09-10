@@ -45,15 +45,18 @@ public class PostServiceImp implements PostService {
 
             if (!currentUser.getRoles().contains(role) &&
                 !course.getUser_id().equals(currentUser.getId()) &&
+
                 studentCourseRepository.findAllByCourse_idAndStatus
                 (course.getUser_id(), StudentCourse.StatusEnum.SHOW)
                 .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
-                .equals(currentUser.getId()))) return new ArrayList<>();
+                .equals(currentUser.getId())))
+
+                return new ArrayList<>();
 
             return postRepository.findAllByCourse_idAndStatus(
                     courseId, Post.StatusEnum.SHOW).stream().map(post -> {
                 try {
-                    var user = userRepository.findById(post.getId());
+                    var user = userRepository.findById(post.getUser_id());
                     if (user.isEmpty()) return new PostResponse();
                     var profile = castObject.profilePrivate(user.get());
                     var attachments = attachmentRepository
@@ -64,10 +67,10 @@ public class PostServiceImp implements PostService {
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.info(e.getMessage());
-            logger.info(e.getCause().getMessage());
+                    logger.info(e.getCause().getMessage());
                     return new PostResponse();
                 }
-            }).collect(Collectors.toList());
+            }).filter(postResponse -> postResponse.getId() != null).collect(Collectors.toList());
         } catch (RuntimeException e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -91,7 +94,7 @@ public class PostServiceImp implements PostService {
             if (!currentUser.getRoles().contains(role) &&
                 !course.getUser_id().equals(currentUser.getId()) &&
                 studentCourseRepository.findAllByCourse_idAndStatus
-                (course.getUser_id(), StudentCourse.StatusEnum.SHOW)
+                (course.getId(), StudentCourse.StatusEnum.SHOW)
                 .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
                 .equals(currentUser.getId())))
             return Optional.empty();
@@ -130,7 +133,7 @@ public class PostServiceImp implements PostService {
 
             if(!course.get().getUser_id().equals(currentUser.get().getId()) &&
                 studentCourseRepository.findAllByCourse_idAndStatus
-                (course.get().getUser_id(), StudentCourse.StatusEnum.SHOW)
+                (course.get().getId(), StudentCourse.StatusEnum.SHOW)
                 .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
                 .equals(currentUser.get().getId()))) return new DatabaseQueryResult(
                     false, "Not your course",
