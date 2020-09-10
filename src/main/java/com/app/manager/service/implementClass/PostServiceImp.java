@@ -43,8 +43,8 @@ public class PostServiceImp implements PostService {
                     .orElseThrow(() -> new RuntimeException("role not found"));
 
 
-            if (!currentUser.getRoles().contains(role) ||
-                !course.getUser_id().equals(currentUser.getId()) ||
+            if (!currentUser.getRoles().contains(role) &&
+                !course.getUser_id().equals(currentUser.getId()) &&
                 studentCourseRepository.findAllByCourse_idAndStatus
                 (course.getUser_id(), StudentCourse.StatusEnum.SHOW)
                 .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
@@ -88,8 +88,8 @@ public class PostServiceImp implements PostService {
             var role = roleRepository.findByName(ERole.ROLE_ADMIN)
                     .orElseThrow(() -> new RuntimeException("role not found"));
 
-            if (!currentUser.getRoles().contains(role) ||
-                !course.getUser_id().equals(currentUser.getId()) ||
+            if (!currentUser.getRoles().contains(role) &&
+                !course.getUser_id().equals(currentUser.getId()) &&
                 studentCourseRepository.findAllByCourse_idAndStatus
                 (course.getUser_id(), StudentCourse.StatusEnum.SHOW)
                 .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
@@ -128,7 +128,7 @@ public class PostServiceImp implements PostService {
                     HttpStatus.NOT_FOUND, postRequest);
 
 
-            if(!course.get().getUser_id().equals(currentUser.get().getId()) ||
+            if(!course.get().getUser_id().equals(currentUser.get().getId()) &&
                 studentCourseRepository.findAllByCourse_idAndStatus
                 (course.get().getUser_id(), StudentCourse.StatusEnum.SHOW)
                 .stream().noneMatch(studentCourse -> studentCourse.getUser_id()

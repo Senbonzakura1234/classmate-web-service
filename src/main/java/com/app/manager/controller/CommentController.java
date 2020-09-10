@@ -17,8 +17,7 @@ import javax.validation.Valid;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api/data/comment",
-        consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/api/data/comment")
 public class CommentController {
     @Autowired CommentService commentService;
 
@@ -41,8 +40,7 @@ public class CommentController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         var currentUser = SecurityContextHolder
@@ -64,8 +62,7 @@ public class CommentController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         var currentUser = SecurityContextHolder

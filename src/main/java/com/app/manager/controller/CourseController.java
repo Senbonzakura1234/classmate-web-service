@@ -22,8 +22,7 @@ import javax.validation.Valid;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api/data/course",
-        consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/api/data/course")
 public class CourseController {
     @Autowired CourseService courseService;
     @Autowired StudentCourseService studentCourseService;
@@ -176,8 +175,7 @@ public class CourseController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
@@ -197,8 +195,7 @@ public class CourseController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
@@ -230,8 +227,7 @@ public class CourseController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();

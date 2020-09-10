@@ -18,8 +18,7 @@ import javax.validation.Valid;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api/data/post",
-        consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/api/data/post")
 public class PostController {
     @Autowired PostService postService;
 
@@ -31,19 +30,19 @@ public class PostController {
         return ResponseEntity.ok(postService.getAllByCourse(course_id, currentUser));
     }
 
-    @PostMapping("/post")
+    @PostMapping("/save")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT')")
-    public ResponseEntity<?> post(BindingResult bindingResult,
+    public ResponseEntity<?> post(
                  @RequestParam(value = "course_id") String course_id,
-                 @Valid @RequestBody PostRequest postRequest) {
+                 @Valid @RequestBody PostRequest postRequest,
+                 BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors()
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         var currentUser = SecurityContextHolder
@@ -78,8 +77,7 @@ public class PostController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         var currentUser = SecurityContextHolder

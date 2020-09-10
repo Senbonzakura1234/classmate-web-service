@@ -20,8 +20,7 @@ import javax.validation.Valid;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api/data/user",
-        consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/api/data/user")
 public class UserController {
     @Autowired
     UserService userService;
@@ -74,8 +73,7 @@ public class UserController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         var currentUser = SecurityContextHolder
@@ -98,8 +96,7 @@ public class UserController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
         if(faceDefinitionClientRequest.getImg_urls().isEmpty())
             return ResponseEntity

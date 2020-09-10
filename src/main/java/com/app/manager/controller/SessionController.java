@@ -20,8 +20,7 @@ import javax.validation.Valid;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api/data/session",
-        consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/api/data/session")
 public class SessionController {
     @Autowired
     SessionService sessionService;
@@ -73,8 +72,7 @@ public class SessionController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
@@ -94,8 +92,7 @@ public class SessionController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();

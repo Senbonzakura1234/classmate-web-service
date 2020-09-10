@@ -46,8 +46,7 @@ public class AuthController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         try {
@@ -85,8 +84,7 @@ public class AuthController {
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .forEach(System.out::println);
             return ResponseEntity.badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         var checkUsername = userService

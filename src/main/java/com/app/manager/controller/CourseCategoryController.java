@@ -16,8 +16,7 @@ import javax.validation.Valid;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api/data/courseCategory",
-        consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/api/data/courseCategory")
 public class CourseCategoryController {
     @Autowired CourseCategoryService courseCategoryService;
 
@@ -38,8 +37,7 @@ public class CourseCategoryController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         var result = courseCategoryService.save(courseCategoryRequest);
@@ -59,8 +57,7 @@ public class CourseCategoryController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         var result = courseCategoryService

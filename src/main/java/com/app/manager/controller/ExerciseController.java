@@ -23,8 +23,7 @@ import javax.validation.Valid;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api/data/exercise",
-        consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/api/data/exercise")
 public class ExerciseController {
     @Autowired ExerciseService exerciseService;
     @Autowired StudentExerciseService studentExerciseService;
@@ -83,8 +82,7 @@ public class ExerciseController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
@@ -104,8 +102,7 @@ public class ExerciseController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
@@ -137,8 +134,7 @@ public class ExerciseController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
@@ -182,8 +178,7 @@ public class ExerciseController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         var currentUser = SecurityContextHolder

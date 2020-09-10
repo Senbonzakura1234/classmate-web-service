@@ -18,8 +18,7 @@ import java.util.List;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api/data/attendance",
-        consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/api/data/attendance")
 public class AttendanceController {
 
     @Autowired
@@ -36,8 +35,7 @@ public class AttendanceController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         var currentUser = SecurityContextHolder
@@ -61,8 +59,7 @@ public class AttendanceController {
                     .forEach(System.out::println);
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Validate Error",
-                            bindingResult.getAllErrors()));
+                    .body(new MessageResponse("Error: Validate Error",""));
         }
 
         var currentUser = SecurityContextHolder
