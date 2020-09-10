@@ -98,7 +98,7 @@ public class PostServiceImp implements PostService {
                 .equals(currentUser.getId())))
                 return Optional.empty();
 
-            var user = userRepository.findById(post.getId());
+            var user = userRepository.findById(post.getUser_id());
             if (user.isEmpty()) return Optional.empty();
             var profile = castObject.profilePrivate(user.get());
             var attachments = attachmentRepository
