@@ -60,8 +60,8 @@ public class CourseServiceImp implements CourseService {
 
             var courses = courseRepository.findAll(courseSpecification)
                     .stream().filter(course -> studentCourseRepository
-                    .findAllByUser_idAndStatus(user.getId(), StudentCourse.StatusEnum.SHOW)
-                    .stream().anyMatch(studentCourse -> studentCourse.getCourse_id()
+                    .findAllByUser_idAndStatus(user.getId(), StudentCourse.StatusEnum.SHOW).stream()
+                    .anyMatch(studentCourse -> studentCourse.getCourse_id()
                             .equals(course.getId()))).collect(Collectors.toList());
 
             return courses.stream().map(course ->
