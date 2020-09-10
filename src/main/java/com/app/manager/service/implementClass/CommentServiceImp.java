@@ -47,8 +47,8 @@ public class CommentServiceImp implements CommentService {
         var role = roleRepository.findByName(ERole.ROLE_ADMIN)
                 .orElseThrow(() -> new RuntimeException("role not found"));
 
-        if (!currentUser.getRoles().contains(role) ||
-        !course.getUser_id().equals(currentUser.getId()) ||
+        if (!currentUser.getRoles().contains(role) &&
+        !course.getUser_id().equals(currentUser.getId()) &&
         studentCourseRepository.findAllByCourse_idAndStatus
                 (course.getUser_id(), StudentCourse.StatusEnum.SHOW)
                 .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
@@ -82,8 +82,8 @@ public class CommentServiceImp implements CommentService {
             var role = roleRepository.findByName(ERole.ROLE_ADMIN)
                     .orElseThrow(() -> new RuntimeException("role not found"));
 
-            if (!currentUser.getRoles().contains(role) ||
-            !course.getUser_id().equals(currentUser.getId()) ||
+            if (!currentUser.getRoles().contains(role) &&
+            !course.getUser_id().equals(currentUser.getId()) &&
             studentCourseRepository.findAllByCourse_idAndStatus
                     (course.getUser_id(), StudentCourse.StatusEnum.SHOW)
                     .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
