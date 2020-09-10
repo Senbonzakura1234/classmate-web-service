@@ -47,7 +47,7 @@ public class PostServiceImp implements PostService {
                 !course.getUser_id().equals(currentUser.getId()) &&
 
                 studentCourseRepository.findAllByCourse_idAndStatus
-                (course.getUser_id(), StudentCourse.StatusEnum.SHOW)
+                (course.getId(), StudentCourse.StatusEnum.SHOW)
                 .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
                 .equals(currentUser.getId())))
 
