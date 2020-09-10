@@ -219,8 +219,9 @@ public class CourseController {
 
     @PostMapping("/addToCourse")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> addToCourse(BindingResult bindingResult,
-            @Valid @RequestBody StudentCourseRequest studentCourseRequest) {
+    public ResponseEntity<?> addToCourse(
+            @Valid @RequestBody StudentCourseRequest studentCourseRequest,
+            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors()
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)

@@ -68,9 +68,10 @@ public class PostController {
 
     @PostMapping("/edit")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT')")
-    public ResponseEntity<?> edit(BindingResult bindingResult,
+    public ResponseEntity<?> edit(
                  @RequestParam(value = "post_id") String post_id,
-                 @Valid @RequestBody PostRequest postRequest) {
+                 @Valid @RequestBody PostRequest postRequest,
+                 BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors()
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)

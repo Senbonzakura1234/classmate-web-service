@@ -31,9 +31,10 @@ public class CommentController {
 
     @PostMapping("/post")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT')")
-    public ResponseEntity<?> post(BindingResult bindingResult,
+    public ResponseEntity<?> post(
                                   @RequestParam(value = "post_id") String post_id,
-                                  @Valid @RequestBody CommentRequest commentRequest) {
+                                  @Valid @RequestBody CommentRequest commentRequest,
+                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors()
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -53,9 +54,10 @@ public class CommentController {
 
     @PostMapping("/edit")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT')")
-    public ResponseEntity<?> edit(BindingResult bindingResult,
+    public ResponseEntity<?> edit(
                                   @RequestParam(value = "comment_id") String comment_id,
-                                  @Valid @RequestBody CommentRequest commentRequest) {
+                                  @Valid @RequestBody CommentRequest commentRequest,
+                                  BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors()
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
