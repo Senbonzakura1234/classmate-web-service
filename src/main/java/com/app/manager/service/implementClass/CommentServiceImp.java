@@ -47,12 +47,12 @@ public class CommentServiceImp implements CommentService {
         var role = roleRepository.findByName(ERole.ROLE_ADMIN)
                 .orElseThrow(() -> new RuntimeException("role not found"));
 
-        if (!currentUser.getRoles().contains(role) &&
-        !course.getUser_id().equals(currentUser.getId()) &&
-        studentCourseRepository.findAllByCourse_idAndStatus
-                (course.getId(), StudentCourse.StatusEnum.SHOW)
-                .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
-                .equals(currentUser.getId()))) return new ArrayList<>();
+        if(!currentUser.getRoles().contains(role) &&
+            !course.getUser_id().equals(currentUser.getId()) &&
+            studentCourseRepository.findAllByCourse_idAndStatus
+            (course.getId(), StudentCourse.StatusEnum.SHOW)
+            .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
+            .equals(currentUser.getId()))) return new ArrayList<>();
 
 
         return commentRepository.findAllByPost_idAndStatus
