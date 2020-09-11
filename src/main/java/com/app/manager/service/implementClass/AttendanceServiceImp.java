@@ -159,7 +159,7 @@ public class AttendanceServiceImp implements AttendanceService {
                         newAttendance.setUser_id(attendanceCheckRequest.getUser_id());
                         newAttendance.setImage_uri("");
                         newAttendance.setFace_matched(true);
-                        newAttendance.setStatus(attendanceCheckRequest.getStatus());
+                        newAttendance.setStatus(Attendance.StatusEnum.valueOf(attendanceCheckRequest.getStatus()));
 
                         attendanceRepository.save(newAttendance);
                         return;
@@ -167,13 +167,13 @@ public class AttendanceServiceImp implements AttendanceService {
                     var a = attendance.get();
                     a.setImage_uri("");
                     a.setFace_matched(true);
-                    a.setStatus(attendanceCheckRequest.getStatus());
+                    a.setStatus(Attendance.StatusEnum.valueOf(attendanceCheckRequest.getStatus()));
                     a.setUpdated_at(System.currentTimeMillis());
                     attendanceRepository.save(a);
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.info(e.getMessage());
-            logger.info(e.getCause().getMessage());
+                    logger.info(e.getCause().getMessage());
                 }
             });
 

@@ -1,21 +1,18 @@
 package com.app.manager.model.payload.request;
 
-import com.app.manager.entity.Attendance;
-
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 public class AttendanceCheckRequest {
     @NotBlank
     private String user_id;
-    @NotNull
-    private Attendance.StatusEnum status;
+    @NotBlank
+    private String status;
 
     public AttendanceCheckRequest() {
     }
 
     public AttendanceCheckRequest(@NotBlank String user_id,
-                                  @NotNull Attendance.StatusEnum status) {
+                                  @NotBlank String status) {
         this.user_id = user_id;
         this.status = status;
     }
@@ -28,11 +25,11 @@ public class AttendanceCheckRequest {
         this.user_id = user_id;
     }
 
-    public Attendance.StatusEnum getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Attendance.StatusEnum status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 }
