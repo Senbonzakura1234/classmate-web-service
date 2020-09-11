@@ -123,12 +123,16 @@ public class SessionServiceImp implements SessionService {
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, sessionRequest);
 
-
-
             var s = sessionRepository.findById(id);
             if(s.isEmpty()) return new DatabaseQueryResult(false,
-                    "save course failed",
+                    "save session failed",
                     HttpStatus.NOT_FOUND, sessionRequest);
+
+            if(s.get().getStatus() != Session.StatusEnum.PENDING)
+                return new DatabaseQueryResult(false,
+                        "you can't update session when it is not pending",
+                        HttpStatus.BAD_REQUEST, sessionRequest);
+
 
             var course = courseRepository
                     .findById(s.get().getCourse_id())

@@ -148,12 +148,13 @@ public class CourseServiceImp implements CourseService {
                         HttpStatus.NOT_FOUND, courseRequest);
 
             var c = courseRepository.findById(id);
-            if(c.isEmpty()){
+            if(c.isEmpty()) return new DatabaseQueryResult(false,
+                    "save course failed",
+                    HttpStatus.NOT_FOUND, courseRequest);
+            if(c.get().getStatus() != Course.StatusEnum.PENDING)
                 return new DatabaseQueryResult(false,
-                        "save course failed",
-                        HttpStatus.NOT_FOUND, courseRequest);
-            }
-
+                        "you can't update your course when it is not pending",
+                        HttpStatus.BAD_REQUEST, courseRequest);
             var course  = c.get();
 
             if(!course.getUser_id().equals(teacher.get().getId()))
