@@ -195,7 +195,7 @@ public class CastObject {
     }
     public PostResponse postModel(UserProfileResponse userProfileResponse,
                                   Post post, List<AttachmentResponse> attachmentResponses){
-        return post != null ? new PostResponse(post.getId(),
+        return post != null ? new PostResponse(post.getId(), post.getContent(),
                 post.isPin(), post.getUser_id(), userProfileResponse,
                 attachmentResponses, post.getCourse_id(), post.getStatus(),
                 post.getCreated_at()) : new PostResponse();

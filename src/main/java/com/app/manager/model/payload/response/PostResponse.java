@@ -6,6 +6,7 @@ import java.util.List;
 
 public class PostResponse {
     private String id;
+    private String content;
     private boolean pin;
     private String user_id;
     private UserProfileResponse userProfileResponse = new UserProfileResponse();
@@ -17,12 +18,12 @@ public class PostResponse {
     public PostResponse() {
     }
 
-    public PostResponse(String id, boolean pin, String user_id,
+    public PostResponse(String id, String content, boolean pin, String user_id,
                         UserProfileResponse userProfileResponse,
                         List<AttachmentResponse> attachmentResponses,
-                        String session_id, Post.StatusEnum status,
-                        Long created_at) {
+                        String session_id, Post.StatusEnum status, Long created_at) {
         this.id = id;
+        this.content = content;
         this.pin = pin;
         this.user_id = user_id;
         this.userProfileResponse = userProfileResponse;
@@ -38,6 +39,14 @@ public class PostResponse {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public boolean isPin() {
