@@ -13,6 +13,9 @@ public class SessionResponse {
     private Session.StatusEnum status; //search
     private Long created_at;
 
+    public SessionResponse() {
+    }
+
     public SessionResponse(String id, String course_id, String name,
                            String content, Long start_time, int session_duration,
                            Session.AttendanceStatusEnum attendance_status,
@@ -26,9 +29,6 @@ public class SessionResponse {
         this.attendance_status = attendance_status;
         this.status = status;
         this.created_at = created_at;
-    }
-
-    public SessionResponse() {
     }
 
     public String getId() {

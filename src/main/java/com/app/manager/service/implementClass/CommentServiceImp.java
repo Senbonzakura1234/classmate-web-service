@@ -66,7 +66,8 @@ public class CommentServiceImp implements CommentService {
                     e.printStackTrace();
                     return new CommentResponse();
                 }
-        }).collect(Collectors.toList());
+        }).filter(commentResponse -> commentResponse.getId() != null)
+            .collect(Collectors.toList());
     }
 
     @Override

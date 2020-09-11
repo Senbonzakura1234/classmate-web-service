@@ -103,7 +103,8 @@ public class StudentCourseServiceImp implements StudentCourseService {
                     e.printStackTrace();
                     return new UserProfileResponse();
                 }
-            }).collect(Collectors.toList());
+            }).filter(userProfileResponse -> userProfileResponse.getId() != null)
+                .collect(Collectors.toList());
             var course = courseRepository.findById(courseId)
                     .orElseThrow(() -> new RuntimeException("Course not found"));
             var teacher = userRepository.findById(course.getUser_id())

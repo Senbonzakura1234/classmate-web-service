@@ -4,6 +4,7 @@ import com.app.manager.context.repository.*;
 import com.app.manager.entity.*;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.PostRequest;
+import com.app.manager.model.payload.response.CommentResponse;
 import com.app.manager.model.payload.response.PostResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.PostService;
@@ -27,6 +28,7 @@ public class PostServiceImp implements PostService {
     @Autowired SessionRepository sessionRepository;
     @Autowired CourseRepository courseRepository;
     @Autowired StudentCourseRepository studentCourseRepository;
+    @Autowired CommentRepository commentRepository;
     @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
 
@@ -62,7 +64,16 @@ public class PostServiceImp implements PostService {
                             .findAllByPost_idAndStatus(post.getId(), Attachment.StatusEnum.SHOW)
                             .stream().map(attachment -> castObject.attachmentModel(attachment))
                             .collect(Collectors.toList());
-                    return castObject.postModel(profile, post, attachments);
+                    var comments = commentRepository
+                            .findAllByPost_idAndStatus(post.getId(), Comment.StatusEnum.SHOW)
+                            .stream().map(comment -> {
+                                var userComment = userRepository.findById(comment.getUser_id());
+                                if(userComment.isEmpty()) return new CommentResponse();
+                                var commentProfile = castObject.profilePrivate(userComment.get());
+                                return castObject.commentModel(commentProfile, comment);
+                            }).filter(commentResponse -> commentResponse.getId() != null)
+                            .collect(Collectors.toList());
+                    return castObject.postModel(profile, post, attachments, comments);
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.info(e.getMessage());
@@ -106,7 +117,19 @@ public class PostServiceImp implements PostService {
                     .stream().map(attachment -> castObject.attachmentModel(attachment))
                     .collect(Collectors.toList());
 
-            return Optional.of(castObject.postModel(profile, post, attachments));
+            var comments = commentRepository
+                .findAllByPost_idAndStatus(post.getId(), Comment.StatusEnum.SHOW)
+                .stream().map(comment -> {
+                    var userComment = userRepository.findById(comment.getUser_id());
+                    if(userComment.isEmpty()) return new CommentResponse();
+                    var commentProfile = castObject.profilePrivate(userComment.get());
+                    return castObject.commentModel(commentProfile, comment);
+                }).filter(commentResponse -> commentResponse.getId() != null)
+                .collect(Collectors.toList());
+
+
+            return Optional.of(castObject.postModel(profile, post,
+                    attachments, comments));
         } catch (RuntimeException e) {
             e.printStackTrace();
             logger.info(e.getMessage());

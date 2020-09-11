@@ -11,6 +11,7 @@ public class PostResponse {
     private String user_id;
     private UserProfileResponse userProfileResponse = new UserProfileResponse();
     private List<AttachmentResponse> attachmentResponses;
+    private List<CommentResponse> commentResponses;
     private String session_id;
     private Post.StatusEnum status;
     private Long created_at;
@@ -18,16 +19,18 @@ public class PostResponse {
     public PostResponse() {
     }
 
-    public PostResponse(String id, String content, boolean pin, String user_id,
-                        UserProfileResponse userProfileResponse,
+    public PostResponse(String id, String content, boolean pin,
+                        String user_id, UserProfileResponse userProfileResponse,
                         List<AttachmentResponse> attachmentResponses,
-                        String session_id, Post.StatusEnum status, Long created_at) {
+                        List<CommentResponse> commentResponses, String session_id,
+                        Post.StatusEnum status, Long created_at) {
         this.id = id;
         this.content = content;
         this.pin = pin;
         this.user_id = user_id;
         this.userProfileResponse = userProfileResponse;
         this.attachmentResponses = attachmentResponses;
+        this.commentResponses = commentResponses;
         this.session_id = session_id;
         this.status = status;
         this.created_at = created_at;
@@ -103,5 +106,13 @@ public class PostResponse {
 
     public void setAttachmentResponses(List<AttachmentResponse> attachmentResponses) {
         this.attachmentResponses = attachmentResponses;
+    }
+
+    public List<CommentResponse> getCommentResponses() {
+        return commentResponses;
+    }
+
+    public void setCommentResponses(List<CommentResponse> commentResponses) {
+        this.commentResponses = commentResponses;
     }
 }

@@ -3,6 +3,7 @@ package com.app.manager.model.payload.response;
 import com.app.manager.entity.Comment;
 
 public class CommentResponse {
+    private String id;
     private String user_id;
     private UserProfileResponse userProfileResponse;
     private String post_id;
@@ -14,9 +15,11 @@ public class CommentResponse {
     public CommentResponse() {
     }
 
-    public CommentResponse(String user_id, UserProfileResponse userProfileResponse,
+    public CommentResponse(String id, String user_id,
+                           UserProfileResponse userProfileResponse,
                            String post_id, String content, boolean pin,
                            Comment.StatusEnum status, Long created_at) {
+        this.id = id;
         this.user_id = user_id;
         this.userProfileResponse = userProfileResponse;
         this.post_id = post_id;
@@ -24,6 +27,14 @@ public class CommentResponse {
         this.pin = pin;
         this.status = status;
         this.created_at = created_at;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUser_id() {

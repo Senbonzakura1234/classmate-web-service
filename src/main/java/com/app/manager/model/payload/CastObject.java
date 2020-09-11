@@ -202,10 +202,12 @@ public class CastObject {
         return post;
     }
     public PostResponse postModel(UserProfileResponse userProfileResponse,
-                                  Post post, List<AttachmentResponse> attachmentResponses){
+                                  Post post, List<AttachmentResponse> attachmentResponses,
+                                  List<CommentResponse> commentResponses){
         return post != null ? new PostResponse(post.getId(), post.getContent(),
                 post.isPin(), post.getUser_id(), userProfileResponse,
-                attachmentResponses, post.getCourse_id(), post.getStatus(),
+                attachmentResponses, commentResponses,
+                post.getCourse_id(), post.getStatus(),
                 post.getCreated_at()) : new PostResponse();
     }
 
@@ -220,9 +222,9 @@ public class CastObject {
     }
     public CommentResponse commentModel(UserProfileResponse userProfileResponse,
                                         Comment comment){
-        return comment != null ? new CommentResponse(comment.getUser_id(),
-                userProfileResponse, comment.getPost_id(), comment.getContent(),
-                comment.isPin(), comment.getStatus(), comment.getCreated_at()) :
-                new CommentResponse();
+        return comment != null ? new CommentResponse(comment.getId(),
+                comment.getUser_id(), userProfileResponse, comment.getPost_id(),
+                comment.getContent(), comment.isPin(), comment.getStatus(),
+                comment.getCreated_at()) : new CommentResponse();
     }
 }
