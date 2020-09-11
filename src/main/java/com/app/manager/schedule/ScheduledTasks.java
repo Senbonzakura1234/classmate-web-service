@@ -4,6 +4,7 @@ import com.app.manager.context.repository.CourseRepository;
 import com.app.manager.context.repository.SessionRepository;
 import com.app.manager.entity.Course;
 import com.app.manager.entity.Session;
+import com.app.manager.service.interfaceClass.SessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ public class ScheduledTasks {
 
     @Autowired CourseRepository courseRepository;
     @Autowired SessionRepository sessionRepository;
+    @Autowired SessionService sessionService;
 
     @Scheduled(cron = "0 0 * * * *")
     public void courseUpdateStatus(){
@@ -34,13 +36,7 @@ public class ScheduledTasks {
                         + course.getStatus().getName());
                 return;
             }
-            if(course.getStart_date() > System.currentTimeMillis()) {
-                logger.info("Change course " + course.getName()
-                        + " to pending");
-                course.setStatus(Course.StatusEnum.PENDING);
-                courseRepository.save(course);
-                return;
-            }
+
             if(course.getStart_date() <= System.currentTimeMillis() &&
                 course.getEnd_date() >= System.currentTimeMillis()) {
                 logger.info("Starting " + course.getName());
@@ -71,13 +67,6 @@ public class ScheduledTasks {
                         + session.getStatus().getName());
                 return;
             }
-            if(session.getStart_time() > System.currentTimeMillis()){
-                logger.info("Change session " + session.getName()
-                        + " to pending");
-                session.setStatus(Session.StatusEnum.PENDING);
-                sessionRepository.save(session);
-                return;
-            }
 
             if(session.getStart_time() <= System.currentTimeMillis() &&
                 (session.getStart_time() + session.getSession_duration()*3600000)
@@ -85,6 +74,10 @@ public class ScheduledTasks {
                 logger.info("Starting " + session.getName());
                 session.setStatus(Session.StatusEnum.ONGOING);
                 sessionRepository.save(session);
+
+                logger.info("Start attendancecheck for session " + session.getName());
+                sessionService.startAttendanceCheck(session.getId(),
+                        "", true);
                 return;
             }
 
@@ -93,6 +86,10 @@ public class ScheduledTasks {
                 logger.info("Closing " + session.getName());
                 session.setStatus(Session.StatusEnum.END);
                 sessionRepository.save(session);
+
+                logger.info("Stop attendancecheck for session " + session.getName());
+                sessionService.closeAttendanceCheck(session.getId(),
+                        "", true);
             }
         });
     }

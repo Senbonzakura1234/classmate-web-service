@@ -119,7 +119,8 @@ public class SessionController {
     public ResponseEntity<?> startAttendanceCheck(@RequestParam(value = "id") String id) {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
-        var result = sessionService.startAttendanceCheck(id, currentUser);
+        var result = sessionService.startAttendanceCheck(id,
+                currentUser, false);
         return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
@@ -129,7 +130,8 @@ public class SessionController {
     public ResponseEntity<?> closeAttendanceCheck(@RequestParam(value = "id") String id) {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
-        var result = sessionService.closeAttendanceCheck(id, currentUser);
+        var result = sessionService.closeAttendanceCheck(id,
+                currentUser, false);
         return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }

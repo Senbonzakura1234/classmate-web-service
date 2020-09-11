@@ -15,6 +15,6 @@ public interface SessionService {
     Optional<SessionResponse> getOne(String id, String currentUsername);
     DatabaseQueryResult update(SessionRequest sessionRequest, String id, String currentUsername);
     DatabaseQueryResult updateStatus(String id, Session.StatusEnum status, String currentUsername);
-    DatabaseQueryResult startAttendanceCheck(String id, String currentUsername);
-    DatabaseQueryResult closeAttendanceCheck(String id, String currentUsername);
+    DatabaseQueryResult startAttendanceCheck(String id, String currentUsername, boolean adminAuthority);
+    DatabaseQueryResult closeAttendanceCheck(String id, String currentUsername, boolean adminAuthority);
 }

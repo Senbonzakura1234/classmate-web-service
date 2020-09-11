@@ -211,13 +211,9 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public DatabaseQueryResult startAttendanceCheck(String id, String currentUsername) {
+    public DatabaseQueryResult startAttendanceCheck(String id, String currentUsername,
+                                                    boolean adminAuthority) {
         try {
-            var teacher = userRepository.findByUsername(currentUsername);
-            if(teacher.isEmpty())
-                return new DatabaseQueryResult(false, "Teacher not found",
-                        HttpStatus.NOT_FOUND, "");
-
             var session = sessionRepository.findById(id);
             if(session.isEmpty()) return new DatabaseQueryResult(false,
                     "Session not found", HttpStatus.NOT_FOUND, "");
@@ -230,9 +226,16 @@ public class SessionServiceImp implements SessionService {
                     .findById(session.get().getCourse_id())
                     .orElseThrow(() -> new RuntimeException("Course not found"));
 
-            if(!course.getUser_id().equals(teacher.get().getId()))
-                return new DatabaseQueryResult(false, "Not your course",
-                        HttpStatus.BAD_REQUEST, "");
+            if (!adminAuthority) {
+                var teacher = userRepository.findByUsername(currentUsername);
+                if(teacher.isEmpty())
+                    return new DatabaseQueryResult(false, "Teacher not found",
+                            HttpStatus.NOT_FOUND, "");
+
+                if(!course.getUser_id().equals(teacher.get().getId()))
+                    return new DatabaseQueryResult(false, "Not your course",
+                            HttpStatus.BAD_REQUEST, "");
+            }
 
             var s = session.get();
             s.setUpdated_at(System.currentTimeMillis());
@@ -266,30 +269,43 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public DatabaseQueryResult closeAttendanceCheck(String id, String currentUsername) {
-        var teacher = userRepository.findByUsername(currentUsername);
-        if(teacher.isEmpty())
-            return new DatabaseQueryResult(false, "Teacher not found",
-                    HttpStatus.NOT_FOUND, "");
+    public DatabaseQueryResult closeAttendanceCheck(String id, String currentUsername,
+                                                    boolean adminAuthority) {
+        try {
+            var session = sessionRepository.findById(id);
+            if(session.isEmpty()){
+                return new DatabaseQueryResult(false,
+                        "Session not found", HttpStatus.NOT_FOUND, "");
+            }
 
-        var session = sessionRepository.findById(id);
-        if(session.isEmpty()){
-            return new DatabaseQueryResult(false,
-                    "Session not found", HttpStatus.NOT_FOUND, "");
+            var course = courseRepository
+                    .findById(session.get().getCourse_id())
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+
+            if (!adminAuthority) {
+                var teacher = userRepository.findByUsername(currentUsername);
+                if(teacher.isEmpty())
+                    return new DatabaseQueryResult(false, "Teacher not found",
+                            HttpStatus.NOT_FOUND, "");
+
+                if(!course.getUser_id().equals(teacher.get().getId()))
+                    return new DatabaseQueryResult(false, "Not your course",
+                            HttpStatus.BAD_REQUEST, "");
+            }
+
+            var s = session.get();
+            s.setUpdated_at(System.currentTimeMillis());
+            s.setAttendance_status(Session.AttendanceStatusEnum.END);
+            sessionRepository.save(s);
+            return new DatabaseQueryResult(true,
+                    "Attendance Closed", HttpStatus.OK, "");
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
+            return new DatabaseQueryResult(true,
+                    "Fail to close Attendance Check",
+                    HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
-
-        var course = courseRepository
-                .findById(session.get().getCourse_id())
-                .orElseThrow(() -> new RuntimeException("Course not found"));
-
-        if(!course.getUser_id().equals(teacher.get().getId()))
-            return new DatabaseQueryResult(false, "Not your course",
-                    HttpStatus.BAD_REQUEST, "");
-        var s = session.get();
-        s.setUpdated_at(System.currentTimeMillis());
-        s.setAttendance_status(Session.AttendanceStatusEnum.END);
-        sessionRepository.save(s);
-        return new DatabaseQueryResult(true,
-                "Attendance Closed", HttpStatus.OK, "");
     }
 }
