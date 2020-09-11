@@ -47,9 +47,6 @@ public class Session {
     @Column(name = "session_duration", nullable = false)
     private int session_duration = 1;
 
-    @Column(name = "attendance_check_start_time", nullable = false)
-    private Long attendance_check_start_time = 0L;
-
     @Column(name = "attendance_status", nullable = false)
     private AttendanceStatusEnum attendance_status = AttendanceStatusEnum.PENDING;
 
@@ -209,14 +206,6 @@ public class Session {
 
     public void setAttendance_status(AttendanceStatusEnum attendancechecked) {
         this.attendance_status = attendancechecked;
-    }
-
-    public Long getAttendance_check_start_time() {
-        return attendance_check_start_time;
-    }
-
-    public void setAttendance_check_start_time(Long attendancecheckstarttime) {
-        this.attendance_check_start_time = attendancecheckstarttime;
     }
 
     public String getContent() {

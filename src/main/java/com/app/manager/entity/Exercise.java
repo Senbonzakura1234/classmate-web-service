@@ -3,7 +3,6 @@ package com.app.manager.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -42,16 +41,12 @@ public class Exercise {
     @Column(name = "answer", nullable = false)
     private String answer;
 
-    @Min(value = 0)
-    @Column(name = "duration", nullable = false)
-    private int duration;
-
     @Column(name = "show_answer", nullable = false)
     private boolean show_answer = false;
 
 
-    @Column(name = "exercise_start_time", nullable = false)
-    private Long exercise_start_time = 0L;
+    @Column(name = "exercise_end_time", nullable = false)
+    private Long exercise_end_time = 0L;
 
 
     @Column(name = "status", nullable = false)
@@ -181,14 +176,6 @@ public class Exercise {
         this.answer = answer;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
     public boolean isShow_answer() {
         return show_answer;
     }
@@ -197,11 +184,11 @@ public class Exercise {
         this.show_answer = show_answer;
     }
 
-    public Long getExercise_start_time() {
-        return exercise_start_time;
+    public Long getExercise_end_time() {
+        return exercise_end_time;
     }
 
-    public void setExercise_start_time(Long exercise_start_time) {
-        this.exercise_start_time = exercise_start_time;
+    public void setExercise_end_time(Long exercise_start_time) {
+        this.exercise_end_time = exercise_start_time;
     }
 }

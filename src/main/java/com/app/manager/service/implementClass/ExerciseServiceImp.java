@@ -207,7 +207,7 @@ public class ExerciseServiceImp implements ExerciseService {
             var e = exercise.get();
             e.setStatus(status);
             if (status == Exercise.StatusEnum.ONGOING)
-                e.setExercise_start_time(System.currentTimeMillis());
+                e.setExercise_end_time(System.currentTimeMillis());
             exerciseRepository.save(e);
             return new DatabaseQueryResult(true,
                     "update exercise success", HttpStatus.OK,

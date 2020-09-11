@@ -36,7 +36,7 @@ public class CastObject {
         exercise.setTitle(exerciseRequest.getTitle());
         exercise.setContent(exerciseRequest.getContent());
         exercise.setAnswer(exerciseRequest.getAnswer());
-        exercise.setDuration(exerciseRequest.getDuration());
+        exercise.setExercise_end_time(exerciseRequest.getExercise_end_time());
         exercise.setShow_answer(exerciseRequest.isShow_answer());
         exercise.setUpdated_at(System.currentTimeMillis());
         return exercise;
@@ -46,14 +46,14 @@ public class CastObject {
         return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
                 exercise.getTitle(), exercise.getContent(),
                 exercise.isShow_answer() ? exercise.getAnswer() : "",
-                exercise.getDuration(), exercise.isShow_answer(),
+                exercise.getExercise_end_time(), exercise.isShow_answer(),
                 exercise.getStatus(), exercise.getCreated_at());
     }
     public ExerciseResponse exerciseModelTeacher(Exercise exercise){
         if(exercise == null) return new ExerciseResponse();
         return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
                 exercise.getTitle(), exercise.getContent(),
-                exercise.getAnswer(), exercise.getDuration(),
+                exercise.getAnswer(), exercise.getExercise_end_time(),
                 exercise.isShow_answer(), exercise.getStatus(),
                 exercise.getCreated_at());
     }
@@ -61,7 +61,7 @@ public class CastObject {
         if(exercise == null) return new ExerciseResponse();
         return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
                 exercise.getTitle(), "", "",
-                exercise.getDuration(), exercise.isShow_answer(),
+                exercise.getExercise_end_time(), exercise.isShow_answer(),
                 exercise.getStatus(), exercise.getCreated_at());
     }
 

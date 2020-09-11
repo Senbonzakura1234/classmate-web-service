@@ -233,8 +233,8 @@ public class SessionServiceImp implements SessionService {
             if(!course.getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, "");
+
             var s = session.get();
-            s.setAttendance_check_start_time(System.currentTimeMillis());
             s.setUpdated_at(System.currentTimeMillis());
             s.setAttendance_status(Session.AttendanceStatusEnum.ONGOING);
             sessionRepository.save(s);

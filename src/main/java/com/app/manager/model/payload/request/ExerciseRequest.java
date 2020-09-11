@@ -1,7 +1,7 @@
 package com.app.manager.model.payload.request;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class ExerciseRequest {
     @NotBlank
@@ -15,8 +15,8 @@ public class ExerciseRequest {
 
     private String answer;
 
-    @Min(value = 0)
-    private int duration;
+    @NotNull
+    private Long exercise_end_time = 0L;
 
     private boolean show_answer = false;
 
@@ -25,13 +25,13 @@ public class ExerciseRequest {
     }
 
     public ExerciseRequest(@NotBlank String session_id, @NotBlank String title,
-                           @NotBlank String content, String answer,
-                           @Min(value = 0) int duration, boolean show_answer) {
+                           @NotBlank String content, String answer, @NotNull
+                           Long exercise_end_time, boolean show_answer) {
         this.session_id = session_id;
         this.title = title;
         this.content = content;
         this.answer = answer;
-        this.duration = duration;
+        this.exercise_end_time = exercise_end_time;
         this.show_answer = show_answer;
     }
 
@@ -67,12 +67,12 @@ public class ExerciseRequest {
         this.answer = answer;
     }
 
-    public int getDuration() {
-        return duration;
+    public Long getExercise_end_time() {
+        return exercise_end_time;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    public void setExercise_end_time(Long exercise_end_time) {
+        this.exercise_end_time = exercise_end_time;
     }
 
     public boolean isShow_answer() {
