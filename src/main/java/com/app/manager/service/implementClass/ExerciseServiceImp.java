@@ -97,7 +97,7 @@ public class ExerciseServiceImp implements ExerciseService {
             var exercise = exerciseRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("exercise not found"));
 
-            var session = sessionRepository.findById(id)
+            var session = sessionRepository.findById(exercise.getSession_id())
                     .orElseThrow(() -> new RuntimeException("session not found"));
 
             if (currentUser.getRoles().contains(role))
@@ -106,7 +106,7 @@ public class ExerciseServiceImp implements ExerciseService {
             var course = courseRepository.findById(session.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("course not found"));
             if(course.getUser_id().equals(currentUser.getId()))
-                return Optional.of(castObject.exerciseModel(exercise));
+                return Optional.of(castObject.exerciseModelTeacher(exercise));
 
             var listStudents = studentCourseRepository
                     .findAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
