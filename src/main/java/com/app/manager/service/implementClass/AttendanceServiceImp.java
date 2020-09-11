@@ -135,6 +135,9 @@ public class AttendanceServiceImp implements AttendanceService {
             List<AttendanceCheckRequest> attendanceCheckRequests,
             String currentUsername, String sessionId) {
         try {
+            var currentUser = userRepository
+                    .findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("Session not found"));
             var session = sessionRepository
                     .findById(sessionId)
                     .orElseThrow(() -> new RuntimeException("Session not found"));
@@ -142,7 +145,7 @@ public class AttendanceServiceImp implements AttendanceService {
                     .findById(session.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("Session not found"));
 
-            if(!course.getUser_id().equals(currentUsername))
+            if(!course.getUser_id().equals(currentUser.getId()))
                 return new DatabaseQueryResult(false,
                         "Not your course",
                         HttpStatus.BAD_REQUEST, attendanceCheckRequests);
