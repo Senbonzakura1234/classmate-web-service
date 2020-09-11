@@ -16,6 +16,9 @@ public class StudentCourse {
     )
     private String id;
 
+    @Column(name = "name")
+    private String name = "";
+
     @Column(name = "user_id")
     private String user_id;
 
@@ -138,5 +141,13 @@ public class StudentCourse {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

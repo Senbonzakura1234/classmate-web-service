@@ -11,5 +11,7 @@ public interface SeederService {
     void generateCourse();
     void generateStudentCourse();
     void generateSession();
+    void generatePost();
+    void generateComment();
     void updateMigrationHistory(History.EMigration result);
 }

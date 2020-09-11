@@ -122,22 +122,6 @@ public class Attachment {
         this.deleted_at = deleted_at;
     }
 
-    public String getMessage_id() {
-        return post_id;
-    }
-
-    public void setMessage_id(String post_id) {
-        this.post_id = post_id;
-    }
-
-    public Post getMessage() {
-        return post;
-    }
-
-    public void setMessage(Post post) {
-        this.post = post;
-    }
-
     public String getName() {
         return name;
     }
@@ -168,5 +152,21 @@ public class Attachment {
 
     public void setFile_size(Long file_size) {
         this.file_size = file_size;
+    }
+
+    public String getPost_id() {
+        return post_id;
+    }
+
+    public void setPost_id(String post_id) {
+        this.post_id = post_id;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 }

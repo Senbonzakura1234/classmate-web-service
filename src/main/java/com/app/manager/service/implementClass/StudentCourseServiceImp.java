@@ -71,6 +71,8 @@ public class StudentCourseServiceImp implements StudentCourseService {
             var studentCourse = new StudentCourse();
             studentCourse.setCourse_id(studentCourseRequest.getCourse_id());
             studentCourse.setUser_id(studentCourseRequest.getStudent_id());
+            studentCourse.setName(student.get().getUsername()
+                    + ", " + course.get().getName());
 
             studentcourseRepository.save(studentCourse);
 

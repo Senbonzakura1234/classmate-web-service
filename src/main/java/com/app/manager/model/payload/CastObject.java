@@ -164,10 +164,10 @@ public class CastObject {
     }
 
 
-    public Attachment attachmentEntity(String messageId,
+    public Attachment attachmentEntity(String postId,
                                        AttachmentRequest attachmentRequest){
         var attachment = new Attachment();
-        attachment.setMessage_id(messageId);
+        attachment.setPost_id(postId);
         attachment.setName(attachmentRequest.getName());
         attachment.setDescription(attachmentRequest.getDescription());
         attachment.setFile_url(attachmentRequest.getFile_url());
@@ -178,7 +178,7 @@ public class CastObject {
     }
     public AttachmentResponse attachmentModel(Attachment attachment){
         return attachment != null ?
-            new AttachmentResponse(attachment.getId(), attachment.getMessage_id(),
+            new AttachmentResponse(attachment.getId(), attachment.getPost_id(),
             attachment.getName(), attachment.getDescription(), attachment.getFile_url(),
             attachment.getFile_size(), attachment.getStatus(), attachment.getCreated_at())
             : new AttachmentResponse();

@@ -28,12 +28,31 @@ public class ApplicationStartup {
             var check = seederService.checkMigrationHistory();
             var result = check.getResult();
             if(result == History.EMigration.SEEDABLE){
+
+                logger.info("Seeing Roles");
                 seederService.generateRoles();
+
+                logger.info("Seeing Category");
                 seederService.generateCategory();
+
+                logger.info("Seeing User");
                 seederService.generateUser();
+
+                logger.info("Seeing Course");
                 seederService.generateCourse();
+
+                logger.info("Seeing Student to course");
                 seederService.generateStudentCourse();
+
+                logger.info("Seeing Session");
                 seederService.generateSession();
+
+                logger.info("Seeing Post");
+                seederService.generatePost();
+
+                logger.info("Seeing Comment");
+                seederService.generateComment();
+
                 logger.info("Seed data success");
                 seederService.updateMigrationHistory(History.EMigration.SEEDED);
             }else if(result == History.EMigration.NOT_SEEDED){

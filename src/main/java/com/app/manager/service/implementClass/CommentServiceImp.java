@@ -83,11 +83,11 @@ public class CommentServiceImp implements CommentService {
                     .orElseThrow(() -> new RuntimeException("role not found"));
 
             if (!currentUser.getRoles().contains(role) &&
-            !course.getUser_id().equals(currentUser.getId()) &&
-            studentCourseRepository.findAllByCourse_idAndStatus
-                    (course.getId(), StudentCourse.StatusEnum.SHOW)
-                    .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
-                    .equals(currentUser.getId())))
+                !course.getUser_id().equals(currentUser.getId()) &&
+                studentCourseRepository.findAllByCourse_idAndStatus
+                (course.getId(), StudentCourse.StatusEnum.SHOW)
+                .stream().noneMatch(studentCourse -> studentCourse.getUser_id()
+                .equals(currentUser.getId())))
                 return new DatabaseQueryResult(false,
                         "not your course",
                         HttpStatus.BAD_REQUEST, commentRequest);

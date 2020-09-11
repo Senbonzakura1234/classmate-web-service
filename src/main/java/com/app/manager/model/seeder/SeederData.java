@@ -22,8 +22,8 @@ public class SeederData {
     }
 
     public List<String> getCourseCategoryNames (){
-        return IntStream.range(0, 10).mapToObj(i -> i == 0 ?
-                "Undefine" : "Category " + i).collect(Collectors.toCollection(ArrayList::new));
+        return IntStream.range(0, 11).mapToObj(i -> i == 0 ?
+                "Undefine" : "Category " + (i - 1)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public List<SignupRequest> getUserSeeds() {
@@ -32,7 +32,7 @@ public class SeederData {
         for (ERole role : ERole.values()) {
             if (role != ERole.ALL && role != ERole.ROLE_USER) {
                 if (role != ERole.ROLE_ADMIN) {
-                    for (int i = 0; i < (role == ERole.ROLE_TEACHER ? 5 : 10); i++)
+                    for (int i = 0; i < (role == ERole.ROLE_TEACHER ? 10 : 10); i++)
                         list.add(new SignupRequest(getUsername(role.getName() + i),
                                 getEmail(role.getName() + i), getPassword(),
                                 new HashSet<>(Arrays.asList(role.getName(),
