@@ -121,4 +121,9 @@ public class AuthController {
     public ResponseEntity<?> getRoleList(){
         return ResponseEntity.ok(roleService.getAll());
     }
+
+    @RequestMapping("/oauth2callback")
+    public ResponseEntity<?> oauth2callback(){
+        return ResponseEntity.ok("");
+    }
 }
