@@ -27,8 +27,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api/auth",
-        consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/api/auth", produces = "application/json")
 public class AuthController {
     @Autowired AuthenticationManager authenticationManager;
     @Autowired UserService userService;
