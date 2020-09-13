@@ -6,14 +6,14 @@ public class FaceCheckClientRequest {
     @NotBlank
     private String session_id;
     @NotBlank
-    private String img_url;
+    private String file_id;
 
     public FaceCheckClientRequest() {
     }
 
-    public FaceCheckClientRequest(@NotBlank String session_id, @NotBlank String img_url) {
+    public FaceCheckClientRequest(@NotBlank String session_id, @NotBlank String file_id) {
         this.session_id = session_id;
-        this.img_url = img_url;
+        this.file_id = file_id;
     }
 
     public String getSession_id() {
@@ -24,11 +24,11 @@ public class FaceCheckClientRequest {
         this.session_id = session_id;
     }
 
-    public String getImg_url() {
-        return img_url;
+    public String getFile_id() {
+        return file_id;
     }
 
-    public void setImg_url(String img_url) {
-        this.img_url = img_url;
+    public void setFile_id(String file_id) {
+        this.file_id = file_id;
     }
 }

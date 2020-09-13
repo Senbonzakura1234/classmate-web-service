@@ -98,7 +98,7 @@ public class UserController {
                     .badRequest()
                     .body(new MessageResponse("Error: Validate Error",""));
         }
-        if(faceDefinitionClientRequest.getImg_urls().isEmpty())
+        if(faceDefinitionClientRequest.getFile_ids().isEmpty())
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Null Imagelist",  ""));

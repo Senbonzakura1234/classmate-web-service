@@ -125,7 +125,7 @@ public class CastObject {
         file.setStudentexercise_id(studentExerciseId);
         file.setName(fileRequest.getName());
         file.setDescription(fileRequest.getDescription());
-        file.setFile_url(fileRequest.getFile_url());
+        file.setFile_id(fileRequest.getFile_id());
         file.setFile_size(fileRequest.getFile_size());
         file.setUpdated_at(System.currentTimeMillis());
         return file;
@@ -133,7 +133,7 @@ public class CastObject {
     public FileResponse fileModel(File file){
         return file != null ? new FileResponse(
                 file.getId(), file.getStudentexercise_id(), file.getName(),
-                file.getDescription(), file.getFile_url(), file.getFile_size(),
+                file.getDescription(), file.getFile_id(), file.getFile_size(),
                 file.getFile_visibility(), file.getStatus(), file.getCreated_at())
                 : new FileResponse();
     }
@@ -178,7 +178,7 @@ public class CastObject {
         attachment.setPost_id(postId);
         attachment.setName(attachmentRequest.getName());
         attachment.setDescription(attachmentRequest.getDescription());
-        attachment.setFile_url(attachmentRequest.getFile_url());
+        attachment.setFile_id(attachmentRequest.getFile_id());
         attachment.setFile_size(attachmentRequest.getFile_size());
         attachment.setUpdated_at(System.currentTimeMillis());
         return attachment;
@@ -187,7 +187,7 @@ public class CastObject {
     public AttachmentResponse attachmentModel(Attachment attachment){
         return attachment != null ?
             new AttachmentResponse(attachment.getId(), attachment.getPost_id(),
-            attachment.getName(), attachment.getDescription(), attachment.getFile_url(),
+            attachment.getName(), attachment.getDescription(), attachment.getFile_id(),
             attachment.getFile_size(), attachment.getStatus(), attachment.getCreated_at())
             : new AttachmentResponse();
     }

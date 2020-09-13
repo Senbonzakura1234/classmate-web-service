@@ -5,20 +5,20 @@ import java.util.List;
 
 public class FaceDefinitionClientRequest {
 
-    private List<String> img_urls = new ArrayList<>();
+    private List<String> file_ids = new ArrayList<>();
 
     public FaceDefinitionClientRequest() {
     }
 
-    public FaceDefinitionClientRequest(List<String> img_urls) {
-        this.img_urls = img_urls;
+    public FaceDefinitionClientRequest(List<String> file_ids) {
+        this.file_ids = file_ids;
     }
 
-    public List<String> getImg_urls() {
-        return img_urls;
+    public List<String> getFile_ids() {
+        return file_ids;
     }
 
-    public void setImg_urls(List<String> img_urls) {
-        this.img_urls = img_urls;
+    public void setFile_ids(List<String> file_ids) {
+        this.file_ids = file_ids;
     }
 }

@@ -36,8 +36,8 @@ public class File {
     private String description;
 
     @NotBlank
-    @Column(name = "file_url", nullable = false)
-    private String file_url;
+    @Column(name = "file_id", nullable = false)
+    private String file_id;
 
     @Min(0L)
     @NotNull
@@ -147,12 +147,12 @@ public class File {
         this.description = description;
     }
 
-    public String getFile_url() {
-        return file_url;
+    public String getFile_id() {
+        return file_id;
     }
 
-    public void setFile_url(String file_url) {
-        this.file_url = file_url;
+    public void setFile_id(String file_id) {
+        this.file_id = file_id;
     }
 
     public Long getFile_size() {

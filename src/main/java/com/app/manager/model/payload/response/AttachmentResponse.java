@@ -7,7 +7,7 @@ public class AttachmentResponse {
     private String message_id;
     private String name;
     private String description;
-    private String file_url;
+    private String file_id;
     private Long file_size;
     private Attachment.StatusEnum status;
     private Long created_at;
@@ -16,13 +16,13 @@ public class AttachmentResponse {
     }
 
     public AttachmentResponse(String id, String message_id, String name,
-                              String description, String file_url, Long file_size,
+                              String description, String file_id, Long file_size,
                               Attachment.StatusEnum status, Long created_at) {
         this.id = id;
         this.message_id = message_id;
         this.name = name;
         this.description = description;
-        this.file_url = file_url;
+        this.file_id = file_id;
         this.file_size = file_size;
         this.status = status;
         this.created_at = created_at;
@@ -60,12 +60,12 @@ public class AttachmentResponse {
         this.description = description;
     }
 
-    public String getFile_url() {
-        return file_url;
+    public String getFile_id() {
+        return file_id;
     }
 
-    public void setFile_url(String file_url) {
-        this.file_url = file_url;
+    public void setFile_id(String file_id) {
+        this.file_id = file_id;
     }
 
     public Long getFile_size() {

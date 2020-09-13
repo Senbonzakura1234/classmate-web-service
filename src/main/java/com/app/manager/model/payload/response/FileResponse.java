@@ -8,7 +8,7 @@ public class FileResponse {
     private String student_exercise_id;
     private String name;
     private String description;
-    private String file_url;
+    private String file_id;
     private Long file_size;
     private EVisibility file_visibility;
     private File.StatusEnum status;
@@ -18,14 +18,14 @@ public class FileResponse {
     }
 
     public FileResponse(String id, String student_exercise_id, String name,
-                        String description, String file_url, Long file_size,
+                        String description, String file_id, Long file_size,
                         EVisibility file_visibility, File.StatusEnum status,
                         Long created_at) {
         this.id = id;
         this.student_exercise_id = student_exercise_id;
         this.name = name;
         this.description = description;
-        this.file_url = file_url;
+        this.file_id = file_id;
         this.file_size = file_size;
         this.file_visibility = file_visibility;
         this.status = status;
@@ -64,12 +64,12 @@ public class FileResponse {
         this.description = description;
     }
 
-    public String getFile_url() {
-        return file_url;
+    public String getFile_id() {
+        return file_id;
     }
 
-    public void setFile_url(String file_url) {
-        this.file_url = file_url;
+    public void setFile_id(String file_id) {
+        this.file_id = file_id;
     }
 
     public Long getFile_size() {

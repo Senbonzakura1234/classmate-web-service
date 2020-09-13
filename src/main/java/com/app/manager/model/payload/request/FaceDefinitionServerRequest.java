@@ -6,7 +6,7 @@ import java.util.UUID;
 public class FaceDefinitionServerRequest {
     private String definition_id = UUID.randomUUID().toString();
 
-    private List<String> img_urls;
+    private List<String> file_ids;
 
     private boolean update;
 
@@ -15,10 +15,10 @@ public class FaceDefinitionServerRequest {
     public FaceDefinitionServerRequest() {
     }
 
-    public FaceDefinitionServerRequest(List<String> img_urls,
+    public FaceDefinitionServerRequest(List<String> file_ids,
                                        boolean update,
                                        String oldDefinitionId) {
-        this.img_urls = img_urls;
+        this.file_ids = file_ids;
         this.update = update;
         this.oldDefinitionId = oldDefinitionId;
     }
@@ -31,12 +31,12 @@ public class FaceDefinitionServerRequest {
         this.definition_id = definition_id;
     }
 
-    public List<String> getImg_urls() {
-        return img_urls;
+    public List<String> getFile_ids() {
+        return file_ids;
     }
 
-    public void setImg_urls(List<String> img_urls) {
-        this.img_urls = img_urls;
+    public void setFile_ids(List<String> file_ids) {
+        this.file_ids = file_ids;
     }
 
     public boolean isUpdate() {

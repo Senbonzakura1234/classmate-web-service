@@ -101,7 +101,7 @@ public class AttendanceServiceImp implements AttendanceService {
                 var newAttendance = new Attendance();
                 newAttendance.setSession_id(session.getId());
                 newAttendance.setUser_id(student.getId());
-                newAttendance.setImage_uri(faceCheckClientRequest.getImg_url());
+                newAttendance.setImage_uri(faceCheckClientRequest.getFile_id());
                 newAttendance.setFace_matched(true);
                 newAttendance.setStatus(Attendance.StatusEnum.ATTENDANT);
                 attendanceRepository.save(newAttendance);
@@ -110,7 +110,7 @@ public class AttendanceServiceImp implements AttendanceService {
                         faceCheckClientRequest);
             }
             var a = attendance.get();
-            a.setImage_uri(faceCheckClientRequest.getImg_url());
+            a.setImage_uri(faceCheckClientRequest.getFile_id());
             a.setFace_matched(true);
             a.setStatus(Attendance.StatusEnum.ATTENDANT);
             a.setUpdated_at(System.currentTimeMillis());
@@ -217,7 +217,7 @@ public class AttendanceServiceImp implements AttendanceService {
             (FaceCheckClientRequest faceCheckClientRequest, User user){
         try {
             var entity = new HttpEntity<>(new FaceCheckServerRequest(user.getFace_definition_id(),
-                    faceCheckClientRequest.getImg_url()), new HttpHeaders());
+                    faceCheckClientRequest.getFile_id()), new HttpHeaders());
             var restTemplate = new RestTemplate();
 
             var response = restTemplate

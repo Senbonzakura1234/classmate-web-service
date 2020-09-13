@@ -256,7 +256,7 @@ public class UserServiceImp implements UserService {
             var student = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("User not found"));
             var faceDefinition = new FaceDefinitionServerRequest(
-                        faceDefinitionClientRequest.getImg_urls(),
+                        faceDefinitionClientRequest.getFile_ids(),
                         student.isFace_definition()
                                 && student.getFace_definition_id() != null
                                 && !student.getFace_definition_id().isEmpty(),

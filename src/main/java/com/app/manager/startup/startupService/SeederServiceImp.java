@@ -271,7 +271,7 @@ public class SeederServiceImp implements SeederService {
                 attachment.setPost_id(post.getId());
                 attachment.setName("File " + j);
                 attachment.setDescription("from post " + i + " of " + studentName);
-                attachment.setFile_url("https://www.google.com.vn/");
+                attachment.setFile_id("https://www.google.com.vn/");
                 attachment.setFile_size((j+1)*100L);
                 attachmentRepository.save(attachment);
             });
@@ -295,7 +295,7 @@ public class SeederServiceImp implements SeederService {
                 attachment.setPost_id(post.getId());
                 attachment.setName("File " + j);
                 attachment.setDescription("from post " + i + " of " + teacherName);
-                attachment.setFile_url("https://www.google.com.vn/");
+                attachment.setFile_id("https://www.google.com.vn/");
                 attachment.setFile_size((j+1)*100L);
                 attachmentRepository.save(attachment);
             });
