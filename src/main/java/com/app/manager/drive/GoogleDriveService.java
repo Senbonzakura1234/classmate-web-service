@@ -94,6 +94,8 @@ public class GoogleDriveService {
             var file = createNewDriveFile(fileInput, mimeType,
                     fileName, Collections.singletonList(folderId));
             setPermission(file.getId());
+            logger.info(file.getWebContentLink());
+            logger.info(file.getWebViewLink());
             return Optional.of(new FileUploadResponse
                     (true, file.getId(), fileName, file.getSize()));
         } catch (IOException e) {

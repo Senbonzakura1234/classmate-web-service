@@ -36,7 +36,7 @@ public class UploadController {
                 System.currentTimeMillis());
     }
 
-    @PostMapping("/googleDrive")
+    @PostMapping(value = "/googleDrive", consumes = "multipart/form-data")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> googleDrive(List<MultipartFile> uploadFiles){
         return ResponseEntity.ok(uploadFiles.stream().map(uploadFile -> {
