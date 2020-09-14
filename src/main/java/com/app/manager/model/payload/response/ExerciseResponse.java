@@ -10,6 +10,8 @@ public class ExerciseResponse {
     private String answer;
     private Long exercise_end_time;
     private boolean show_answer;
+    private boolean auto_start;
+    private boolean auto_close;
     private Exercise.StatusEnum status;
     private Long created_at;
 
@@ -18,8 +20,8 @@ public class ExerciseResponse {
 
     public ExerciseResponse(String id, String session_id, String title,
                             String content, String answer, Long exercise_end_time,
-                            boolean show_answer, Exercise.StatusEnum status,
-                            Long created_at) {
+                            boolean show_answer, boolean auto_start, boolean auto_close,
+                            Exercise.StatusEnum status, Long created_at) {
         this.id = id;
         this.session_id = session_id;
         this.title = title;
@@ -27,10 +29,11 @@ public class ExerciseResponse {
         this.answer = answer;
         this.exercise_end_time = exercise_end_time;
         this.show_answer = show_answer;
+        this.auto_start = auto_start;
+        this.auto_close = auto_close;
         this.status = status;
         this.created_at = created_at;
     }
-
 
     public String getId() {
         return id;
@@ -102,5 +105,13 @@ public class ExerciseResponse {
 
     public void setCreated_at(Long created_at) {
         this.created_at = created_at;
+    }
+
+    public boolean isAuto_start() {
+        return auto_start;
+    }
+
+    public void setAuto_start(boolean auto_start) {
+        this.auto_start = auto_start;
     }
 }

@@ -38,6 +38,8 @@ public class CastObject {
         exercise.setAnswer(exerciseRequest.getAnswer());
         exercise.setExercise_end_time(exerciseRequest.getExercise_end_time());
         exercise.setShow_answer(exerciseRequest.isShow_answer());
+        exercise.setAuto_start(exerciseRequest.isAuto_start());
+        exercise.setAuto_close(exerciseRequest.isAuto_close());
         exercise.setUpdated_at(System.currentTimeMillis());
         return exercise;
     }
@@ -47,6 +49,7 @@ public class CastObject {
                 exercise.getTitle(), exercise.getContent(),
                 exercise.isShow_answer() ? exercise.getAnswer() : "",
                 exercise.getExercise_end_time(), exercise.isShow_answer(),
+                exercise.isAuto_start(), exercise.isAuto_close(),
                 exercise.getStatus(), exercise.getCreated_at());
     }
     public ExerciseResponse exerciseModelTeacher(Exercise exercise){
@@ -54,14 +57,16 @@ public class CastObject {
         return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
                 exercise.getTitle(), exercise.getContent(),
                 exercise.getAnswer(), exercise.getExercise_end_time(),
-                exercise.isShow_answer(), exercise.getStatus(),
-                exercise.getCreated_at());
+                exercise.isShow_answer(), exercise.isAuto_start(),
+                exercise.isAuto_close(),
+                exercise.getStatus(), exercise.getCreated_at());
     }
     public ExerciseResponse exerciseModelPublic(Exercise exercise){
         if(exercise == null) return new ExerciseResponse();
         return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
                 exercise.getTitle(), "", "",
                 exercise.getExercise_end_time(), exercise.isShow_answer(),
+                exercise.isAuto_start(), exercise.isAuto_close(),
                 exercise.getStatus(), exercise.getCreated_at());
     }
 

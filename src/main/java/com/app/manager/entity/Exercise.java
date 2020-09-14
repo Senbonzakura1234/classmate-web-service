@@ -49,6 +49,14 @@ public class Exercise {
     private Long exercise_end_time = 0L;
 
 
+    @Column(name = "auto_start", nullable = false)
+    private boolean auto_start = true;
+
+
+    @Column(name = "auto_close", nullable = false)
+    private boolean auto_close = true;
+
+
     @Column(name = "status", nullable = false)
     private StatusEnum status = StatusEnum.PENDING;
 
@@ -190,5 +198,21 @@ public class Exercise {
 
     public void setExercise_end_time(Long exercise_start_time) {
         this.exercise_end_time = exercise_start_time;
+    }
+
+    public boolean isAuto_start() {
+        return auto_start;
+    }
+
+    public void setAuto_start(boolean auto_start) {
+        this.auto_start = auto_start;
+    }
+
+    public boolean isAuto_close() {
+        return auto_close;
+    }
+
+    public void setAuto_close(boolean auto_close) {
+        this.auto_close = auto_close;
     }
 }

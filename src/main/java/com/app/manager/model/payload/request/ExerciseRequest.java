@@ -13,26 +13,30 @@ public class ExerciseRequest {
     @NotBlank
     private String content;
 
-    private String answer;
+    private String answer = "";
 
     @NotNull
     private Long exercise_end_time = 0L;
 
     private boolean show_answer = false;
+    private boolean auto_start = true;
+    private boolean auto_close = true;
 
 
     public ExerciseRequest() {
     }
 
     public ExerciseRequest(@NotBlank String session_id, @NotBlank String title,
-                           @NotBlank String content, String answer, @NotNull
-                           Long exercise_end_time, boolean show_answer) {
+                           @NotBlank String content, String answer,
+                           @NotNull Long exercise_end_time, boolean show_answer,
+                           boolean auto_start) {
         this.session_id = session_id;
         this.title = title;
         this.content = content;
         this.answer = answer;
         this.exercise_end_time = exercise_end_time;
         this.show_answer = show_answer;
+        this.auto_start = auto_start;
     }
 
     public String getSession_id() {
@@ -81,5 +85,21 @@ public class ExerciseRequest {
 
     public void setShow_answer(boolean show_answer) {
         this.show_answer = show_answer;
+    }
+
+    public boolean isAuto_start() {
+        return auto_start;
+    }
+
+    public void setAuto_start(boolean auto_start) {
+        this.auto_start = auto_start;
+    }
+
+    public boolean isAuto_close() {
+        return auto_close;
+    }
+
+    public void setAuto_close(boolean auto_close) {
+        this.auto_close = auto_close;
     }
 }
