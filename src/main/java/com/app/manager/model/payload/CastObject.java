@@ -5,6 +5,7 @@ import com.app.manager.model.payload.request.*;
 import com.app.manager.model.payload.response.*;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,8 @@ public class CastObject {
                 course.getStatus());
     }
 
-    public Exercise exerciseEntity(ExerciseRequest exerciseRequest){
+    public Exercise exerciseEntity(ExerciseRequest exerciseRequest,
+                                   @NotNull String course_id){
         var exercise = new Exercise();
         exercise.setSession_id(exerciseRequest.getSession_id());
         exercise.setTitle(exerciseRequest.getTitle());
@@ -40,6 +42,7 @@ public class CastObject {
         exercise.setShow_answer(exerciseRequest.isShow_answer());
         exercise.setAuto_start(exerciseRequest.isAuto_start());
         exercise.setAuto_close(exerciseRequest.isAuto_close());
+        exercise.setCourse_id(course_id);
         exercise.setUpdated_at(System.currentTimeMillis());
         return exercise;
     }

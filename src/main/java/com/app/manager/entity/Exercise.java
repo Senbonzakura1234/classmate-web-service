@@ -33,6 +33,9 @@ public class Exercise {
     @NotBlank
     @Column(name = "title", nullable = false)
     private String title;
+    @NotBlank
+    @Column(name = "course_id", nullable = false)
+    private String course_id;
 
     @NotBlank
     @Column(name = "content", nullable = false)
@@ -214,5 +217,13 @@ public class Exercise {
 
     public void setAuto_close(boolean auto_close) {
         this.auto_close = auto_close;
+    }
+
+    public String getCourse_id() {
+        return course_id;
+    }
+
+    public void setCourse_id(String course_id) {
+        this.course_id = course_id;
     }
 }

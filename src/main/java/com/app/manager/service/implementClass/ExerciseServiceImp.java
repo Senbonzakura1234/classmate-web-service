@@ -70,7 +70,8 @@ public class ExerciseServiceImp implements ExerciseService {
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, exerciseRequest);
 
-            exerciseRepository.save(castObject.exerciseEntity(exerciseRequest));
+            exerciseRepository.save(castObject.exerciseEntity(exerciseRequest,
+                    session.get().getCourse_id()));
             return new DatabaseQueryResult(true, "save exercise success",
                     HttpStatus.OK, exerciseRequest);
         } catch (Exception e) {
@@ -155,7 +156,8 @@ public class ExerciseServiceImp implements ExerciseService {
                         "Not your course",
                         HttpStatus.BAD_REQUEST, exerciseRequest);
 
-            exerciseRepository.save(castObject.exerciseEntity(exerciseRequest));
+            exerciseRepository.save(castObject.exerciseEntity(exerciseRequest,
+                    session.get().getCourse_id()));
             return new DatabaseQueryResult(true,
                     "update exercise success",
                     HttpStatus.OK, exerciseRequest);
