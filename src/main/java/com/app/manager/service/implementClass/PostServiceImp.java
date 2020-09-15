@@ -321,7 +321,8 @@ public class PostServiceImp implements PostService {
             var p = post.get();
             p.setStatus(status);
             p.setUpdated_at(System.currentTimeMillis());
-            p.setDeleted_at(0L);
+            p.setDeleted_at(status == Post.StatusEnum.SHOW ? 0L
+                    : System.currentTimeMillis());
             postRepository.save(p);
 
             return new DatabaseQueryResult(true,

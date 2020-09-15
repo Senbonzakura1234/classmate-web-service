@@ -265,7 +265,8 @@ public class CommentServiceImp implements CommentService {
             var c = comment.get();
             c.setStatus(status);
             c.setUpdated_at(System.currentTimeMillis());
-            c.setDeleted_at(0L);
+            c.setDeleted_at(status == Comment.StatusEnum.SHOW ? 0L
+                    : System.currentTimeMillis());
             commentRepository.save(c);
 
             return new DatabaseQueryResult(true,
