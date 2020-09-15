@@ -33,6 +33,7 @@ public class ExerciseController {
     public ResponseEntity<?> getAll(
             @RequestParam(value = "title", required = false, defaultValue = "") String title,
             @RequestParam(value = "session_id", required = false, defaultValue = "") String session_id,
+            @RequestParam(value = "course_id", required = false, defaultValue = "") String course_id,
             @RequestParam(value = "content", required = false, defaultValue = "") String content,
             @RequestParam(value = "status", required = false) Exercise.StatusEnum status
     ) {
@@ -44,6 +45,11 @@ public class ExerciseController {
 
         if(session_id != null && !session_id.isEmpty()){
             query.add(new SearchCriteria("session_id", session_id,
+                    SearchCriteria.SearchOperation.EQUAL));
+        }
+
+        if(course_id != null && !course_id.isEmpty()){
+            query.add(new SearchCriteria("course_id", course_id,
                     SearchCriteria.SearchOperation.EQUAL));
         }
 
