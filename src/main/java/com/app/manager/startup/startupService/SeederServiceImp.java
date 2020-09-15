@@ -144,8 +144,11 @@ public class SeederServiceImp implements SeederService {
                 course.setCoursecategory_id(category.get().getId());
                 course.setUser_id(teacher.get().getId());
 
+                if(i < 3){
+                    course.setStatus(Course.StatusEnum.ONGOING);
+                    course.setStart_date(System.currentTimeMillis());
+                }
 
-//                course.setStatus(Course.StatusEnum.ONGOING);
 
                 courseRepository.save(course);
                 logger.info("Add course success");

@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -36,7 +37,7 @@ public class CourseController {
             @RequestParam(value = "user_id", required = false, defaultValue = "") String user_id,
             @RequestParam(value = "start_date", required = false, defaultValue = "0") long start_date,
             @RequestParam(value = "end_date", required = false, defaultValue = "0") long end_date,
-            @RequestParam(value = "status", required = false) Course.StatusEnum status
+            @RequestParam(value = "statuss", required = false) List<Course.StatusEnum> statuss
     ) {
         var query = new CourseSpecification();
         if(name != null){
@@ -44,9 +45,12 @@ public class CourseController {
                     SearchCriteria.SearchOperation.MATCH));
         }
 
-        if(status != null && status != Course.StatusEnum.ALL){
-            query.add(new SearchCriteria("status", status.getValue(),
-                    SearchCriteria.SearchOperation.EQUAL));
+        if(!statuss.isEmpty()){
+            statuss.stream().filter(statusEnum -> statusEnum != Course.StatusEnum.ALL)
+                .forEach(status -> {
+                query.add(new SearchCriteria("status", status.getValue(),
+                        SearchCriteria.SearchOperation.EQUAL));
+            });
         }
 
         if(course_category_id != null && !course_category_id.isEmpty()){
@@ -79,7 +83,7 @@ public class CourseController {
             @RequestParam(value = "user_id", required = false, defaultValue = "") String user_id,
             @RequestParam(value = "start_date", required = false, defaultValue = "0") long start_date,
             @RequestParam(value = "end_date", required = false, defaultValue = "0") long end_date,
-            @RequestParam(value = "status", required = false) Course.StatusEnum status
+            @RequestParam(value = "statuss", required = false) List<Course.StatusEnum> statuss
     ) {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
@@ -89,9 +93,12 @@ public class CourseController {
                     SearchCriteria.SearchOperation.MATCH));
         }
 
-        if(status != null && status != Course.StatusEnum.ALL){
-            query.add(new SearchCriteria("status", status.getValue(),
-                    SearchCriteria.SearchOperation.EQUAL));
+        if(!statuss.isEmpty()){
+            statuss.stream().filter(statusEnum -> statusEnum != Course.StatusEnum.ALL)
+                .forEach(status -> {
+                query.add(new SearchCriteria("status", status.getValue(),
+                        SearchCriteria.SearchOperation.EQUAL));
+            });
         }
 
         if(course_category_id != null && !course_category_id.isEmpty()){
