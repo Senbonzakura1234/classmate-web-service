@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface StudentExerciseRepository extends JpaRepository<StudentExercise, String> {
     Optional<StudentExercise> findFirstByUser_idAndExercise_id(String user_id, String exercise_id);
     List<StudentExercise> findAllByExercise_idAndStatus(String exercise_id, StudentExercise.StatusEnum status);
+    List<StudentExercise> findAllByUser_idAndStatus(String user_id, StudentExercise.StatusEnum status);
 }

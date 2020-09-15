@@ -152,12 +152,25 @@ public class ExerciseController {
 
     @GetMapping("/studentExercise/all")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
-    public ResponseEntity<?> getListStudentExercises(@RequestParam(value = "id") String id) {
+    public ResponseEntity<?> getListStudentExercises(@RequestParam(value = "session_id") String session_id) {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
 
-        return ResponseEntity.ok(studentExerciseService.getAllStudentExercise(id, currentUser));
+        return ResponseEntity.ok(studentExerciseService.getAllStudentExercise(session_id, currentUser));
     }
+
+    @GetMapping("/studentExercise/student")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> getListStudentExercisesByStudent(
+            @RequestParam(value = "course_id", required = false, defaultValue = "") String course_id) {
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        return ResponseEntity.ok(studentExerciseService
+                .getStudentExerciseOfOneStudentByCourse(course_id, currentUser));
+    }
+
+
+
 
     @GetMapping("/studentExercise/getOne")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")

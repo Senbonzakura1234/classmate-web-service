@@ -171,6 +171,29 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
     }
 
     @Override
+    public List<StudentExerciseResponse> getStudentExerciseOfOneStudentByCourse
+            (String courseId, String currentUsername) {
+        var currentUser = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return studentExerciseRepository.findAllByUser_idAndStatus(currentUser.getId(),
+                    StudentExercise.StatusEnum.SHOW).stream().map(studentExercise -> {
+
+            var exercise = exerciseRepository.findById(studentExercise.getExercise_id());
+            if(exercise.isEmpty()) return new StudentExerciseResponse();
+
+            if (!courseId.isEmpty() && !exercise.get().getCourse_id().equals(courseId))
+                return new StudentExerciseResponse();
+            var files = fileRepository.findAllByStudentexercise_idAndStatus(
+                    studentExercise.getId(),
+                    File.StatusEnum.SHOW).stream().map(file -> castObject.fileModel(file))
+                    .collect(Collectors.toList());
+            return castObject.studentExerciseModel(studentExercise, files);
+
+        }).filter(studentExerciseResponse -> studentExerciseResponse.getId() != null)
+            .collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<StudentExerciseResponse> getStudentExercise(
             String id, String currentUsername) {
         try {

@@ -13,6 +13,7 @@ public interface StudentExerciseService {
                                             String currentUsername, String id);
 
     List<StudentExerciseResponse> getAllStudentExercise(String sessionId, String currentUsername);
+    List<StudentExerciseResponse> getStudentExerciseOfOneStudentByCourse(String courseId, String currentUsername);
     Optional<StudentExerciseResponse> getStudentExercise(String id, String currentUsername);
     DatabaseQueryResult markExcercise(String exerciseId, String currentUsername,
                                       MarkExerciseRequest markExerciseRequest);
