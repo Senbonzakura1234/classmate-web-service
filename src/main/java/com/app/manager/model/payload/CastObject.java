@@ -22,13 +22,13 @@ public class CastObject {
         course.setUpdated_at(System.currentTimeMillis());
         return course;
     }
-    public CourseResponse courseModel(Course course){
+    public CourseResponse courseModel(Course course, SessionResponse currentSession){
         if(course == null) return new CourseResponse();
 
         return new CourseResponse(course.getId(), course.getUser_id(),
                 course.getCoursecategory_id(), course.getName(), course.getDescription(),
                 course.getStart_date(), course.getEnd_date(), course.getCreated_at(),
-                course.getStatus());
+                course.getStatus(), currentSession);
     }
 
     public Exercise exerciseEntity(ExerciseRequest exerciseRequest,

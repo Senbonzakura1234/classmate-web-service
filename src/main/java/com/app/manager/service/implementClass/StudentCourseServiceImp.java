@@ -1,13 +1,11 @@
 package com.app.manager.service.implementClass;
 
-import com.app.manager.context.repository.CourseRepository;
-import com.app.manager.context.repository.RoleRepository;
-import com.app.manager.context.repository.StudentCourseRepository;
-import com.app.manager.context.repository.UserRepository;
+import com.app.manager.context.repository.*;
 import com.app.manager.entity.*;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.StudentCourseRequest;
 import com.app.manager.model.payload.response.CourseProfileResponse;
+import com.app.manager.model.payload.response.SessionResponse;
 import com.app.manager.model.payload.response.UserProfileResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.StudentCourseService;
@@ -28,6 +26,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
     @Autowired UserRepository userRepository;
     @Autowired CourseRepository courseRepository;
     @Autowired RoleRepository roleRepository;
+    @Autowired SessionRepository sessionRepository;
     @Autowired CastObject castObject;
 
     private static final Logger logger = LoggerFactory.getLogger(StudentCourseServiceImp.class);
@@ -105,13 +104,19 @@ public class StudentCourseServiceImp implements StudentCourseService {
                 }
             }).filter(userProfileResponse -> userProfileResponse.getId() != null)
                 .collect(Collectors.toList());
+
             var course = courseRepository.findById(courseId)
                     .orElseThrow(() -> new RuntimeException("Course not found"));
             var teacher = userRepository.findById(course.getUser_id())
                     .orElseThrow(() -> new RuntimeException("User not found"));
-
-            return Optional.of(new CourseProfileResponse(castObject.courseModel(course),
-                    castObject.profilePublic(teacher), studentCoursesProfile ));
+            var currentSession = sessionRepository
+                    .findFirstByCourse_idAndStatus(course.getId(),
+                            Session.StatusEnum.ONGOING);
+            var sessionModel = currentSession.isEmpty()? new SessionResponse() :
+                    castObject.sessionModelPublic(currentSession.get());
+            return Optional.of(new CourseProfileResponse(castObject.courseModel(
+                    course, sessionModel), castObject.profilePublic(teacher),
+                    studentCoursesProfile));
         } catch (RuntimeException e) {
             e.printStackTrace();
             logger.info(e.getMessage());

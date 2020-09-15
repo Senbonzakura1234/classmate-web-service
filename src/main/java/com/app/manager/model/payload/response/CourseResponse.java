@@ -12,22 +12,24 @@ public class CourseResponse {
     private Long end_date; //search
     private Long created_at;
     private Course.StatusEnum status; //search
+    private SessionResponse currentSession;
 
     public CourseResponse() {
     }
 
     public CourseResponse(String id, String user_id, String course_category_id,
-                          String name, String description, Long start_date,
-                          Long enddate, Long created_at, Course.StatusEnum status) {
+                          String name, String description, Long start_date, Long end_date,
+                          Long created_at, Course.StatusEnum status, SessionResponse currentSession) {
         this.id = id;
         this.user_id = user_id;
         this.course_category_id = course_category_id;
         this.name = name;
         this.description = description;
         this.start_date = start_date;
-        this.end_date = enddate;
+        this.end_date = end_date;
         this.created_at = created_at;
         this.status = status;
+        this.currentSession = currentSession;
     }
 
     public String getId() {
@@ -102,5 +104,11 @@ public class CourseResponse {
         this.created_at = created_at;
     }
 
+    public SessionResponse getCurrentSession() {
+        return currentSession;
+    }
 
+    public void setCurrentSession(SessionResponse currentSession) {
+        this.currentSession = currentSession;
+    }
 }

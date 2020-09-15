@@ -1,17 +1,12 @@
 package com.app.manager.service.implementClass;
 
-import com.app.manager.context.repository.CourseRepository;
-import com.app.manager.context.repository.RoleRepository;
-import com.app.manager.context.repository.StudentCourseRepository;
-import com.app.manager.context.repository.UserRepository;
+import com.app.manager.context.repository.*;
 import com.app.manager.context.specification.CourseSpecification;
-import com.app.manager.entity.Course;
-import com.app.manager.entity.ERole;
-import com.app.manager.entity.Role;
-import com.app.manager.entity.StudentCourse;
+import com.app.manager.entity.*;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.CourseRequest;
 import com.app.manager.model.payload.response.CourseResponse;
+import com.app.manager.model.payload.response.SessionResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.CourseService;
 import org.slf4j.Logger;
@@ -30,6 +25,7 @@ import java.util.stream.Collectors;
 public class CourseServiceImp implements CourseService {
     @Autowired CourseRepository courseRepository;
     @Autowired StudentCourseRepository studentCourseRepository;
+    @Autowired SessionRepository sessionRepository;
     @Autowired UserRepository userRepository;
     @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
@@ -40,9 +36,14 @@ public class CourseServiceImp implements CourseService {
     public List<CourseResponse> findAll(CourseSpecification courseSpecification) {
         try {
             var courses = courseRepository.findAll(courseSpecification);
-            return courses.stream().map(course ->
-                    castObject.courseModel(course))
-                    .collect(Collectors.toList());
+            return courses.stream().map(course -> {
+                var currentSession = sessionRepository
+                        .findFirstByCourse_idAndStatus(course.getId(),
+                                Session.StatusEnum.ONGOING);
+                return castObject.courseModel(course, currentSession.isEmpty() ?
+                        new SessionResponse() : castObject
+                        .sessionModelPublic(currentSession.get()));
+            }).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -64,9 +65,14 @@ public class CourseServiceImp implements CourseService {
                     .anyMatch(studentCourse -> studentCourse.getCourse_id()
                             .equals(course.getId()))).collect(Collectors.toList());
 
-            return courses.stream().map(course ->
-                    castObject.courseModel(course))
-                    .collect(Collectors.toList());
+            return courses.stream().map(course -> {
+                var currentSession = sessionRepository
+                        .findFirstByCourse_idAndStatus(course.getId(),
+                                Session.StatusEnum.ONGOING);
+                return castObject.courseModel(course, currentSession.isEmpty() ?
+                        new SessionResponse() : castObject
+                        .sessionModelPublic(currentSession.get()));
+            }).collect(Collectors.toList());
         } catch (RuntimeException e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -84,9 +90,14 @@ public class CourseServiceImp implements CourseService {
             var courses = courseRepository.findAll(courseSpecification)
                     .stream().filter(course -> course.getUser_id().equals(user.getId()))
                     .collect(Collectors.toList());
-            return courses.stream().map(course ->
-                    castObject.courseModel(course))
-                    .collect(Collectors.toList());
+            return courses.stream().map(course -> {
+                var currentSession = sessionRepository
+                        .findFirstByCourse_idAndStatus(course.getId(),
+                                Session.StatusEnum.ONGOING);
+                return castObject.courseModel(course, currentSession.isEmpty() ?
+                        new SessionResponse() : castObject
+                        .sessionModelPublic(currentSession.get()));
+            }).collect(Collectors.toList());
         } catch (RuntimeException e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -129,7 +140,12 @@ public class CourseServiceImp implements CourseService {
         try {
             var course = courseRepository.findById(id);
             if(course.isEmpty()) return Optional.empty();
-            return Optional.of(castObject.courseModel(course.get()));
+            var currentSession = sessionRepository
+                    .findFirstByCourse_idAndStatus(course.get().getId(),
+                            Session.StatusEnum.ONGOING);
+            return Optional.of(castObject.courseModel(course.get(),
+                    currentSession.isEmpty()? new SessionResponse() :
+                    castObject.sessionModelPublic(currentSession.get())));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -217,7 +233,7 @@ public class CourseServiceImp implements CourseService {
             courseRepository.save(c);
             return new DatabaseQueryResult(true,
                     "update course success", HttpStatus.OK,
-                    castObject.courseModel(c));
+                    "");
 
         }catch (Exception e){
             e.printStackTrace();

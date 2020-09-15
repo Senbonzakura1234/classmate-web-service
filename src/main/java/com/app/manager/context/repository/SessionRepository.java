@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface SessionRepository extends JpaRepository<Session, String>,
         JpaSpecificationExecutor<Session> {
     Optional<Session> findFirstByName (String name);
+    Optional<Session> findFirstByCourse_idAndStatus(String course_id, Session.StatusEnum status);
 }
