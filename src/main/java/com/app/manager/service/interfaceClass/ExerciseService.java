@@ -11,8 +11,9 @@ import java.util.Optional;
 
 public interface ExerciseService {
     List<ExerciseResponse> findAll(ExerciseSpecification exerciseSpecification);
+    List<ExerciseResponse> gradeList(String courseId);
     DatabaseQueryResult save(ExerciseRequest exerciseRequest, String currentUsername);
-    Optional<ExerciseResponse> getOne(String id, String currentUsername);
+    Optional<ExerciseResponse> getOne(String exerciseId, String currentUsername);
     DatabaseQueryResult update(ExerciseRequest exerciseRequest, String id, String currentUsername);
-    DatabaseQueryResult updateStatus(String id, Exercise.StatusEnum status, String currentUsername);
+    DatabaseQueryResult updateStatus(String exerciseId, Exercise.StatusEnum status, String currentUsername);
 }

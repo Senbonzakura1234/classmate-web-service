@@ -66,6 +66,12 @@ public class ExerciseController {
         return ResponseEntity.ok(exerciseService.findAll(query));
     }
 
+    @GetMapping("/gradeList")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    public ResponseEntity<?> gradeList(@RequestParam(value = "course_id") String course_id) {
+        return ResponseEntity.ok(exerciseService.gradeList(course_id));
+    }
+
     @GetMapping("/detail")
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {

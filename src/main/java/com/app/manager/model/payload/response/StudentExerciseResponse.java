@@ -2,37 +2,48 @@ package com.app.manager.model.payload.response;
 
 import com.app.manager.entity.StudentExercise;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StudentExerciseResponse {
     private String id;
-    private String user_id;
-    private String exercise_id;
-    private String content;
-    private String student_message;
+    private String user_id = "";
+    private String exercise_id = "";
+    private String content = "";
+    private String student_message = "";
     private StudentExercise.StatusEnum status;
-    private Long created_at;
-    private double mark;
-    private boolean marked;
-    private String teacher_message;
+    private Long created_at = 0L;
+    private double mark = 0;
+    private boolean marked = false;
+    private String teacher_message = "";
 
-    private List<FileResponse> fileResponses;
+    private List<FileResponse> fileResponses = new ArrayList<>();
 
     public StudentExerciseResponse() {
     }
 
-    public StudentExerciseResponse(String id, String user_id,
-                                   String exercise_id, String content,
-                                   String student_message, StudentExercise.StatusEnum status,
-                                   Long created_at, List<FileResponse> fileResponses) {
+
+    public StudentExerciseResponse(String id, String user_id, String exercise_id,
+                                   StudentExercise.StatusEnum status, Long created_at,
+                                   boolean marked) {
         this.id = id;
         this.user_id = user_id;
         this.exercise_id = exercise_id;
-        this.content = content;
-        this.student_message = student_message;
         this.status = status;
         this.created_at = created_at;
-        this.fileResponses = fileResponses;
+        this.marked = marked;
+    }
+
+    public StudentExerciseResponse(String id, String user_id, String exercise_id,
+                                   StudentExercise.StatusEnum status, Long created_at,
+                                   double mark, boolean marked) {
+        this.id = id;
+        this.user_id = user_id;
+        this.exercise_id = exercise_id;
+        this.status = status;
+        this.created_at = created_at;
+        this.mark = mark;
+        this.marked = marked;
     }
 
     public StudentExerciseResponse(String id, String user_id, String exercise_id,

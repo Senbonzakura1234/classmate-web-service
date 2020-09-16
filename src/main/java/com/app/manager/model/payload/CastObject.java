@@ -53,16 +53,17 @@ public class CastObject {
                 exercise.isShow_answer() ? exercise.getAnswer() : "",
                 exercise.getExercise_end_time(), exercise.isShow_answer(),
                 exercise.isAuto_start(), exercise.isAuto_close(),
-                exercise.getStatus(), exercise.getCreated_at());
+                exercise.getStatus(), exercise.getCreated_at(), new ArrayList<>());
     }
-    public ExerciseResponse exerciseModelTeacher(Exercise exercise){
+    public ExerciseResponse exerciseModelTeacher(Exercise exercise,
+            List<StudentExerciseResponse> studentExerciseResponses){
         if(exercise == null) return new ExerciseResponse();
         return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
                 exercise.getTitle(), exercise.getContent(),
                 exercise.getAnswer(), exercise.getExercise_end_time(),
                 exercise.isShow_answer(), exercise.isAuto_start(),
-                exercise.isAuto_close(),
-                exercise.getStatus(), exercise.getCreated_at());
+                exercise.isAuto_close(), exercise.getStatus(),
+                exercise.getCreated_at(), studentExerciseResponses);
     }
     public ExerciseResponse exerciseModelPublic(Exercise exercise){
         if(exercise == null) return new ExerciseResponse();
@@ -70,7 +71,8 @@ public class CastObject {
                 exercise.getTitle(), "", "",
                 exercise.getExercise_end_time(), exercise.isShow_answer(),
                 exercise.isAuto_start(), exercise.isAuto_close(),
-                exercise.getStatus(), exercise.getCreated_at());
+                exercise.getStatus(), exercise.getCreated_at(),
+                new ArrayList<>());
     }
 
     public Session sessionEntity(SessionRequest sessionRequest){
@@ -160,8 +162,16 @@ public class CastObject {
     public StudentExerciseResponse studentExerciseModelPublic(
             StudentExercise studentExercise){
         return new StudentExerciseResponse(studentExercise.getId(), studentExercise.getUser_id(),
-                studentExercise.getExercise_id(), "", "", studentExercise.getStatus(),
-                studentExercise.getCreated_at(), new ArrayList<>());
+                studentExercise.getExercise_id(), studentExercise.getStatus(),
+                studentExercise.getCreated_at(), studentExercise.isMarked());
+    }
+
+    public StudentExerciseResponse studentExerciseModelGradeList(
+            StudentExercise studentExercise){
+        return new StudentExerciseResponse(studentExercise.getId(),
+                studentExercise.getUser_id(), studentExercise.getExercise_id(),
+                studentExercise.getStatus(), studentExercise.getCreated_at(),
+                studentExercise.getMark(), studentExercise.isMarked());
     }
 
     public CourseCategory courseCategoryEntity(

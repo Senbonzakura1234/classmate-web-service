@@ -2,6 +2,8 @@ package com.app.manager.model.payload.response;
 
 import com.app.manager.entity.Exercise;
 
+import java.util.List;
+
 public class ExerciseResponse {
     private String id;
     private String session_id;
@@ -14,14 +16,15 @@ public class ExerciseResponse {
     private boolean auto_close;
     private Exercise.StatusEnum status;
     private Long created_at;
+    private List<StudentExerciseResponse> studentExerciseResponses;
 
     public ExerciseResponse() {
     }
 
-    public ExerciseResponse(String id, String session_id, String title,
-                            String content, String answer, Long exercise_end_time,
-                            boolean show_answer, boolean auto_start, boolean auto_close,
-                            Exercise.StatusEnum status, Long created_at) {
+    public ExerciseResponse(String id, String session_id, String title, String content,
+                            String answer, Long exercise_end_time, boolean show_answer,
+                            boolean auto_start, boolean auto_close, Exercise.StatusEnum status,
+                            Long created_at, List<StudentExerciseResponse> studentExerciseResponses) {
         this.id = id;
         this.session_id = session_id;
         this.title = title;
@@ -33,6 +36,7 @@ public class ExerciseResponse {
         this.auto_close = auto_close;
         this.status = status;
         this.created_at = created_at;
+        this.studentExerciseResponses = studentExerciseResponses;
     }
 
     public String getId() {
@@ -113,5 +117,21 @@ public class ExerciseResponse {
 
     public void setAuto_start(boolean auto_start) {
         this.auto_start = auto_start;
+    }
+
+    public boolean isAuto_close() {
+        return auto_close;
+    }
+
+    public void setAuto_close(boolean auto_close) {
+        this.auto_close = auto_close;
+    }
+
+    public List<StudentExerciseResponse> getStudentExerciseResponses() {
+        return studentExerciseResponses;
+    }
+
+    public void setStudentExerciseResponses(List<StudentExerciseResponse> studentExerciseResponses) {
+        this.studentExerciseResponses = studentExerciseResponses;
     }
 }

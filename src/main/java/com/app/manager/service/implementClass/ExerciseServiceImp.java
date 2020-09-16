@@ -2,10 +2,7 @@ package com.app.manager.service.implementClass;
 
 import com.app.manager.context.repository.*;
 import com.app.manager.context.specification.ExerciseSpecification;
-import com.app.manager.entity.ERole;
-import com.app.manager.entity.Exercise;
-import com.app.manager.entity.Role;
-import com.app.manager.entity.StudentCourse;
+import com.app.manager.entity.*;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.ExerciseRequest;
 import com.app.manager.model.payload.response.ExerciseResponse;
@@ -30,6 +27,7 @@ public class ExerciseServiceImp implements ExerciseService {
     @Autowired SessionRepository sessionRepository;
     @Autowired CourseRepository courseRepository;
     @Autowired StudentCourseRepository studentCourseRepository;
+    @Autowired StudentExerciseRepository studentExerciseRepository;
     @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
 
@@ -43,6 +41,30 @@ public class ExerciseServiceImp implements ExerciseService {
                     castObject.exerciseModel(exercise))
                     .collect(Collectors.toList());
         } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<ExerciseResponse> gradeList(String courseId) {
+        try {
+            var sessionIds = sessionRepository
+                    .findAllByCourse_idAndStatusIsNot(courseId, Session.StatusEnum.CANCEL)
+                    .stream().map(Session::getId).collect(Collectors.toList());
+            return exerciseRepository
+                .findAllBySession_idInAndStatusIsNot(sessionIds, Exercise.StatusEnum.CANCEL)
+                .stream().map(exercise -> {
+                    var studentExercises = studentExerciseRepository
+                        .findAllByExercise_idAndStatus(exercise.getId(), StudentExercise.StatusEnum.SHOW)
+                        .stream().map(studentExercise -> castObject.studentExerciseModelGradeList(studentExercise))
+                        .collect(Collectors.toList());
+                    return castObject.exerciseModelTeacher(exercise, studentExercises);
+            }).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
@@ -85,7 +107,7 @@ public class ExerciseServiceImp implements ExerciseService {
     }
 
     @Override
-    public Optional<ExerciseResponse> getOne(String id, String currentUsername) {
+    public Optional<ExerciseResponse> getOne(String exerciseId, String currentUsername) {
         try {
             var currentUser = userRepository
                     .findByUsername(currentUsername)
@@ -95,7 +117,7 @@ public class ExerciseServiceImp implements ExerciseService {
             if(role.getStatus() == Role.StatusEnum.HIDE) return Optional.empty();
 
 
-            var exercise = exerciseRepository.findById(id)
+            var exercise = exerciseRepository.findById(exerciseId)
                     .orElseThrow(() -> new RuntimeException("exercise not found"));
 
             var session = sessionRepository.findById(exercise.getSession_id())
@@ -106,8 +128,14 @@ public class ExerciseServiceImp implements ExerciseService {
 
             var course = courseRepository.findById(session.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("course not found"));
-            if(course.getUser_id().equals(currentUser.getId()))
-                return Optional.of(castObject.exerciseModelTeacher(exercise));
+            if(course.getUser_id().equals(currentUser.getId())) {
+                var studentExercises = studentExerciseRepository
+                    .findAllByExercise_idAndStatus(exerciseId, StudentExercise.StatusEnum.SHOW)
+                    .stream().map(studentExercise ->
+                        castObject.studentExerciseModelGradeList(studentExercise))
+                        .collect(Collectors.toList());
+                return Optional.of(castObject.exerciseModelTeacher(exercise, studentExercises));
+            }
 
             var listStudents = studentCourseRepository
                     .findAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
@@ -173,7 +201,7 @@ public class ExerciseServiceImp implements ExerciseService {
     }
 
     @Override
-    public DatabaseQueryResult updateStatus(String id,
+    public DatabaseQueryResult updateStatus(String exerciseId,
         Exercise.StatusEnum status, String currentUsername) {
         try {
             if(status == Exercise.StatusEnum.ALL)
@@ -185,7 +213,7 @@ public class ExerciseServiceImp implements ExerciseService {
                 return new DatabaseQueryResult(false,
                         "Teacher not found", HttpStatus.NOT_FOUND, "");
 
-            var exercise = exerciseRepository.findById(id);
+            var exercise = exerciseRepository.findById(exerciseId);
 
             if(exercise.isEmpty())
                 return new DatabaseQueryResult(false, "exercise not found",

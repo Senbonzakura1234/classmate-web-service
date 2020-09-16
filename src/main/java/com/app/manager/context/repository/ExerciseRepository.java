@@ -10,4 +10,5 @@ public interface ExerciseRepository extends JpaRepository<Exercise, String>,
         JpaSpecificationExecutor<Exercise> {
     List<Exercise> findAllBySession_idAndStatusIsNot(String session_id, Exercise.StatusEnum status);
     List<Exercise> findAllBySession_idAndStatus(String session_id, Exercise.StatusEnum status);
+    List<Exercise> findAllBySession_idInAndStatusIsNot(List<String> session_id, Exercise.StatusEnum status);
 }
