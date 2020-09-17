@@ -152,6 +152,12 @@ public class AttendanceServiceImp implements AttendanceService {
 
             attendanceCheckRequests.forEach(attendanceCheckRequest -> {
                 try {
+                    var studentCheck = studentCourseRepository
+                            .findAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW)
+                            .stream().noneMatch(studentCourse ->
+                                    studentCourse.getUser_id().equals(attendanceCheckRequest.getUser_id()));
+
+                    if (studentCheck) return;
                     var attendance =
                             attendanceRepository.findFirstByUser_idAndSession_id(
                                     attendanceCheckRequest.getUser_id(), sessionId);
@@ -162,7 +168,7 @@ public class AttendanceServiceImp implements AttendanceService {
                         newAttendance.setUser_id(attendanceCheckRequest.getUser_id());
                         newAttendance.setImage_uri("");
                         newAttendance.setFace_matched(true);
-                        newAttendance.setStatus(Attendance.StatusEnum.valueOf(attendanceCheckRequest.getStatus()));
+                        newAttendance.setStatus(attendanceCheckRequest.getStatus());
 
                         attendanceRepository.save(newAttendance);
                         return;
@@ -170,7 +176,7 @@ public class AttendanceServiceImp implements AttendanceService {
                     var a = attendance.get();
                     a.setImage_uri("");
                     a.setFace_matched(true);
-                    a.setStatus(Attendance.StatusEnum.valueOf(attendanceCheckRequest.getStatus()));
+                    a.setStatus(attendanceCheckRequest.getStatus());
                     a.setUpdated_at(System.currentTimeMillis());
                     attendanceRepository.save(a);
                 } catch (Exception e) {
@@ -210,10 +216,22 @@ public class AttendanceServiceImp implements AttendanceService {
                     .findById(session.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("Session not found"));
 
+            var studentCheck = studentCourseRepository
+                    .findAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW)
+                    .stream().noneMatch(studentCourse ->
+                            studentCourse.getUser_id().equals(attendanceCheckRequest.getUser_id()));
+
+            if (studentCheck)
+                return new DatabaseQueryResult(false,
+                        "This student not in your course",
+                        HttpStatus.BAD_REQUEST, attendanceCheckRequest);
             if(!course.getUser_id().equals(currentUser.getId()))
                 return new DatabaseQueryResult(false,
                         "Not your course",
                         HttpStatus.BAD_REQUEST, attendanceCheckRequest);
+
+
+
             var attendance =
                     attendanceRepository.findFirstByUser_idAndSession_id(
                             attendanceCheckRequest.getUser_id(), sessionId);
@@ -224,7 +242,7 @@ public class AttendanceServiceImp implements AttendanceService {
                 newAttendance.setUser_id(attendanceCheckRequest.getUser_id());
                 newAttendance.setImage_uri("");
                 newAttendance.setFace_matched(true);
-                newAttendance.setStatus(Attendance.StatusEnum.valueOf(attendanceCheckRequest.getStatus()));
+                newAttendance.setStatus(attendanceCheckRequest.getStatus());
 
                 attendanceRepository.save(newAttendance);
                 return new DatabaseQueryResult(true,
@@ -234,7 +252,7 @@ public class AttendanceServiceImp implements AttendanceService {
             var a = attendance.get();
             a.setImage_uri("");
             a.setFace_matched(true);
-            a.setStatus(Attendance.StatusEnum.valueOf(attendanceCheckRequest.getStatus()));
+            a.setStatus(attendanceCheckRequest.getStatus());
             a.setUpdated_at(System.currentTimeMillis());
             attendanceRepository.save(a);
             return new DatabaseQueryResult(true,
