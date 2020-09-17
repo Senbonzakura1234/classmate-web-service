@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public class UserProfileRequest {
     @NotNull private String fullname = ""; //search
-    @NotNull private String avatar_uri = "";
+    @NotNull private String avatar_uri = "https://res.cloudinary.com/senbonzakura/image/upload/v1573316200/avatar_tpygpm.jpg";
     @NotNull private String phone = "";
     @NotNull private String address = "";
     @NotNull private String civil_id = "";

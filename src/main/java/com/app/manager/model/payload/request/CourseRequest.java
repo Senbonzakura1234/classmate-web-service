@@ -11,7 +11,7 @@ public class CourseRequest {
     @NotBlank
     private String description = "";
     @NotBlank
-    private String cover_img = "";
+    private String cover_img = "https://res.cloudinary.com/senbonzakura/image/upload/v1600346648/GOkP8onbuyjGmN9Rc8Que5mw21CdSw6OuXpAKUuE6-4_knoeu0.jpg";
     @NotNull
     private Long start_date = 0L;
     @NotNull
