@@ -66,6 +66,10 @@ public class SessionServiceImp implements SessionService {
                         HttpStatus.BAD_REQUEST, sessionRequest);
             var session = castObject.sessionEntity(sessionRequest);
             sessionRepository.save(session);
+
+            if(sessionRequest.isStart_immidiately()){
+                updateStatus(session.getId(), Session.StatusEnum.ONGOING, "", true);
+            }
             return new DatabaseQueryResult(true,
                     "save session success", HttpStatus.OK,
                     castObject.sessionModel(session));
@@ -154,6 +158,10 @@ public class SessionServiceImp implements SessionService {
             session.setStart_time(sessionRequest.getStart_time());
             session.setCourse_id(sessionRequest.getCourse_id());
             sessionRepository.save(session);
+            if(sessionRequest.isStart_immidiately()
+                    && session.getStatus() == Session.StatusEnum.PENDING){
+                updateStatus(session.getId(), Session.StatusEnum.ONGOING, "", true);
+            }
             return new DatabaseQueryResult(true,
                     "save session success",
                     HttpStatus.OK, castObject.sessionModel(session));
@@ -167,43 +175,49 @@ public class SessionServiceImp implements SessionService {
 
     @Override
     public DatabaseQueryResult updateStatus(String id, Session.StatusEnum status,
-                                            String currentUsername) {
+                                            String currentUsername, boolean adminAuthority) {
         try {
-            var teacher = userRepository.findByUsername(currentUsername);
-            if(teacher.isEmpty())
-                return new DatabaseQueryResult(false, "Teacher not found",
-                        HttpStatus.NOT_FOUND, "");
-
             var session = sessionRepository.findById(id);
             if(session.isEmpty()){
                 return new DatabaseQueryResult(false,
-                        "delete course failed", HttpStatus.NOT_FOUND, "");
+                        "session not found", HttpStatus.NOT_FOUND, "");
             }
+            if (!adminAuthority) {
+                var teacher = userRepository.findByUsername(currentUsername);
+                if(teacher.isEmpty())
+                    return new DatabaseQueryResult(false, "Teacher not found",
+                            HttpStatus.NOT_FOUND, "");
 
-            var course = courseRepository
-                    .findById(session.get().getCourse_id())
-                    .orElseThrow(() -> new RuntimeException("Course not found"));
 
-            var role = roleRepository.findByName(ERole.ROLE_ADMIN);
-            if(role.isEmpty() || role.get().getStatus() == Role.StatusEnum.HIDE)
-                return new DatabaseQueryResult(false, "Role not found",
-                        HttpStatus.NOT_FOUND, "");
+                var course = courseRepository
+                        .findById(session.get().getCourse_id())
+                        .orElseThrow(() -> new RuntimeException("Course not found"));
 
-            if (!teacher.get().getRoles().contains(role.get())) {
-                if(!course.getUser_id().equals(teacher.get().getId()))
-                    return new DatabaseQueryResult(false, "Not your course",
-                            HttpStatus.BAD_REQUEST, "");
+                var role = roleRepository.findByName(ERole.ROLE_ADMIN);
+                if(role.isEmpty() || role.get().getStatus() == Role.StatusEnum.HIDE)
+                    return new DatabaseQueryResult(false, "Role not found",
+                            HttpStatus.NOT_FOUND, "");
 
-                if(status != Session.StatusEnum.CANCEL){
-                    return new DatabaseQueryResult(false,
-                            "You dont have authority to change session status",
-                            HttpStatus.BAD_REQUEST, "");
+                if (!teacher.get().getRoles().contains(role.get())) {
+                    if(!course.getUser_id().equals(teacher.get().getId()))
+                        return new DatabaseQueryResult(false, "Not your course",
+                                HttpStatus.BAD_REQUEST, "");
+
+                    if(status != Session.StatusEnum.CANCEL){
+                        return new DatabaseQueryResult(false,
+                                "You dont have authority to change session status",
+                                HttpStatus.BAD_REQUEST, "");
+                    }
                 }
             }
 
             var s = session.get();
             s.setStatus(status);
+            if(status == Session.StatusEnum.ONGOING){
+                s.setStart_time(System.currentTimeMillis());
+            }
             sessionRepository.save(s);
+            startAttendanceCheck(s.getId(), "", true);
             return new DatabaseQueryResult(true,
                     "delete course success", HttpStatus.OK,
                     castObject.sessionModel(s));

@@ -14,7 +14,7 @@ public interface SessionService {
     DatabaseQueryResult save(SessionRequest sessionRequest, String currentUsername);
     Optional<SessionResponse> getOne(String id, String currentUsername);
     DatabaseQueryResult update(SessionRequest sessionRequest, String id, String currentUsername);
-    DatabaseQueryResult updateStatus(String id, Session.StatusEnum status, String currentUsername);
+    DatabaseQueryResult updateStatus(String id, Session.StatusEnum status, String currentUsername, boolean adminAuthority);
     DatabaseQueryResult startAttendanceCheck(String id, String currentUsername, boolean adminAuthority);
     DatabaseQueryResult closeAttendanceCheck(String id, String currentUsername, boolean adminAuthority);
 }

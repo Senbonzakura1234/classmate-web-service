@@ -16,19 +16,23 @@ public class SessionRequest {
     @Min(value = 1)
     private int session_duration = 1;
 
+    private boolean start_immidiately = false;
+
     public SessionRequest() {
     }
 
-    public SessionRequest(@NotBlank String course_id, @NotBlank String name, String content,
-                          @NotNull Long start_time, @NotNull @Min(value = 1) int session_duration) {
+
+    public SessionRequest(@NotBlank String course_id, @NotBlank String name,
+                          String content, @NotNull Long start_time,
+                          @NotNull @Min(value = 1) int session_duration,
+                          boolean start_immidiately) {
         this.course_id = course_id;
         this.name = name;
         this.content = content;
         this.start_time = start_time;
         this.session_duration = session_duration;
+        this.start_immidiately = start_immidiately;
     }
-
-
 
     public String getCourse_id() {
         return course_id;
@@ -68,5 +72,13 @@ public class SessionRequest {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public boolean isStart_immidiately() {
+        return start_immidiately;
+    }
+
+    public void setStart_immidiately(boolean start_immidiately) {
+        this.start_immidiately = start_immidiately;
     }
 }
