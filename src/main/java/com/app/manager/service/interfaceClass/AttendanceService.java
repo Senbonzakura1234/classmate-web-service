@@ -12,6 +12,7 @@ public interface AttendanceService {
                                       String currentUsername);
     DatabaseQueryResult teacherAttendaneCheck(List<AttendanceCheckRequest> attendanceCheckRequests,
                                               String currentUsername, String sessionId);
-
+    DatabaseQueryResult teacherAttendaneCheckOne(AttendanceCheckRequest attendanceCheckRequest,
+                                              String currentUsername, String sessionId);
     List<AttendanceCheckResponse> getAttendanceResult(String sessionId);
 }

@@ -71,6 +71,31 @@ public class AttendanceController {
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
+    @PostMapping("/checkOne")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> checkOne(
+            @Valid @RequestBody AttendanceCheckRequest attendanceCheckRequest,
+            @RequestParam(value = "session_id") String session_id,
+            BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error",""));
+        }
+
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = attendanceService
+                .teacherAttendaneCheckOne(attendanceCheckRequest,
+                        currentUser, session_id);
+
+        return result.isSuccess() ? ResponseEntity.ok(result) :
+                ResponseEntity.status(result.getHttp_status()).body(result);
+    }
+
     @GetMapping("/checkResult")
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
     public ResponseEntity<?> checkResult(

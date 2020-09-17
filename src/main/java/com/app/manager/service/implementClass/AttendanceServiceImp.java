@@ -197,6 +197,61 @@ public class AttendanceServiceImp implements AttendanceService {
     }
 
     @Override
+    public DatabaseQueryResult teacherAttendaneCheckOne(AttendanceCheckRequest attendanceCheckRequest,
+                                                        String currentUsername, String sessionId) {
+        try {
+            var currentUser = userRepository
+                    .findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("Session not found"));
+            var session = sessionRepository
+                    .findById(sessionId)
+                    .orElseThrow(() -> new RuntimeException("Session not found"));
+            var course = courseRepository
+                    .findById(session.getCourse_id())
+                    .orElseThrow(() -> new RuntimeException("Session not found"));
+
+            if(!course.getUser_id().equals(currentUser.getId()))
+                return new DatabaseQueryResult(false,
+                        "Not your course",
+                        HttpStatus.BAD_REQUEST, attendanceCheckRequest);
+            var attendance =
+                    attendanceRepository.findFirstByUser_idAndSession_id(
+                            attendanceCheckRequest.getUser_id(), sessionId);
+
+            if(attendance.isEmpty()){
+                var newAttendance = new Attendance();
+                newAttendance.setSession_id(sessionId);
+                newAttendance.setUser_id(attendanceCheckRequest.getUser_id());
+                newAttendance.setImage_uri("");
+                newAttendance.setFace_matched(true);
+                newAttendance.setStatus(Attendance.StatusEnum.valueOf(attendanceCheckRequest.getStatus()));
+
+                attendanceRepository.save(newAttendance);
+                return new DatabaseQueryResult(true,
+                        "Attendance Check One Success",
+                        HttpStatus.OK, attendanceCheckRequest);
+            }
+            var a = attendance.get();
+            a.setImage_uri("");
+            a.setFace_matched(true);
+            a.setStatus(Attendance.StatusEnum.valueOf(attendanceCheckRequest.getStatus()));
+            a.setUpdated_at(System.currentTimeMillis());
+            attendanceRepository.save(a);
+            return new DatabaseQueryResult(true,
+                    "Attendance Check One Success",
+                    HttpStatus.OK, attendanceCheckRequest);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
+            return new DatabaseQueryResult(false,
+                    "Error: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    attendanceCheckRequest);
+        }
+    }
+
+    @Override
     public List<AttendanceCheckResponse> getAttendanceResult(String sessionId) {
         try {
             var list = attendanceRepository
