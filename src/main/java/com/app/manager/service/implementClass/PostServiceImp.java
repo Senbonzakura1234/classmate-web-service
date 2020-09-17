@@ -4,6 +4,7 @@ import com.app.manager.context.repository.*;
 import com.app.manager.entity.*;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.PostRequest;
+import com.app.manager.model.payload.response.AttachmentResponse;
 import com.app.manager.model.payload.response.CommentResponse;
 import com.app.manager.model.payload.response.PostResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
@@ -146,6 +147,8 @@ public class PostServiceImp implements PostService {
             if(currentUser.isEmpty()) return new DatabaseQueryResult(
                     false, "User not found",
                     HttpStatus.NOT_FOUND, postRequest);
+            var profile = castObject.profilePrivate(currentUser.get());
+
 
             var course = courseRepository.findById(courseId);
             if(course.isEmpty()) return new DatabaseQueryResult(
@@ -164,11 +167,16 @@ public class PostServiceImp implements PostService {
                     currentUser.get().getId(), course.get().getId(),
                     postRequest);
             postRepository.save(post);
-            postRequest.getAttachmentRequests()
-                    .forEach(attachmentRequest -> attachmentRepository
-                    .save(castObject.attachmentEntity(post.getId(), attachmentRequest)));
+
+            var attachments = postRequest.getAttachmentRequests()
+                    .stream().map(attachmentRequest -> attachmentRepository
+                    .save(castObject.attachmentEntity(post.getId(), attachmentRequest)))
+                    .map(attachment -> castObject.attachmentModel(attachment))
+                    .collect(Collectors.toList());
+
             return new DatabaseQueryResult(true, "post post success",
-                    HttpStatus.OK, postRequest);
+                    HttpStatus.OK, castObject.postModel(profile, post, attachments,
+                    new ArrayList<>()));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -187,6 +195,7 @@ public class PostServiceImp implements PostService {
             if(currentUser.isEmpty()) return new DatabaseQueryResult(
                 false, "User not found",
                 HttpStatus.NOT_FOUND, postRequest);
+            var profile = castObject.profilePrivate(currentUser.get());
             var post = postRepository
                     .findFirstByIdAndStatus(postId, Post.StatusEnum.SHOW);
 
@@ -202,18 +211,24 @@ public class PostServiceImp implements PostService {
             p.setContent(postRequest.getContent());
             p.setUpdated_at(System.currentTimeMillis());
             postRepository.save(p);
-            attachmentRepository.findAllByPost_idAndStatus
-                (p.getId(), Attachment.StatusEnum.SHOW).forEach(attachment -> {
-                attachment.setUpdated_at(System.currentTimeMillis());
-                attachment.setDeleted_at(System.currentTimeMillis());
-                attachment.setStatus(Attachment.StatusEnum.HIDE);
-                attachmentRepository.save(attachment);
-            });
+            var attachments = attachmentRepository.findAllByPost_idAndStatus
+                (p.getId(), Attachment.StatusEnum.SHOW).stream().map(attachment -> {
+                try {
+                    attachment.setUpdated_at(System.currentTimeMillis());
+                    attachment.setDeleted_at(System.currentTimeMillis());
+                    attachment.setStatus(Attachment.StatusEnum.HIDE);
+                    return castObject.attachmentModel(attachmentRepository.save(attachment));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return new AttachmentResponse();
+                }
+            }).filter(attachmentResponse -> attachmentResponse.getId() != null)
+                    .collect(Collectors.toList());
             postRequest.getAttachmentRequests().forEach(
                 attachmentRequest -> attachmentRepository
                 .save(castObject.attachmentEntity(p.getId(), attachmentRequest)));
             return new DatabaseQueryResult(true, "edit post success",
-                    HttpStatus.OK, postRequest);
+                    HttpStatus.OK, castObject.postModel(profile, p, attachments, new ArrayList<>()));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());

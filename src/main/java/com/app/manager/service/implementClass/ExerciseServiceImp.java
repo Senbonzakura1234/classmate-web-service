@@ -101,10 +101,11 @@ public class ExerciseServiceImp implements ExerciseService {
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, exerciseRequest);
 
-            exerciseRepository.save(castObject.exerciseEntity(exerciseRequest,
-                    session.get().getCourse_id()));
+            var exercise = castObject.exerciseEntity(exerciseRequest,
+                    session.get().getCourse_id());
+            exerciseRepository.save(exercise);
             return new DatabaseQueryResult(true, "save exercise success",
-                    HttpStatus.OK, exerciseRequest);
+                    HttpStatus.OK, castObject.exerciseModel(exercise));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -199,11 +200,19 @@ public class ExerciseServiceImp implements ExerciseService {
                         "Not your course",
                         HttpStatus.BAD_REQUEST, exerciseRequest);
 
-            exerciseRepository.save(castObject.exerciseEntity(exerciseRequest,
-                    session.get().getCourse_id()));
+            var e = exercise.get();
+            e.setTitle(exerciseRequest.getTitle());
+            e.setContent(exerciseRequest.getContent());
+            e.setAnswer(exerciseRequest.getAnswer());
+            e.setExercise_end_time(exerciseRequest.getExercise_end_time());
+            e.setShow_answer(exerciseRequest.isShow_answer());
+            e.setAuto_close(exerciseRequest.isAuto_close());
+            e.setAuto_start(exerciseRequest.isAuto_start());
+
+            exerciseRepository.save(e);
             return new DatabaseQueryResult(true,
                     "update exercise success",
-                    HttpStatus.OK, exerciseRequest);
+                    HttpStatus.OK, castObject.exerciseModel(e));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());

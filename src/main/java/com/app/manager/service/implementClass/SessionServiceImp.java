@@ -68,7 +68,7 @@ public class SessionServiceImp implements SessionService {
             sessionRepository.save(session);
             return new DatabaseQueryResult(true,
                     "save session success", HttpStatus.OK,
-                    sessionRequest);
+                    castObject.sessionModel(session));
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
@@ -156,7 +156,7 @@ public class SessionServiceImp implements SessionService {
             sessionRepository.save(session);
             return new DatabaseQueryResult(true,
                     "save session success",
-                    HttpStatus.OK, sessionRequest);
+                    HttpStatus.OK, castObject.sessionModel(session));
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,

@@ -240,7 +240,7 @@ public class UserServiceImp implements UserService {
             u.setGender(userProfileRequest.getGender());
             userRepository.save(u);
             return new DatabaseQueryResult(true, "Update profile success",
-                    HttpStatus.OK, userProfileRequest);
+                    HttpStatus.OK, castObject.profilePublic(u));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());

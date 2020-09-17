@@ -92,6 +92,9 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                             }
                         });
                     }
+                    return new DatabaseQueryResult(true,
+                            "Update Student Exercise success",
+                            HttpStatus.OK, castObject.studentExerciseModelPublic(s));
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.info(e.getMessage());
@@ -110,7 +113,7 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
             }
             return new DatabaseQueryResult(true,
                     "Post Student Exercise success",
-                    HttpStatus.OK, studentExerciseRequest);
+                    HttpStatus.OK, castObject.studentExerciseModelPublic(studentExercise));
         } catch (Exception e) {
             e.printStackTrace();
                     logger.info(e.getMessage());

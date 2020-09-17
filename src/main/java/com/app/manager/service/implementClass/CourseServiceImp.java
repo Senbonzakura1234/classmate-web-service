@@ -132,10 +132,21 @@ public class CourseServiceImp implements CourseService {
             var course = castObject.courseEntity(courseRequest,
                     teacher.get().getId());
             courseRepository.save(course);
+
+            var currentSession = sessionRepository
+                    .findFirstByCourse_idAndStatus(course.getId(),
+                            Session.StatusEnum.ONGOING);
+            var studentCount = studentCourseRepository
+                    .countAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+            var sessionCount = sessionRepository
+                    .countAllByCourse_idAndStatusIsNot(course.getId(), Session.StatusEnum.CANCEL);
+
             return new DatabaseQueryResult(true,
                     "save course success",
-                    HttpStatus.OK,
-                    courseRequest);
+                    HttpStatus.OK, castObject.courseModel(course,
+                    currentSession.isEmpty()? new SessionResponse() :
+                            castObject.sessionModelPublic(currentSession.get()),
+                    studentCount, sessionCount));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -190,6 +201,9 @@ public class CourseServiceImp implements CourseService {
                         HttpStatus.BAD_REQUEST, courseRequest);
             var course  = c.get();
 
+
+
+
             if(!course.getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, courseRequest);
@@ -202,9 +216,20 @@ public class CourseServiceImp implements CourseService {
             course.setStart_date(courseRequest.getStart_date());
             courseRepository.save(course);
 
+            var currentSession = sessionRepository
+                    .findFirstByCourse_idAndStatus(course.getId(),
+                            Session.StatusEnum.ONGOING);
+            var studentCount = studentCourseRepository
+                    .countAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+            var sessionCount = sessionRepository
+                    .countAllByCourse_idAndStatusIsNot(course.getId(), Session.StatusEnum.CANCEL);
+
             return new DatabaseQueryResult(true,
                     "save course success",
-                    HttpStatus.OK, courseRequest);
+                    HttpStatus.OK, castObject.courseModel(course,
+                    currentSession.isEmpty()? new SessionResponse() :
+                    castObject.sessionModelPublic(currentSession.get()),
+                    studentCount, sessionCount));
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,

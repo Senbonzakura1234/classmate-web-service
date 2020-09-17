@@ -76,6 +76,7 @@ public class CommentServiceImp implements CommentService {
         try {
             var currentUser = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("User not found"));
+            var profile = castObject.profilePrivate(currentUser);
             var post = postRepository.findFirstByIdAndStatus(postId, Post.StatusEnum.SHOW)
                     .orElseThrow(() -> new RuntimeException("post not found"));
             var course = courseRepository.findById(post.getCourse_id())
@@ -93,12 +94,13 @@ public class CommentServiceImp implements CommentService {
                         "not your course",
                         HttpStatus.BAD_REQUEST, commentRequest);
 
-            commentRepository.save(castObject
-                    .commentEntity(currentUser.getId(), postId, commentRequest));
+            var comment = castObject
+                    .commentEntity(currentUser.getId(), postId, commentRequest);
+            commentRepository.save(comment);
 
             return new DatabaseQueryResult(true,
                     "post comment success",
-                    HttpStatus.OK, commentRequest);
+                    HttpStatus.OK, castObject.commentModel(profile, comment));
         } catch (RuntimeException e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -119,6 +121,7 @@ public class CommentServiceImp implements CommentService {
                 return new DatabaseQueryResult(false,
                         "user not found",
                         HttpStatus.NOT_FOUND, commentRequest);
+            var profile = castObject.profilePrivate(currentUser.get());
 
             var comment = commentRepository
                     .findFirstByIdAndStatus(commentId, Comment.StatusEnum.SHOW);
@@ -138,7 +141,7 @@ public class CommentServiceImp implements CommentService {
             commentRepository.save(c);
             return new DatabaseQueryResult(true,
                     "update comment success",
-                    HttpStatus.OK, commentRequest);
+                    HttpStatus.OK,  castObject.commentModel(profile, c));
         } catch (RuntimeException e) {
             e.printStackTrace();
             logger.info(e.getMessage());
