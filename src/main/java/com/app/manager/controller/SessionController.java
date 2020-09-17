@@ -109,7 +109,7 @@ public class SessionController {
     ) {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
-        var result = sessionService.updateStatus(id, status,currentUser);
+        var result = sessionService.updateStatus(id, status,currentUser, false);
         return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }

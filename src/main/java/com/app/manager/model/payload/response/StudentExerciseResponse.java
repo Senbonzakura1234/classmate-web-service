@@ -15,6 +15,7 @@ public class StudentExerciseResponse {
     private Long created_at = 0L;
     private double mark = 0;
     private boolean marked = false;
+    private boolean submitted = false;
     private String teacher_message = "";
 
     private List<FileResponse> fileResponses = new ArrayList<>();
@@ -25,18 +26,19 @@ public class StudentExerciseResponse {
 
     public StudentExerciseResponse(String id, String user_id, String exercise_id,
                                    StudentExercise.StatusEnum status, Long created_at,
-                                   boolean marked) {
+                                   boolean marked, boolean submitted) {
         this.id = id;
         this.user_id = user_id;
         this.exercise_id = exercise_id;
         this.status = status;
         this.created_at = created_at;
         this.marked = marked;
+        this.submitted = submitted;
     }
 
     public StudentExerciseResponse(String id, String user_id, String exercise_id,
                                    StudentExercise.StatusEnum status, Long created_at,
-                                   double mark, boolean marked) {
+                                   double mark, boolean marked, boolean submitted) {
         this.id = id;
         this.user_id = user_id;
         this.exercise_id = exercise_id;
@@ -44,13 +46,14 @@ public class StudentExerciseResponse {
         this.created_at = created_at;
         this.mark = mark;
         this.marked = marked;
+        this.submitted = submitted;
     }
 
     public StudentExerciseResponse(String id, String user_id, String exercise_id,
                                    String content, String student_message,
                                    StudentExercise.StatusEnum status, Long created_at,
                                    double mark, boolean marked, String teacher_message,
-                                   List<FileResponse> fileResponses) {
+                                   List<FileResponse> fileResponses, boolean submitted) {
         this.id = id;
         this.user_id = user_id;
         this.exercise_id = exercise_id;
@@ -60,6 +63,7 @@ public class StudentExerciseResponse {
         this.created_at = created_at;
         this.mark = mark;
         this.marked = marked;
+        this.submitted = submitted;
         this.teacher_message = teacher_message;
         this.fileResponses = fileResponses;
     }
@@ -150,5 +154,13 @@ public class StudentExerciseResponse {
 
     public void setTeacher_message(String teacher_message) {
         this.teacher_message = teacher_message;
+    }
+
+    public boolean isSubmitted() {
+        return submitted;
+    }
+
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
     }
 }

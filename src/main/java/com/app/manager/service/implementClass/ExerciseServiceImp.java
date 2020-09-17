@@ -65,15 +65,13 @@ public class ExerciseServiceImp implements ExerciseService {
                         if(student.isEmpty()) return new GradeRecordResponse();
                         var sumittedExercise = studentExerciseRepository
                             .findFirstByUser_idAndExercise_id(student.get().getId(), exercise.getId());
-                        if(sumittedExercise.isEmpty())
-                            return new GradeRecordResponse(castObject.profilePublic(student.get()));
+                        if(sumittedExercise.isEmpty()) return new GradeRecordResponse();
                         return new GradeRecordResponse(castObject.profilePublic(student.get()),
                             castObject.studentExerciseModelGradeList(sumittedExercise.get()));
                     }).filter(GradeRecordResponse::isNotNull).collect(Collectors.toList());
                     return castObject.exerciseModelTeacher(exercise, records);
                 }).collect(Collectors.toList());
         } catch (Exception e) {
-            e.printStackTrace();
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
@@ -104,6 +102,23 @@ public class ExerciseServiceImp implements ExerciseService {
             var exercise = castObject.exerciseEntity(exerciseRequest,
                     session.get().getCourse_id());
             exerciseRepository.save(exercise);
+
+            studentCourseRepository
+                .findAllByCourse_idAndStatus(
+                        course.get().getId(), StudentCourse.StatusEnum.SHOW)
+                .forEach(studentCourse -> {
+                    try {
+                        var studentExercise = new StudentExercise();
+                        studentExercise.setUser_id(studentCourse.getUser_id());
+                        studentExercise.setExercise_id(exercise.getId());
+                        studentExerciseRepository.save(studentExercise);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.info(e.getMessage());
+                        logger.info(e.getCause().getMessage());
+                    }
+                });
+
             return new DatabaseQueryResult(true, "save exercise success",
                     HttpStatus.OK, castObject.exerciseModel(exercise));
         } catch (Exception e) {
@@ -147,8 +162,7 @@ public class ExerciseServiceImp implements ExerciseService {
                     if(student.isEmpty()) return new GradeRecordResponse();
                     var sumittedExercise = studentExerciseRepository
                             .findFirstByUser_idAndExercise_id(student.get().getId(), exercise.getId());
-                    if(sumittedExercise.isEmpty())
-                        return new GradeRecordResponse(castObject.profilePublic(student.get()));
+                    if(sumittedExercise.isEmpty()) return new GradeRecordResponse();
                     return new GradeRecordResponse(castObject.profilePublic(student.get()),
                             castObject.studentExerciseModelGradeList(sumittedExercise.get()));
                 }).filter(GradeRecordResponse::isNotNull).collect(Collectors.toList());

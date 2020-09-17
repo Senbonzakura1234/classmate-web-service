@@ -126,6 +126,7 @@ public class CastObject {
             StudentExerciseRequest studentExerciseRequest){
         var studentExercise = new StudentExercise();
         studentExercise.setUser_id(studentId);
+        studentExercise.setSubmitted(true);
         studentExercise.setExercise_id(exerciseId);
         studentExercise.setContent(studentExerciseRequest.getContent());
         studentExercise.setStudent_message(studentExerciseRequest.getStudent_message());
@@ -159,14 +160,15 @@ public class CastObject {
             studentExercise.getStudent_message(), studentExercise.getStatus(),
             studentExercise.getCreated_at(), studentExercise.getMark(),
             studentExercise.isMarked(), studentExercise.getTeacher_message(),
-                fileResponses) : new StudentExerciseResponse();
+                fileResponses, studentExercise.isSubmitted()) : new StudentExerciseResponse();
     }
 
     public StudentExerciseResponse studentExerciseModelPublic(
             StudentExercise studentExercise){
         return new StudentExerciseResponse(studentExercise.getId(), studentExercise.getUser_id(),
                 studentExercise.getExercise_id(), studentExercise.getStatus(),
-                studentExercise.getCreated_at(), studentExercise.isMarked());
+                studentExercise.getCreated_at(), studentExercise.isMarked(),
+                studentExercise.isSubmitted());
     }
 
     public StudentExerciseResponse studentExerciseModelGradeList(
@@ -174,7 +176,8 @@ public class CastObject {
         return new StudentExerciseResponse(studentExercise.getId(),
                 studentExercise.getUser_id(), studentExercise.getExercise_id(),
                 studentExercise.getStatus(), studentExercise.getCreated_at(),
-                studentExercise.getMark(), studentExercise.isMarked());
+                studentExercise.getMark(), studentExercise.isMarked(),
+                studentExercise.isSubmitted());
     }
 
 

@@ -78,6 +78,7 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                 try {
                     var s = oldStudentExercise.get();
                     s.setStatus(StudentExercise.StatusEnum.HIDE);
+                    s.setSubmitted(true);
                     studentExerciseRepository.save(s);
                     var oldFiles = fileRepository
                             .findAllByStudentexercise_idAndStatus(

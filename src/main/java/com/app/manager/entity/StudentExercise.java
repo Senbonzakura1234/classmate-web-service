@@ -38,19 +38,21 @@ public class StudentExercise {
 
 
 
+    @Column(name = "submitted", nullable = false)
+    private boolean submitted = false;
 
     @Column(name = "content", nullable = false)
-    private String content;
+    private String content = "";
 
     @Column(name = "student_message", nullable = false)
-    private String student_message;
+    private String student_message = "";
 
     @Min(0) @Max(10)
     @Column(name = "mark", nullable = false)
-    private double mark;
+    private double mark = 0;
 
     @Column(name = "marked", nullable = false)
-    private boolean marked;
+    private boolean marked = false;
 
     @Column(name = "teacher_message", nullable = false)
     private String teacher_message = "";
@@ -211,5 +213,13 @@ public class StudentExercise {
 
     public void setTeacher_message(String teacher_message) {
         this.teacher_message = teacher_message;
+    }
+
+    public boolean isSubmitted() {
+        return submitted;
+    }
+
+    public void setSubmitted(boolean submitted) {
+        this.submitted = submitted;
     }
 }
