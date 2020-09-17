@@ -6,6 +6,7 @@ import com.app.manager.entity.*;
 import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.ExerciseRequest;
 import com.app.manager.model.payload.response.ExerciseResponse;
+import com.app.manager.model.payload.response.GradeRecordResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.ExerciseService;
 import org.slf4j.Logger;
@@ -54,15 +55,23 @@ public class ExerciseServiceImp implements ExerciseService {
             var sessionIds = sessionRepository
                     .findAllByCourse_idAndStatusIsNot(courseId, Session.StatusEnum.CANCEL)
                     .stream().map(Session::getId).collect(Collectors.toList());
+            var students = studentCourseRepository
+                    .findAllByCourse_idAndStatus(courseId, StudentCourse.StatusEnum.SHOW);
             return exerciseRepository
                 .findAllBySession_idInAndStatusIsNot(sessionIds, Exercise.StatusEnum.CANCEL)
                 .stream().map(exercise -> {
-                    var studentExercises = studentExerciseRepository
-                        .findAllByExercise_idAndStatus(exercise.getId(), StudentExercise.StatusEnum.SHOW)
-                        .stream().map(studentExercise -> castObject.studentExerciseModelGradeList(studentExercise))
-                        .collect(Collectors.toList());
-                    return castObject.exerciseModelTeacher(exercise, studentExercises);
-            }).collect(Collectors.toList());
+                    var records = students.stream().map(studentCourse -> {
+                        var student = userRepository.findById(studentCourse.getUser_id());
+                        if(student.isEmpty()) return new GradeRecordResponse();
+                        var sumittedExercise = studentExerciseRepository
+                            .findFirstByUser_idAndExercise_id(student.get().getId(), exercise.getId());
+                        if(sumittedExercise.isEmpty())
+                            return new GradeRecordResponse(castObject.profilePublic(student.get()));
+                        return new GradeRecordResponse(castObject.profilePublic(student.get()),
+                            castObject.studentExerciseModelGradeList(sumittedExercise.get()));
+                    }).filter(GradeRecordResponse::isNull).collect(Collectors.toList());
+                    return castObject.exerciseModelTeacher(exercise, records);
+                }).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
             e.printStackTrace();
@@ -128,17 +137,23 @@ public class ExerciseServiceImp implements ExerciseService {
 
             var course = courseRepository.findById(session.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("course not found"));
-            if(course.getUser_id().equals(currentUser.getId())) {
-                var studentExercises = studentExerciseRepository
-                    .findAllByExercise_idAndStatus(exerciseId, StudentExercise.StatusEnum.SHOW)
-                    .stream().map(studentExercise ->
-                        castObject.studentExerciseModelGradeList(studentExercise))
-                        .collect(Collectors.toList());
-                return Optional.of(castObject.exerciseModelTeacher(exercise, studentExercises));
-            }
-
             var listStudents = studentCourseRepository
                     .findAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+
+            if(course.getUser_id().equals(currentUser.getId())) {
+                var records = listStudents.stream().map(studentCourse -> {
+                    var student = userRepository.findById(studentCourse.getUser_id());
+                    if(student.isEmpty()) return new GradeRecordResponse();
+                    var sumittedExercise = studentExerciseRepository
+                            .findFirstByUser_idAndExercise_id(student.get().getId(), exercise.getId());
+                    if(sumittedExercise.isEmpty())
+                        return new GradeRecordResponse(castObject.profilePublic(student.get()));
+                    return new GradeRecordResponse(castObject.profilePublic(student.get()),
+                            castObject.studentExerciseModelGradeList(sumittedExercise.get()));
+                }).filter(GradeRecordResponse::isNull).collect(Collectors.toList());
+                return Optional.of(castObject.exerciseModelTeacher(exercise, records));
+            }
+
             if (listStudents.stream().anyMatch(studentCourse ->
                     studentCourse.getUser_id().equals(currentUser.getId())))
                 return Optional.of(castObject.exerciseModel(exercise));

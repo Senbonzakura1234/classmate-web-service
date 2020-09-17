@@ -16,15 +16,17 @@ public class ExerciseResponse {
     private boolean auto_close;
     private Exercise.StatusEnum status;
     private Long created_at;
-    private List<StudentExerciseResponse> studentExerciseResponses;
+    private List<GradeRecordResponse> gradeRecordResponses;
 
     public ExerciseResponse() {
     }
 
-    public ExerciseResponse(String id, String session_id, String title, String content,
-                            String answer, Long exercise_end_time, boolean show_answer,
-                            boolean auto_start, boolean auto_close, Exercise.StatusEnum status,
-                            Long created_at, List<StudentExerciseResponse> studentExerciseResponses) {
+
+    public ExerciseResponse(String id, String session_id, String title,
+                            String content, String answer, Long exercise_end_time,
+                            boolean show_answer, boolean auto_start, boolean auto_close,
+                            Exercise.StatusEnum status, Long created_at,
+                            List<GradeRecordResponse> gradeRecordResponses) {
         this.id = id;
         this.session_id = session_id;
         this.title = title;
@@ -36,7 +38,7 @@ public class ExerciseResponse {
         this.auto_close = auto_close;
         this.status = status;
         this.created_at = created_at;
-        this.studentExerciseResponses = studentExerciseResponses;
+        this.gradeRecordResponses = gradeRecordResponses;
     }
 
     public String getId() {
@@ -127,11 +129,11 @@ public class ExerciseResponse {
         this.auto_close = auto_close;
     }
 
-    public List<StudentExerciseResponse> getStudentExerciseResponses() {
-        return studentExerciseResponses;
+    public List<GradeRecordResponse> getGradeRecordResponses() {
+        return gradeRecordResponses;
     }
 
-    public void setStudentExerciseResponses(List<StudentExerciseResponse> studentExerciseResponses) {
-        this.studentExerciseResponses = studentExerciseResponses;
+    public void setGradeRecordResponses(List<GradeRecordResponse> gradeRecordResponses) {
+        this.gradeRecordResponses = gradeRecordResponses;
     }
 }

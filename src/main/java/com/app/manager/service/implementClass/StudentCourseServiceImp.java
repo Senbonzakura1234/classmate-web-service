@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
 public class StudentCourseServiceImp implements StudentCourseService {
-    @Autowired StudentCourseRepository studentcourseRepository;
+    @Autowired StudentCourseRepository studentCourseRepository;
     @Autowired UserRepository userRepository;
     @Autowired CourseRepository courseRepository;
     @Autowired RoleRepository roleRepository;
@@ -73,7 +73,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
             studentCourse.setName(student.get().getUsername()
                     + ", " + course.get().getName());
 
-            studentcourseRepository.save(studentCourse);
+            studentCourseRepository.save(studentCourse);
 
             return new DatabaseQueryResult(true, "add student to course success",
                     HttpStatus.OK, studentCourseRequest);
@@ -89,7 +89,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
     @Override
     public Optional<CourseProfileResponse> getAllProfileInCourse(String courseId) {
         try {
-            var studentCourses = studentcourseRepository
+            var studentCourses = studentCourseRepository
                     .findAllByCourse_idAndStatus(courseId, StudentCourse.StatusEnum.SHOW)
                     .stream().map(StudentCourse::getUser_id).collect(Collectors.toList());
             var studentCoursesProfile =
@@ -114,8 +114,13 @@ public class StudentCourseServiceImp implements StudentCourseService {
                             Session.StatusEnum.ONGOING);
             var sessionModel = currentSession.isEmpty()? new SessionResponse() :
                     castObject.sessionModelPublic(currentSession.get());
+            var studentCount = studentCourseRepository
+                    .countAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+            var sessionCount = sessionRepository
+                    .countAllByCourse_idAndStatusIsNot(course.getId(), Session.StatusEnum.CANCEL);
             return Optional.of(new CourseProfileResponse(castObject.courseModel(
-                    course, sessionModel), castObject.profilePublic(teacher),
+                    course, sessionModel, studentCount, sessionCount),
+                    castObject.profilePublic(teacher),
                     studentCoursesProfile));
         } catch (RuntimeException e) {
             e.printStackTrace();

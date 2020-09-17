@@ -40,9 +40,14 @@ public class CourseServiceImp implements CourseService {
                 var currentSession = sessionRepository
                         .findFirstByCourse_idAndStatus(course.getId(),
                                 Session.StatusEnum.ONGOING);
+                var studentCount = studentCourseRepository
+                        .countAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+                var sessionCount = sessionRepository
+                        .countAllByCourse_idAndStatusIsNot(course.getId(), Session.StatusEnum.CANCEL);
                 return castObject.courseModel(course, currentSession.isEmpty() ?
                         new SessionResponse() : castObject
-                        .sessionModelPublic(currentSession.get()));
+                        .sessionModelPublic(currentSession.get()),
+                        studentCount, sessionCount);
             }).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,9 +74,13 @@ public class CourseServiceImp implements CourseService {
                 var currentSession = sessionRepository
                         .findFirstByCourse_idAndStatus(course.getId(),
                                 Session.StatusEnum.ONGOING);
+                var studentCount = studentCourseRepository
+                        .countAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+                var sessionCount = sessionRepository
+                        .countAllByCourse_idAndStatusIsNot(course.getId(), Session.StatusEnum.CANCEL);
                 return castObject.courseModel(course, currentSession.isEmpty() ?
                         new SessionResponse() : castObject
-                        .sessionModelPublic(currentSession.get()));
+                        .sessionModelPublic(currentSession.get()), studentCount, sessionCount);
             }).collect(Collectors.toList());
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -94,9 +103,13 @@ public class CourseServiceImp implements CourseService {
                 var currentSession = sessionRepository
                         .findFirstByCourse_idAndStatus(course.getId(),
                                 Session.StatusEnum.ONGOING);
+                var studentCount = studentCourseRepository
+                        .countAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+                var sessionCount = sessionRepository
+                        .countAllByCourse_idAndStatusIsNot(course.getId(), Session.StatusEnum.CANCEL);
                 return castObject.courseModel(course, currentSession.isEmpty() ?
                         new SessionResponse() : castObject
-                        .sessionModelPublic(currentSession.get()));
+                        .sessionModelPublic(currentSession.get()), studentCount, sessionCount);
             }).collect(Collectors.toList());
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -143,9 +156,13 @@ public class CourseServiceImp implements CourseService {
             var currentSession = sessionRepository
                     .findFirstByCourse_idAndStatus(course.get().getId(),
                             Session.StatusEnum.ONGOING);
+            var studentCount = studentCourseRepository
+                    .countAllByCourse_idAndStatus(course.get().getId(), StudentCourse.StatusEnum.SHOW);
+            var sessionCount = sessionRepository
+                    .countAllByCourse_idAndStatusIsNot(course.get().getId(), Session.StatusEnum.CANCEL);
             return Optional.of(castObject.courseModel(course.get(),
                     currentSession.isEmpty()? new SessionResponse() :
-                    castObject.sessionModelPublic(currentSession.get())));
+                    castObject.sessionModelPublic(currentSession.get()), studentCount, sessionCount));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());

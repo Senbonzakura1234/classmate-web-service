@@ -22,13 +22,14 @@ public class CastObject {
         course.setUpdated_at(System.currentTimeMillis());
         return course;
     }
-    public CourseResponse courseModel(Course course, SessionResponse currentSession){
+    public CourseResponse courseModel(Course course, SessionResponse currentSession,
+                              int studentCount, int sessionCount){
         if(course == null) return new CourseResponse();
 
         return new CourseResponse(course.getId(), course.getUser_id(),
                 course.getCoursecategory_id(), course.getName(), course.getDescription(),
                 course.getStart_date(), course.getEnd_date(), course.getCreated_at(),
-                course.getStatus(), currentSession);
+                studentCount, sessionCount, course.getStatus(), currentSession);
     }
 
     public Exercise exerciseEntity(ExerciseRequest exerciseRequest,
@@ -56,14 +57,14 @@ public class CastObject {
                 exercise.getStatus(), exercise.getCreated_at(), new ArrayList<>());
     }
     public ExerciseResponse exerciseModelTeacher(Exercise exercise,
-            List<StudentExerciseResponse> studentExerciseResponses){
+            List<GradeRecordResponse> gradeRecordResponses){
         if(exercise == null) return new ExerciseResponse();
         return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
                 exercise.getTitle(), exercise.getContent(),
                 exercise.getAnswer(), exercise.getExercise_end_time(),
                 exercise.isShow_answer(), exercise.isAuto_start(),
                 exercise.isAuto_close(), exercise.getStatus(),
-                exercise.getCreated_at(), studentExerciseResponses);
+                exercise.getCreated_at(), gradeRecordResponses);
     }
     public ExerciseResponse exerciseModelPublic(Exercise exercise){
         if(exercise == null) return new ExerciseResponse();
@@ -173,6 +174,7 @@ public class CastObject {
                 studentExercise.getStatus(), studentExercise.getCreated_at(),
                 studentExercise.getMark(), studentExercise.isMarked());
     }
+
 
     public CourseCategory courseCategoryEntity(
             CourseCategoryRequest courseCategoryRequest){

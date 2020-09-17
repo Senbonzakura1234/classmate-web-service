@@ -10,4 +10,5 @@ public interface StudentCourseRepository extends CrudRepository<StudentCourse, S
     List<StudentCourse> findAllByCourse_idAndStatus(String course_id, StudentCourse.StatusEnum status);
     List<StudentCourse> findAllByUser_idAndStatus(String user_id, StudentCourse.StatusEnum status);
     Optional<StudentCourse> findFirstByCourse_idAndUser_id(String course_id, String user_id);
+    int countAllByCourse_idAndStatus(String course_id, StudentCourse.StatusEnum status);
 }

@@ -11,15 +11,19 @@ public class CourseResponse {
     private Long start_date; //search
     private Long end_date; //search
     private Long created_at;
+    private int studentCount = 0;
+    private int sessionCount = 0;
     private Course.StatusEnum status; //search
     private SessionResponse currentSession;
 
     public CourseResponse() {
     }
 
+
     public CourseResponse(String id, String user_id, String course_category_id,
                           String name, String description, Long start_date, Long end_date,
-                          Long created_at, Course.StatusEnum status, SessionResponse currentSession) {
+                          Long created_at, int studentCount, int sessionCount,
+                          Course.StatusEnum status, SessionResponse currentSession) {
         this.id = id;
         this.user_id = user_id;
         this.course_category_id = course_category_id;
@@ -28,6 +32,8 @@ public class CourseResponse {
         this.start_date = start_date;
         this.end_date = end_date;
         this.created_at = created_at;
+        this.studentCount = studentCount;
+        this.sessionCount = sessionCount;
         this.status = status;
         this.currentSession = currentSession;
     }
@@ -110,5 +116,21 @@ public class CourseResponse {
 
     public void setCurrentSession(SessionResponse currentSession) {
         this.currentSession = currentSession;
+    }
+
+    public int getStudentCount() {
+        return studentCount;
+    }
+
+    public void setStudentCount(int studentCount) {
+        this.studentCount = studentCount;
+    }
+
+    public int getSessionCount() {
+        return sessionCount;
+    }
+
+    public void setSessionCount(int sessionCount) {
+        this.sessionCount = sessionCount;
     }
 }
