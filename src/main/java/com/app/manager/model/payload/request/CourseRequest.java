@@ -10,6 +10,8 @@ public class CourseRequest {
     private String name = "";
     @NotBlank
     private String description = "";
+    @NotBlank
+    private String cover_img = "";
     @NotNull
     private Long start_date = 0L;
     @NotNull
@@ -19,17 +21,15 @@ public class CourseRequest {
     }
 
     public CourseRequest(@NotBlank String course_category_id, @NotBlank String name,
-                         @NotBlank String description, @NotNull Long start_date,
-                         @NotNull Long end_date) {
+                         @NotBlank String description, @NotBlank String cover_img,
+                         @NotNull Long start_date, @NotNull Long end_date) {
         this.course_category_id = course_category_id;
         this.name = name;
         this.description = description;
+        this.cover_img = cover_img;
         this.start_date = start_date;
         this.end_date = end_date;
     }
-
-
-
 
     public String getCourse_category_id() {
         return course_category_id;
@@ -69,5 +69,13 @@ public class CourseRequest {
 
     public void setEnd_date(Long end_date) {
         this.end_date = end_date;
+    }
+
+    public String getCover_img() {
+        return cover_img;
+    }
+
+    public void setCover_img(String cover_img) {
+        this.cover_img = cover_img;
     }
 }

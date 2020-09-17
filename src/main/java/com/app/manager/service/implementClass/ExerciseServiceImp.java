@@ -69,7 +69,7 @@ public class ExerciseServiceImp implements ExerciseService {
                             return new GradeRecordResponse(castObject.profilePublic(student.get()));
                         return new GradeRecordResponse(castObject.profilePublic(student.get()),
                             castObject.studentExerciseModelGradeList(sumittedExercise.get()));
-                    }).filter(GradeRecordResponse::isNull).collect(Collectors.toList());
+                    }).filter(GradeRecordResponse::isNotNull).collect(Collectors.toList());
                     return castObject.exerciseModelTeacher(exercise, records);
                 }).collect(Collectors.toList());
         } catch (Exception e) {
@@ -150,7 +150,7 @@ public class ExerciseServiceImp implements ExerciseService {
                         return new GradeRecordResponse(castObject.profilePublic(student.get()));
                     return new GradeRecordResponse(castObject.profilePublic(student.get()),
                             castObject.studentExerciseModelGradeList(sumittedExercise.get()));
-                }).filter(GradeRecordResponse::isNull).collect(Collectors.toList());
+                }).filter(GradeRecordResponse::isNotNull).collect(Collectors.toList());
                 return Optional.of(castObject.exerciseModelTeacher(exercise, records));
             }
 

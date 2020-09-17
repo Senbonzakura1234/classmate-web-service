@@ -3,18 +3,18 @@ package com.app.manager.model.payload.response;
 public class GradeRecordResponse {
     private UserProfileResponse userProfileResponse;
     private boolean exercisePosted;
-    private final boolean isNull;
+    private final boolean isNotNull;
     private StudentExerciseResponse studentExerciseResponse;
 
 
     public GradeRecordResponse() {
-        isNull = true;
+        isNotNull = false;
     }
 
     public GradeRecordResponse(UserProfileResponse userProfileResponse) {
         this.userProfileResponse = userProfileResponse;
         exercisePosted = false;
-        isNull = false;
+        isNotNull = true;
     }
 
     public GradeRecordResponse(UserProfileResponse userProfileResponse,
@@ -22,7 +22,7 @@ public class GradeRecordResponse {
         this.userProfileResponse = userProfileResponse;
         exercisePosted = true;
         this.studentExerciseResponse = studentExerciseResponse;
-        isNull = false;
+        isNotNull = true;
     }
 
     public boolean isExercisePosted() {
@@ -49,7 +49,7 @@ public class GradeRecordResponse {
         this.studentExerciseResponse = studentExerciseResponse;
     }
 
-    public boolean isNull() {
-        return isNull;
+    public boolean isNotNull() {
+        return isNotNull;
     }
 }

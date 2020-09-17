@@ -140,6 +140,7 @@ public class SeederServiceImp implements SeederService {
                 var checkCourse = courseRepository.findFirstByName("Course Name " + i);
                 if (checkCourse.isPresent()) return;
 
+                course.setCover_img("https://res.cloudinary.com/senbonzakura/image/upload/v1600346648/GOkP8onbuyjGmN9Rc8Que5mw21CdSw6OuXpAKUuE6-4_knoeu0.jpg");
                 course.setDescription("Teacher: " + teacherName + ", Category: " + categoryName);
                 course.setCoursecategory_id(category.get().getId());
                 course.setUser_id(teacher.get().getId());

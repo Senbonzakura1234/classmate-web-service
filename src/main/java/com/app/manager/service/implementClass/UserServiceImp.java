@@ -124,6 +124,7 @@ public class UserServiceImp implements UserService {
                 });
             }
             user.setRoles(roles);
+            user.setAvatar_uri("https://res.cloudinary.com/senbonzakura/image/upload/v1573316200/avatar_tpygpm.jpg");
             userRepository.save(user);
             return new DatabaseQueryResult(true,
                     "User registered successfully!",

@@ -196,6 +196,7 @@ public class CourseServiceImp implements CourseService {
 
             course.setCoursecategory_id(courseRequest.getCourse_category_id());
             course.setDescription(courseRequest.getDescription());
+            course.setCover_img(courseRequest.getCover_img());
             course.setEnd_date(courseRequest.getEnd_date());
             course.setName(courseRequest.getName());
             course.setStart_date(courseRequest.getStart_date());
