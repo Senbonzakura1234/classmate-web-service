@@ -35,8 +35,8 @@ public class Attendance {
     @Column(name = "face_matched", nullable = false)
     private boolean face_matched = false;
 
-    @Column(name = "image_uri", nullable = false)
-    private String image_uri = "";
+    @Column(name = "image_file_id", nullable = false, length = 2000)
+    private String file_id = "";
 
 
     @Column(name = "status", nullable = false)
@@ -155,11 +155,11 @@ public class Attendance {
         this.face_matched = face_matched;
     }
 
-    public String getImage_uri() {
-        return image_uri;
+    public String getFile_id() {
+        return file_id;
     }
 
-    public void setImage_uri(String image_uri) {
-        this.image_uri = image_uri;
+    public void setFile_id(String file_id) {
+        this.file_id = file_id;
     }
 }

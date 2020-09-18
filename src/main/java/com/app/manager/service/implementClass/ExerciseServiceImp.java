@@ -64,7 +64,8 @@ public class ExerciseServiceImp implements ExerciseService {
                         var student = userRepository.findById(studentCourse.getUser_id());
                         if(student.isEmpty()) return new GradeRecordResponse();
                         var sumittedExercise = studentExerciseRepository
-                            .findFirstByUser_idAndExercise_id(student.get().getId(), exercise.getId());
+                            .findFirstByUser_idAndExercise_idAndStatus(student.get().getId(), exercise.getId(),
+                                    StudentExercise.StatusEnum.SHOW);
                         if(sumittedExercise.isEmpty()) return new GradeRecordResponse();
                         return new GradeRecordResponse(castObject.profilePublic(student.get()),
                             castObject.studentExerciseModelGradeList(sumittedExercise.get()));
@@ -166,7 +167,8 @@ public class ExerciseServiceImp implements ExerciseService {
                     var student = userRepository.findById(studentCourse.getUser_id());
                     if(student.isEmpty()) return new GradeRecordResponse();
                     var sumittedExercise = studentExerciseRepository
-                            .findFirstByUser_idAndExercise_id(student.get().getId(), exercise.getId());
+                            .findFirstByUser_idAndExercise_idAndStatus(student.get().getId(), exercise.getId(),
+                                    StudentExercise.StatusEnum.SHOW);
                     if(sumittedExercise.isEmpty()) return new GradeRecordResponse();
                     return new GradeRecordResponse(castObject.profilePublic(student.get()),
                             castObject.studentExerciseModelGradeList(sumittedExercise.get()));

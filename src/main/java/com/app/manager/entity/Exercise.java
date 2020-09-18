@@ -31,17 +31,17 @@ public class Exercise {
 
 
     @NotBlank
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, length = 2000)
     private String title;
     @NotBlank
     @Column(name = "course_id", nullable = false)
     private String course_id;
 
     @NotBlank
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 2000)
     private String content;
 
-    @Column(name = "answer", nullable = false)
+    @Column(name = "answer", nullable = false, length = 2000)
     private String answer;
 
     @Column(name = "show_answer", nullable = false)

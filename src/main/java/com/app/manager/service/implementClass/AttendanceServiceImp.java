@@ -101,7 +101,7 @@ public class AttendanceServiceImp implements AttendanceService {
                 var newAttendance = new Attendance();
                 newAttendance.setSession_id(session.getId());
                 newAttendance.setUser_id(student.getId());
-                newAttendance.setImage_uri(faceCheckClientRequest.getFile_id());
+                newAttendance.setFile_id(faceCheckClientRequest.getFile_id());
                 newAttendance.setFace_matched(true);
                 newAttendance.setStatus(Attendance.StatusEnum.ATTENDANT);
                 attendanceRepository.save(newAttendance);
@@ -110,7 +110,7 @@ public class AttendanceServiceImp implements AttendanceService {
                         faceCheckClientRequest);
             }
             var a = attendance.get();
-            a.setImage_uri(faceCheckClientRequest.getFile_id());
+            a.setFile_id(faceCheckClientRequest.getFile_id());
             a.setFace_matched(true);
             a.setStatus(Attendance.StatusEnum.ATTENDANT);
             a.setUpdated_at(System.currentTimeMillis());
@@ -166,7 +166,7 @@ public class AttendanceServiceImp implements AttendanceService {
                         var newAttendance = new Attendance();
                         newAttendance.setSession_id(sessionId);
                         newAttendance.setUser_id(attendanceCheckRequest.getUser_id());
-                        newAttendance.setImage_uri("");
+                        newAttendance.setFile_id("");
                         newAttendance.setFace_matched(true);
                         newAttendance.setStatus(attendanceCheckRequest.getStatus());
 
@@ -174,7 +174,7 @@ public class AttendanceServiceImp implements AttendanceService {
                         return;
                     }
                     var a = attendance.get();
-                    a.setImage_uri("");
+                    a.setFile_id("");
                     a.setFace_matched(true);
                     a.setStatus(attendanceCheckRequest.getStatus());
                     a.setUpdated_at(System.currentTimeMillis());
@@ -240,7 +240,7 @@ public class AttendanceServiceImp implements AttendanceService {
                 var newAttendance = new Attendance();
                 newAttendance.setSession_id(sessionId);
                 newAttendance.setUser_id(attendanceCheckRequest.getUser_id());
-                newAttendance.setImage_uri("");
+                newAttendance.setFile_id("");
                 newAttendance.setFace_matched(true);
                 newAttendance.setStatus(attendanceCheckRequest.getStatus());
 
@@ -250,7 +250,7 @@ public class AttendanceServiceImp implements AttendanceService {
                         HttpStatus.OK, attendanceCheckRequest);
             }
             var a = attendance.get();
-            a.setImage_uri("");
+            a.setFile_id("");
             a.setFace_matched(true);
             a.setStatus(attendanceCheckRequest.getStatus());
             a.setUpdated_at(System.currentTimeMillis());

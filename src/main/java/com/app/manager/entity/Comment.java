@@ -33,7 +33,7 @@ public class Comment {
 
 
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 2000)
     private String content;
 
     @Column(name = "pin", nullable = false)

@@ -44,13 +44,13 @@ public class Course implements Serializable {
 
 
     @NotBlank
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 2000)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, length = 2000)
     private String description = "";
 
-    @Column(name = "cover_file_id", nullable = false)
+    @Column(name = "cover_file_id", nullable = false, length = 2000)
     private String cover_file_id = "";
 
     @Column(name = "start_date", nullable = false)

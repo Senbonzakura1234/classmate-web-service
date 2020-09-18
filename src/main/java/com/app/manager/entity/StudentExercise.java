@@ -41,10 +41,10 @@ public class StudentExercise {
     @Column(name = "submitted", nullable = false)
     private boolean submitted = false;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 2000)
     private String content = "";
 
-    @Column(name = "student_message", nullable = false)
+    @Column(name = "student_message", nullable = false, length = 2000)
     private String student_message = "";
 
     @Min(0) @Max(10)
@@ -54,7 +54,7 @@ public class StudentExercise {
     @Column(name = "marked", nullable = false)
     private boolean marked = false;
 
-    @Column(name = "teacher_message", nullable = false)
+    @Column(name = "teacher_message", nullable = false, length = 2000)
     private String teacher_message = "";
 
 

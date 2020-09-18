@@ -32,11 +32,11 @@ public class Session {
 
 
     @NotBlank
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 2000)
     private String name;
 
     @NotBlank
-    @Column(name = "content", nullable = false, length = 512)
+    @Column(name = "content", nullable = false, length = 2000)
     private String content = "";
 
 

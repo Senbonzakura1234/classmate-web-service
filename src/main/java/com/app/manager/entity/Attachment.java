@@ -28,14 +28,14 @@ public class Attachment {
 
 
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 2000)
     private String name;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, length=2000)
     private String description;
 
     @NotBlank
-    @Column(name = "file_id", nullable = false)
+    @Column(name = "file_id", nullable = false, length = 2000)
     private String file_id;
 
     @Min(0L)

@@ -65,19 +65,19 @@ public class User {
     private String email;
 
 
-    @Column(name = "fullname", nullable = false)
+    @Column(name = "fullname", nullable = false, length = 2000)
     private String fullname = "";
 
-    @Column(name = "avatar_file_id", nullable = false)
+    @Column(name = "avatar_file_id", nullable = false, length = 2000)
     private String avatar_file_id = "";
 
-    @Column(name = "phone", nullable = false)
+    @Column(name = "phone", nullable = false, length = 2000)
     private String phone = "";
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "address", nullable = false, length = 2000)
     private String address = "";
 
-    @Column(name = "civil_id", nullable = false)
+    @Column(name = "civil_id", nullable = false, length = 2000)
     private String civil_id = "";
 
     @Column(name = "birthday")
@@ -91,7 +91,7 @@ public class User {
 
 
 
-    @Column(name = "face_definition_id", nullable = false)
+    @Column(name = "face_definition_id", nullable = false, length = 2000)
     private String face_definition_id = "";
 
     @Column(name = "facedefinition", nullable = false)

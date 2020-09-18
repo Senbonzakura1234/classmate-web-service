@@ -71,15 +71,18 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                         HttpStatus.BAD_REQUEST, studentExerciseRequest);
 
             var oldStudentExercise = studentExerciseRepository
-                    .findFirstByUser_idAndExercise_id(student.get().getId(),
-                            exercise.get().getId());
+                    .findFirstByUser_idAndExercise_idAndStatus(student.get().getId(),
+                            exercise.get().getId(), StudentExercise.StatusEnum.SHOW);
 
             if(oldStudentExercise.isPresent()){
                 try {
                     var s = oldStudentExercise.get();
-                    s.setStatus(StudentExercise.StatusEnum.HIDE);
                     s.setSubmitted(true);
+                    s.setContent(studentExerciseRequest.getContent());
+                    s.setStudent_message(studentExerciseRequest.getStudent_message());
                     studentExerciseRepository.save(s);
+
+
                     var oldFiles = fileRepository
                             .findAllByStudentexercise_idAndStatus(
                                     s.getId(), File.StatusEnum.SHOW);
@@ -93,8 +96,14 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                             }
                         });
                     }
+                    if(!studentExerciseRequest.getFileRequests().isEmpty()){
+                        fileRepository.saveAll(studentExerciseRequest.getFileRequests()
+                                .stream().map(fileRequest -> castObject
+                                        .fileEntity(s.getId(), fileRequest))
+                                .collect(Collectors.toList()));
+                    }
                     return new DatabaseQueryResult(true,
-                            "Update Student Exercise success",
+                            "Post Student Exercise success",
                             HttpStatus.OK, castObject.studentExerciseModelPublic(s));
                 } catch (Exception e) {
                     e.printStackTrace();

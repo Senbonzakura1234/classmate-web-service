@@ -260,6 +260,32 @@ public class SeederServiceImp implements SeederService {
                 exerciseService.save(exerciseRequest, "", true);
             });
         });
+        try {
+            var index  = 0;
+            logger.info("Start exercise of course " + index);
+
+            logger.info("getting course");
+            var course = courseRepository.findFirstByName("Course Name " + index);
+            if(course.isEmpty()) return;
+
+            logger.info("getting session");
+            var sessions = sessionRepository
+                    .findAllByCourse_idAndStatusIsNot(course.get().getId(), Session.StatusEnum.CANCEL);
+            if(sessions.isEmpty()) return;
+
+            var sessionIds = sessions.stream().map(Session::getId).collect(Collectors.toList());
+            exerciseRepository.findAllBySession_idInAndStatusIsNot(sessionIds, Exercise.StatusEnum.CANCEL)
+            .forEach(exercise -> {
+                try {
+                    exercise.setStatus(Exercise.StatusEnum.ONGOING);
+                    exerciseRepository.save(exercise);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -290,8 +316,11 @@ public class SeederServiceImp implements SeederService {
                             "the release of Letraset sheets containing Lorem Ipsum passages, and more " +
                             "recently with desktop publishing software like Aldus PageMaker including versions" +
                             " of Lorem Ipsum.", exercise.getContent(), fileRequests);
+                    var result =
                     studentExerciseService.saveStudentExercise(studentExerciseRequest,
                             student, exercise.getId());
+
+                    logger.info(result.getDescription());
                 });
             } catch (RuntimeException e) {
                 e.printStackTrace();
@@ -302,108 +331,143 @@ public class SeederServiceImp implements SeederService {
 
     @Override
     public void generatePost() {
-        var index = 0;
-        logger.info("getting student");
-        var studentName = seederData.getUserSeeds()
-                .stream().filter(signupRequest -> signupRequest.getRole()
-                        .contains(ERole.ROLE_STUDENT.getName()))
-                .collect(Collectors.toList()).get(index).getUsername();
-        var student = userRepository.findByUsername(studentName);
-        if(student.isEmpty()) return;
+        try {
+            var index = 0;
+            logger.info("getting student");
+            var studentName = seederData.getUserSeeds()
+                    .stream().filter(signupRequest -> signupRequest.getRole()
+                            .contains(ERole.ROLE_STUDENT.getName()))
+                    .collect(Collectors.toList()).get(index).getUsername();
+            var student = userRepository.findByUsername(studentName);
+            if(student.isEmpty()) return;
 
-        logger.info("getting teacher");
-        var teacherName = seederData.getUserSeeds()
-                .stream().filter(signupRequest -> signupRequest.getRole()
-                        .contains(ERole.ROLE_TEACHER.getName()))
-                .collect(Collectors.toList()).get(index).getUsername();
-        var teacher = userRepository.findByUsername(teacherName);
-        if(teacher.isEmpty()) return;
+            logger.info("getting teacher");
+            var teacherName = seederData.getUserSeeds()
+                    .stream().filter(signupRequest -> signupRequest.getRole()
+                            .contains(ERole.ROLE_TEACHER.getName()))
+                    .collect(Collectors.toList()).get(index).getUsername();
+            var teacher = userRepository.findByUsername(teacherName);
+            if(teacher.isEmpty()) return;
 
-        logger.info("getting course");
-        var course = courseRepository.findFirstByName("Course Name " + index);
-        if(course.isEmpty()) return;
+            logger.info("getting course");
+            var course = courseRepository.findFirstByName("Course Name " + index);
+            if(course.isEmpty()) return;
 
-        logger.info("Seed post by " + studentName);
-        IntStream.range(0, 5).forEach(i -> {
-            logger.info("Seeding post " + i + " by"  + studentName);
-            var post = new Post();
-            post.setUser_id(student.get().getId());
-            post.setCourse_id(course.get().getId());
-            post.setContent("Post " + i + ", " +
-                    " created by " + studentName +
-                    " in " + course.get().getName());
-            postRepository.save(post);
+            logger.info("Seed post by " + studentName);
+            IntStream.range(0, 5).forEach(i -> {
+                try {
+                    logger.info("Seeding post " + i + " by"  + studentName);
+                    var post = new Post();
+                    post.setUser_id(student.get().getId());
+                    post.setCourse_id(course.get().getId());
+                    post.setContent("Post " + i + ", " +
+                            " created by " + studentName +
+                            " in " + course.get().getName());
+                    postRepository.save(post);
 
-            IntStream.range(0, 3).forEach(j -> {
-                var attachment = new Attachment();
-                attachment.setPost_id(post.getId());
-                attachment.setName("File " + j);
-                attachment.setDescription("from post " + i + " of " + studentName);
-                attachment.setFile_id("https://www.google.com.vn/");
-                attachment.setFile_size((j+1)*100L);
-                attachmentRepository.save(attachment);
+                    IntStream.range(0, 3).forEach(j -> {
+                        try {
+                            var attachment = new Attachment();
+                            attachment.setPost_id(post.getId());
+                            attachment.setName("File " + j);
+                            attachment.setDescription("from post " + i + " of " + studentName);
+                            attachment.setFile_id("https://www.google.com.vn/");
+                            attachment.setFile_size((j+1)*100L);
+                            attachmentRepository.save(attachment);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            logger.info(e.getMessage());
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.info(e.getMessage());
+                }
             });
-        });
 
 
-        logger.info("Seed post by " + teacherName);
-        IntStream.range(0, 5).forEach(i -> {
-            logger.info("Seeding post " + i + " by " + teacherName);
-            var post = new Post();
-            post.setPin(i == 0);
-            post.setUser_id(teacher.get().getId());
-            post.setCourse_id(course.get().getId());
-            post.setContent("Post " + i + ", " +
-                    " created by " + teacherName +
-                    " in " + course.get().getName());
-            postRepository.save(post);
+            logger.info("Seed post by " + teacherName);
+            IntStream.range(0, 5).forEach(i -> {
+                try {
+                    logger.info("Seeding post " + i + " by " + teacherName);
+                    var post = new Post();
+                    post.setPin(i == 0);
+                    post.setUser_id(teacher.get().getId());
+                    post.setCourse_id(course.get().getId());
+                    post.setContent("Post " + i + ", " +
+                            " created by " + teacherName +
+                            " in " + course.get().getName());
+                    postRepository.save(post);
 
-            IntStream.range(0, 3).forEach(j -> {
-                var attachment = new Attachment();
-                attachment.setPost_id(post.getId());
-                attachment.setName("File " + j);
-                attachment.setDescription("from post " + i + " of " + teacherName);
-                attachment.setFile_id("https://www.google.com.vn/");
-                attachment.setFile_size((j+1)*100L);
-                attachmentRepository.save(attachment);
+                    IntStream.range(0, 3).forEach(j -> {
+                        try {
+                            var attachment = new Attachment();
+                            attachment.setPost_id(post.getId());
+                            attachment.setName("File " + j);
+                            attachment.setDescription("from post " + i + " of " + teacherName);
+                            attachment.setFile_id("https://www.google.com.vn/");
+                            attachment.setFile_size((j+1)*100L);
+                            attachmentRepository.save(attachment);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            logger.info(e.getMessage());
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.info(e.getMessage());
+                }
             });
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+        }
     }
 
     @Override
     public void generateComment() {
-        var index = 0;
-        logger.info("getting student");
-        var studentName = seederData.getUserSeeds()
-                .stream().filter(signupRequest -> signupRequest.getRole()
-                        .contains(ERole.ROLE_STUDENT.getName()))
-                .collect(Collectors.toList()).get(index).getUsername();
-        var student = userRepository.findByUsername(studentName);
-        if(student.isEmpty()) return;
+        try {
+            var index = 0;
+            logger.info("getting student");
+            var studentName = seederData.getUserSeeds()
+                    .stream().filter(signupRequest -> signupRequest.getRole()
+                            .contains(ERole.ROLE_STUDENT.getName()))
+                    .collect(Collectors.toList()).get(index).getUsername();
+            var student = userRepository.findByUsername(studentName);
+            if(student.isEmpty()) return;
 
-        logger.info("getting teacher");
-        var teacherName = seederData.getUserSeeds()
-                .stream().filter(signupRequest -> signupRequest.getRole()
-                        .contains(ERole.ROLE_TEACHER.getName()))
-                .collect(Collectors.toList()).get(index).getUsername();
-        var teacher = userRepository.findByUsername(teacherName);
-        if(teacher.isEmpty()) return;
+            logger.info("getting teacher");
+            var teacherName = seederData.getUserSeeds()
+                    .stream().filter(signupRequest -> signupRequest.getRole()
+                            .contains(ERole.ROLE_TEACHER.getName()))
+                    .collect(Collectors.toList()).get(index).getUsername();
+            var teacher = userRepository.findByUsername(teacherName);
+            if(teacher.isEmpty()) return;
 
-        logger.info("getting posts");
-        postRepository.findAll(Sort.by("content")).forEach(post -> {
-            var pinIndex = (new Random()).nextInt(6);
-            IntStream.range(0, 7).forEach(i -> {
-                logger.info("Seeding comment " + i + " by "
-                        + (i%2 == 0? studentName : teacherName));
-                var comment  = new Comment();
-                comment.setUser_id(i%2 == 0? student.get().getId()
-                        : teacher.get().getId());
-                comment.setPost_id(post.getId());
-                comment.setContent("Comment " + i + " by "
-                        + (i%2 == 0? studentName : teacherName));
-                comment.setPin(pinIndex == i);
+            logger.info("getting posts");
+            postRepository.findAll(Sort.by("content")).forEach(post -> {
+                try {
+                    var pinIndex = (new Random()).nextInt(6);
+                    IntStream.range(0, 7).forEach(i -> {
+                        logger.info("Seeding comment " + i + " by "
+                                + (i%2 == 0? studentName : teacherName));
+                        var comment  = new Comment();
+                        comment.setUser_id(i%2 == 0? student.get().getId()
+                                : teacher.get().getId());
+                        comment.setPost_id(post.getId());
+                        comment.setContent("Comment " + i + " by "
+                                + (i%2 == 0? studentName : teacherName));
+                        comment.setPin(pinIndex == i);
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.info(e.getMessage());
+                }
             });
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+        }
     }
 
     @Override
