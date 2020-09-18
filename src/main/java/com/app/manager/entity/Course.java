@@ -50,8 +50,8 @@ public class Course implements Serializable {
     @Column(name = "description", nullable = false)
     private String description = "";
 
-    @Column(name = "cover_img", nullable = false)
-    private String cover_img = "";
+    @Column(name = "cover_file_id", nullable = false)
+    private String cover_file_id = "";
 
     @Column(name = "start_date", nullable = false)
     private Long start_date = System.currentTimeMillis() + 10L * 86400000L;
@@ -226,11 +226,11 @@ public class Course implements Serializable {
         this.posts = posts;
     }
 
-    public String getCover_img() {
-        return cover_img;
+    public String getCover_file_id() {
+        return cover_file_id;
     }
 
-    public void setCover_img(String cover_img) {
-        this.cover_img = cover_img;
+    public void setCover_file_id(String cover_file_id) {
+        this.cover_file_id = cover_file_id;
     }
 }

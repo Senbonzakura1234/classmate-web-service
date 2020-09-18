@@ -12,8 +12,8 @@ import java.util.Optional;
 public interface ExerciseService {
     List<ExerciseResponse> findAll(ExerciseSpecification exerciseSpecification);
     List<ExerciseResponse> gradeList(String courseId);
-    DatabaseQueryResult save(ExerciseRequest exerciseRequest, String currentUsername);
+    DatabaseQueryResult save(ExerciseRequest exerciseRequest, String currentUsername, boolean adminAuthority);
     Optional<ExerciseResponse> getOne(String exerciseId, String currentUsername);
-    DatabaseQueryResult update(ExerciseRequest exerciseRequest, String id, String currentUsername);
+    DatabaseQueryResult update(ExerciseRequest exerciseRequest, String exerciseId, String currentUsername);
     DatabaseQueryResult updateStatus(String exerciseId, Exercise.StatusEnum status, String currentUsername);
 }

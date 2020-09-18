@@ -37,14 +37,14 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
     @Override
     public DatabaseQueryResult saveStudentExercise(
             StudentExerciseRequest studentExerciseRequest,
-            String currentUsername, String id) {
+            String currentUsername, String exerciseId) {
         try {
             var student = userRepository.findByUsername(currentUsername);
             if(student.isEmpty())
                 return new DatabaseQueryResult(false, "student not found",
                         HttpStatus.NOT_FOUND, studentExerciseRequest);
 
-            var exercise = exerciseRepository.findById(id);
+            var exercise = exerciseRepository.findById(exerciseId);
             if(exercise.isEmpty())
                 return new DatabaseQueryResult(false, "exercise not found",
                         HttpStatus.NOT_FOUND, studentExerciseRequest);
@@ -104,7 +104,7 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
             }
 
             var studentExercise = castObject.studentExerciseEntity(
-                    student.get().getId(), id, studentExerciseRequest);
+                    student.get().getId(), exerciseId, studentExerciseRequest);
             studentExerciseRepository.save(studentExercise);
             if(!studentExerciseRequest.getFileRequests().isEmpty()){
                 fileRepository.saveAll(studentExerciseRequest.getFileRequests()
@@ -199,13 +199,13 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
 
     @Override
     public Optional<StudentExerciseResponse> getStudentExercise(
-            String id, String currentUsername) {
+            String studentExerciseId, String currentUsername) {
         try {
             var currentUser = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             var studentExercise = studentExerciseRepository
-                    .findById(id).orElseThrow(() -> new RuntimeException("Student Exercise not found"));
+                    .findById(studentExerciseId).orElseThrow(() -> new RuntimeException("Student Exercise not found"));
             if(studentExercise.getStatus() == StudentExercise.StatusEnum.HIDE)
                 return Optional.empty();
             var files = fileRepository.findAllByStudentexercise_idAndStatus(

@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public class UserProfileRequest {
     @NotNull private String fullname = ""; //search
-    @NotNull private String avatar_uri = "https://res.cloudinary.com/senbonzakura/image/upload/v1573316200/avatar_tpygpm.jpg";
+    @NotNull private String avatar_file_id = "1m34xGnYQfstyeAFx_KsrBPhEhoTVYiVD";
     @NotNull private String phone = "";
     @NotNull private String address = "";
     @NotNull private String civil_id = "";
@@ -18,12 +18,12 @@ public class UserProfileRequest {
     public UserProfileRequest() {
     }
 
-    public UserProfileRequest(@NotNull String fullname, @NotNull String avatar_uri,
+    public UserProfileRequest(@NotNull String fullname, @NotNull String avatar_file_id,
                               @NotNull String phone, @NotNull String address,
                               @NotNull String civil_id, @NotNull @Min(0L) Long birthday,
                               @NotNull User.GenderEnum gender) {
         this.fullname = fullname;
-        this.avatar_uri = avatar_uri;
+        this.avatar_file_id = avatar_file_id;
         this.phone = phone;
         this.address = address;
         this.civil_id = civil_id;
@@ -79,11 +79,11 @@ public class UserProfileRequest {
         this.gender = gender;
     }
 
-    public String getAvatar_uri() {
-        return avatar_uri;
+    public String getAvatar_file_id() {
+        return avatar_file_id;
     }
 
-    public void setAvatar_uri(String avatar_uri) {
-        this.avatar_uri = avatar_uri;
+    public void setAvatar_file_id(String avatar_file_id) {
+        this.avatar_file_id = avatar_file_id;
     }
 }

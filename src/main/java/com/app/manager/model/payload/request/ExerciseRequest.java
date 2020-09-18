@@ -29,7 +29,7 @@ public class ExerciseRequest {
     public ExerciseRequest(@NotBlank String session_id, @NotBlank String title,
                            @NotBlank String content, String answer,
                            @NotNull Long exercise_end_time, boolean show_answer,
-                           boolean auto_start) {
+                           boolean auto_start, boolean auto_close) {
         this.session_id = session_id;
         this.title = title;
         this.content = content;
@@ -37,6 +37,7 @@ public class ExerciseRequest {
         this.exercise_end_time = exercise_end_time;
         this.show_answer = show_answer;
         this.auto_start = auto_start;
+        this.auto_close = auto_close;
     }
 
     public String getSession_id() {

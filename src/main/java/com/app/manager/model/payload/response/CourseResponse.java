@@ -8,7 +8,7 @@ public class CourseResponse {
     private String course_category_id; //search
     private String name; //search
     private String description;
-    private String cover_img;
+    private String cover_file_id;
     private Long start_date; //search
     private Long end_date; //search
     private Long created_at;
@@ -22,7 +22,7 @@ public class CourseResponse {
 
 
     public CourseResponse(String id, String user_id, String course_category_id,
-                          String name, String description, String cover_img,
+                          String name, String description, String cover_file_id,
                           Long start_date, Long end_date, Long created_at, int studentCount,
                           int sessionCount, Course.StatusEnum status,
                           SessionResponse currentSession) {
@@ -31,7 +31,7 @@ public class CourseResponse {
         this.course_category_id = course_category_id;
         this.name = name;
         this.description = description;
-        this.cover_img = cover_img;
+        this.cover_file_id = cover_file_id;
         this.start_date = start_date;
         this.end_date = end_date;
         this.created_at = created_at;
@@ -137,11 +137,11 @@ public class CourseResponse {
         this.sessionCount = sessionCount;
     }
 
-    public String getCover_img() {
-        return cover_img;
+    public String getCover_file_id() {
+        return cover_file_id;
     }
 
-    public void setCover_img(String cover_img) {
-        this.cover_img = cover_img;
+    public void setCover_file_id(String cover_file_id) {
+        this.cover_file_id = cover_file_id;
     }
 }

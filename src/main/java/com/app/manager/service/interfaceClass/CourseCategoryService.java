@@ -10,6 +10,6 @@ import java.util.List;
 public interface CourseCategoryService {
     List<CourseCategoryResponse> getAll();
     DatabaseQueryResult save(CourseCategoryRequest courseCategoryRequest);
-    DatabaseQueryResult update(String id,
+    DatabaseQueryResult update(String courseCategoryId,
                                CourseCategoryRequest courseCategoryRequest);
 }

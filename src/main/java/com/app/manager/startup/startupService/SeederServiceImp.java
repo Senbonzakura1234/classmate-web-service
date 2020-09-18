@@ -2,8 +2,13 @@ package com.app.manager.startup.startupService;
 
 import com.app.manager.context.repository.*;
 import com.app.manager.entity.*;
+import com.app.manager.model.payload.request.ExerciseRequest;
+import com.app.manager.model.payload.request.FileRequest;
+import com.app.manager.model.payload.request.StudentExerciseRequest;
 import com.app.manager.model.returnResult.MigrationQueryResult;
 import com.app.manager.model.seeder.SeederData;
+import com.app.manager.service.interfaceClass.ExerciseService;
+import com.app.manager.service.interfaceClass.StudentExerciseService;
 import com.app.manager.service.interfaceClass.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -28,6 +34,9 @@ public class SeederServiceImp implements SeederService {
     @Autowired StudentCourseRepository studentCourseRepository;
     @Autowired SessionRepository sessionRepository;
     @Autowired UserService userService;
+    @Autowired ExerciseService exerciseService;
+    @Autowired ExerciseRepository exerciseRepository;
+    @Autowired StudentExerciseService studentExerciseService;
     @Autowired PostRepository postRepository;
     @Autowired AttachmentRepository attachmentRepository;
     @Autowired HistoryRepository historyRepository;
@@ -140,7 +149,7 @@ public class SeederServiceImp implements SeederService {
                 var checkCourse = courseRepository.findFirstByName("Course Name " + i);
                 if (checkCourse.isPresent()) return;
 
-                course.setCover_img("https://res.cloudinary.com/senbonzakura/image/upload/v1600346648/GOkP8onbuyjGmN9Rc8Que5mw21CdSw6OuXpAKUuE6-4_knoeu0.jpg");
+                course.setCover_file_id("10ni2kUeQARrDchDCLqcFAuw1yyRJYCOj");
                 course.setDescription("Teacher: " + teacherName + ", Category: " + categoryName);
                 course.setCoursecategory_id(category.get().getId());
                 course.setUser_id(teacher.get().getId());
@@ -230,6 +239,61 @@ public class SeederServiceImp implements SeederService {
                     }
                 });
             } catch (Exception e) {
+                e.printStackTrace();
+                logger.info(e.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void generateExercise() {
+        sessionRepository.findAll().forEach(session -> {
+            logger.info("Seeding Exercise for Session Name " + session.getName());
+            IntStream.range(0, 2).forEach(i -> {
+                logger.info("Seeding Exercise " + i);
+                var exerciseRequest = new ExerciseRequest(session.getId(),
+                        "Exercise " + i + " from " + session.getName(),
+                        "Question: What is Lorem Ipsum?", "Answer: " +
+                        "Lorem Ipsum is simply dummy text of the printing" +
+                        " and typesetting industry. ", System.currentTimeMillis()
+                        + 3L * 86400000L, false, true, true);
+                exerciseService.save(exerciseRequest, "", true);
+            });
+        });
+    }
+
+    @Override
+    public void generateStudentExercise() {
+        exerciseRepository.findAll().forEach(exercise -> {
+            try {
+                logger.info("Seeding Student Exercise for Exercise id: " + exercise.getId());
+                var session = sessionRepository.findById(exercise.getSession_id())
+                        .orElseThrow(() -> new RuntimeException("session not found"));
+                var course = courseRepository.findById(session.getCourse_id())
+                        .orElseThrow(() -> new RuntimeException("course not found"));
+                studentCourseRepository.findAllByCourse_idAndStatus
+                    (course.getId(), StudentCourse.StatusEnum.SHOW).stream().map(studentCourse -> {
+                        var student = userRepository.findById(studentCourse.getUser_id());
+                        if(student.isEmpty()) return "";
+                        return student.get().getUsername();
+                    }).forEach(student -> {
+                    var fileRequests = Collections.singletonList(
+                        new FileRequest("lorem-ipsum-file.pdf", exercise.getContent(),
+                                "1R27uYWN-ylclyIxsEcbUn9l2y_aQYNLx", 77123L));
+                    var studentExerciseRequest =
+                        new StudentExerciseRequest("Lorem Ipsum is simply dummy text of the printing " +
+                            "and typesetting industry. Lorem Ipsum has been the industry's standard " +
+                            "dummy text ever since the 1500s, when an unknown printer took a galley of" +
+                            " type and scrambled it to make a type specimen book. It has survived not " +
+                            "only five centuries, but also the leap into electronic typesetting," +
+                            " remaining essentially unchanged. It was popularised in the 1960s with " +
+                            "the release of Letraset sheets containing Lorem Ipsum passages, and more " +
+                            "recently with desktop publishing software like Aldus PageMaker including versions" +
+                            " of Lorem Ipsum.", exercise.getContent(), fileRequests);
+                    studentExerciseService.saveStudentExercise(studentExerciseRequest,
+                            student, exercise.getId());
+                });
+            } catch (RuntimeException e) {
                 e.printStackTrace();
                 logger.info(e.getMessage());
             }

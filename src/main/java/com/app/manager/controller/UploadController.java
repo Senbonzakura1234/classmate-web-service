@@ -39,8 +39,15 @@ public class UploadController {
     @PostMapping(value = "/googleDrive", consumes = "multipart/form-data")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> googleDrive(List<MultipartFile> uploadFiles){
+        if(uploadFiles == null || uploadFiles.isEmpty())
+            return ResponseEntity.badRequest().body("Please upload valid file");
+
         return ResponseEntity.ok(uploadFiles.stream().map(uploadFile -> {
             try {
+                if(uploadFile.getOriginalFilename() == null ||
+                        uploadFile.getOriginalFilename().isEmpty() ||
+                        uploadFile.getOriginalFilename().isBlank())
+                    return new FileUploadResponse(false, "file error");
                 var temporaryFile = new File(getFileTransferPath(uploadFile.getOriginalFilename()));
                 uploadFile.transferTo(temporaryFile);
 

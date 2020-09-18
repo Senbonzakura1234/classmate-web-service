@@ -14,7 +14,7 @@ public interface CourseService {
     List<CourseResponse> findAllByStudent(CourseSpecification courseSpecification, String currentUsername);
     List<CourseResponse> findAllByTeacher(CourseSpecification courseSpecification, String currentUsername);
     DatabaseQueryResult save(CourseRequest courseRequest, String currentUsername);
-    Optional<CourseResponse> getOne(String id);
-    DatabaseQueryResult update(CourseRequest courseRequest, String id, String currentUsername);
-    DatabaseQueryResult updateStatus(String id, Course.StatusEnum status, String currentUsername);
+    Optional<CourseResponse> getOne(String courseId);
+    DatabaseQueryResult update(CourseRequest courseRequest, String courseId, String currentUsername);
+    DatabaseQueryResult updateStatus(String courseId, Course.StatusEnum status, String currentUsername);
 }

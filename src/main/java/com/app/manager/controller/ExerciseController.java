@@ -98,7 +98,7 @@ public class ExerciseController {
         }
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
-        var result = exerciseService.save(exerciseRequest, currentUser);
+        var result = exerciseService.save(exerciseRequest, currentUser, false);
         return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }

@@ -12,9 +12,10 @@ import java.util.Optional;
 public interface SessionService {
     List<SessionResponse> findAll(SessionSpecification sessionSpecification);
     DatabaseQueryResult save(SessionRequest sessionRequest, String currentUsername);
-    Optional<SessionResponse> getOne(String id, String currentUsername);
-    DatabaseQueryResult update(SessionRequest sessionRequest, String id, String currentUsername);
-    DatabaseQueryResult updateStatus(String id, Session.StatusEnum status, String currentUsername, boolean adminAuthority);
-    DatabaseQueryResult startAttendanceCheck(String id, String currentUsername, boolean adminAuthority);
-    DatabaseQueryResult closeAttendanceCheck(String id, String currentUsername, boolean adminAuthority);
+    Optional<SessionResponse> getOne(String sessionId, String currentUsername);
+    DatabaseQueryResult update(SessionRequest sessionRequest, String sessionId, String currentUsername);
+    DatabaseQueryResult updateStatus(String sessionId, Session.StatusEnum status,
+                                     String currentUsername, boolean adminAuthority);
+    DatabaseQueryResult startAttendanceCheck(String sessionId, String currentUsername, boolean adminAuthority);
+    DatabaseQueryResult closeAttendanceCheck(String sessionId, String currentUsername, boolean adminAuthority);
 }

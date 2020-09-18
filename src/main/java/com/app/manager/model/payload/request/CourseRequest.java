@@ -11,7 +11,7 @@ public class CourseRequest {
     @NotBlank
     private String description = "";
     @NotBlank
-    private String cover_img = "https://res.cloudinary.com/senbonzakura/image/upload/v1600346648/GOkP8onbuyjGmN9Rc8Que5mw21CdSw6OuXpAKUuE6-4_knoeu0.jpg";
+    private String cover_file_id = "10ni2kUeQARrDchDCLqcFAuw1yyRJYCOj";
     @NotNull
     private Long start_date = 0L;
     @NotNull
@@ -21,12 +21,12 @@ public class CourseRequest {
     }
 
     public CourseRequest(@NotBlank String course_category_id, @NotBlank String name,
-                         @NotBlank String description, @NotBlank String cover_img,
+                         @NotBlank String description, @NotBlank String cover_file_id,
                          @NotNull Long start_date, @NotNull Long end_date) {
         this.course_category_id = course_category_id;
         this.name = name;
         this.description = description;
-        this.cover_img = cover_img;
+        this.cover_file_id = cover_file_id;
         this.start_date = start_date;
         this.end_date = end_date;
     }
@@ -71,11 +71,11 @@ public class CourseRequest {
         this.end_date = end_date;
     }
 
-    public String getCover_img() {
-        return cover_img;
+    public String getCover_file_id() {
+        return cover_file_id;
     }
 
-    public void setCover_img(String cover_img) {
-        this.cover_img = cover_img;
+    public void setCover_file_id(String cover_file_id) {
+        this.cover_file_id = cover_file_id;
     }
 }

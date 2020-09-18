@@ -2,7 +2,7 @@ package com.app.manager.model.payload.response;
 
 public class GradeRecordResponse {
     private UserProfileResponse userProfileResponse;
-    private final boolean isNotNull;
+    private boolean isNotNull;
     private StudentExerciseResponse studentExerciseResponse;
 
 
@@ -35,5 +35,10 @@ public class GradeRecordResponse {
 
     public boolean isNotNull() {
         return isNotNull;
+    }
+
+
+    public void setNotNull(boolean notNull) {
+        isNotNull = notNull;
     }
 }

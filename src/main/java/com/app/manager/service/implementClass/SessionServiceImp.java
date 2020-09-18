@@ -83,7 +83,7 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public Optional<SessionResponse> getOne(String id, String currentUsername) {
+    public Optional<SessionResponse> getOne(String sessionId, String currentUsername) {
         try {
             var currentUser = userRepository
                     .findByUsername(currentUsername)
@@ -92,7 +92,7 @@ public class SessionServiceImp implements SessionService {
             var role = roleRepository.findByName(ERole.ROLE_ADMIN)
                     .orElseThrow(() -> new RuntimeException("role not found"));
             if(role.getStatus() == Role.StatusEnum.HIDE) return Optional.empty();
-            var session = sessionRepository.findById(id)
+            var session = sessionRepository.findById(sessionId)
                     .orElseThrow(() -> new RuntimeException("session not found"));
 
             if (currentUser.getRoles().contains(role))
@@ -120,14 +120,14 @@ public class SessionServiceImp implements SessionService {
 
     @Override
     public DatabaseQueryResult update(SessionRequest sessionRequest,
-                                      String id, String currentUsername) {
+                                      String sessionId, String currentUsername) {
         try {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, sessionRequest);
 
-            var s = sessionRepository.findById(id);
+            var s = sessionRepository.findById(sessionId);
             if(s.isEmpty()) return new DatabaseQueryResult(false,
                     "save session failed",
                     HttpStatus.NOT_FOUND, sessionRequest);
@@ -174,10 +174,10 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public DatabaseQueryResult updateStatus(String id, Session.StatusEnum status,
+    public DatabaseQueryResult updateStatus(String sessionId, Session.StatusEnum status,
                                             String currentUsername, boolean adminAuthority) {
         try {
-            var session = sessionRepository.findById(id);
+            var session = sessionRepository.findById(sessionId);
             if(session.isEmpty()){
                 return new DatabaseQueryResult(false,
                         "session not found", HttpStatus.NOT_FOUND, "");
@@ -229,10 +229,10 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public DatabaseQueryResult startAttendanceCheck(String id, String currentUsername,
+    public DatabaseQueryResult startAttendanceCheck(String sessionId, String currentUsername,
                                                     boolean adminAuthority) {
         try {
-            var session = sessionRepository.findById(id);
+            var session = sessionRepository.findById(sessionId);
             if(session.isEmpty()) return new DatabaseQueryResult(false,
                     "Session not found", HttpStatus.NOT_FOUND, "");
 
@@ -287,10 +287,10 @@ public class SessionServiceImp implements SessionService {
     }
 
     @Override
-    public DatabaseQueryResult closeAttendanceCheck(String id, String currentUsername,
+    public DatabaseQueryResult closeAttendanceCheck(String sessionId, String currentUsername,
                                                     boolean adminAuthority) {
         try {
-            var session = sessionRepository.findById(id);
+            var session = sessionRepository.findById(sessionId);
             if(session.isEmpty()){
                 return new DatabaseQueryResult(false,
                         "Session not found", HttpStatus.NOT_FOUND, "");

@@ -15,7 +15,7 @@ public class CastObject {
         var course = new Course();
         course.setCoursecategory_id(courseRequest.getCourse_category_id());
         course.setDescription(courseRequest.getDescription());
-        course.setCover_img(courseRequest.getCover_img());
+        course.setCover_file_id(courseRequest.getCover_file_id());
         course.setEnd_date(courseRequest.getEnd_date());
         course.setName(courseRequest.getName());
         course.setStart_date(courseRequest.getStart_date());
@@ -29,7 +29,7 @@ public class CastObject {
 
         return new CourseResponse(course.getId(), course.getUser_id(),
                 course.getCoursecategory_id(), course.getName(), course.getDescription(),
-                course.getCover_img(),
+                course.getCover_file_id(),
                 course.getStart_date(), course.getEnd_date(), course.getCreated_at(),
                 studentCount, sessionCount, course.getStatus(), currentSession);
     }
@@ -112,14 +112,14 @@ public class CastObject {
         return new UserProfileResponse(
                 user.getId(), user.getUsername(),
                 user.getEmail(), user.getFullname(),
-                user.getPhone(), user.getAvatar_uri(),
+                user.getPhone(), user.getAvatar_file_id(),
                 user.getAddress(), user.getCivil_id(),
                 user.getBirthday(), user.getGender());
     }
     public UserProfileResponse profilePrivate(User user){
         if(user == null) return new UserProfileResponse();
         return new UserProfileResponse(user.getId(), user.getUsername(),
-                user.getAvatar_uri());
+                user.getAvatar_file_id());
     }
 
     public StudentExercise studentExerciseEntity(String studentId, String exerciseId,

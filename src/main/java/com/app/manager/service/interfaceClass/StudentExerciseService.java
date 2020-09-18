@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public interface StudentExerciseService {
     DatabaseQueryResult saveStudentExercise(StudentExerciseRequest studentExerciseRequest,
-                                            String currentUsername, String id);
+                                            String currentUsername, String exerciseId);
 
     List<StudentExerciseResponse> getAllStudentExercise(String sessionId, String currentUsername);
     List<StudentExerciseResponse> getStudentExerciseOfOneStudentByCourse(String courseId, String currentUsername);
-    Optional<StudentExerciseResponse> getStudentExercise(String id, String currentUsername);
+    Optional<StudentExerciseResponse> getStudentExercise(String studentExerciseId, String currentUsername);
     DatabaseQueryResult markExcercise(String exerciseId, String currentUsername,
                                       MarkExerciseRequest markExerciseRequest);
 }

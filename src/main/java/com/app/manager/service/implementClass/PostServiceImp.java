@@ -91,11 +91,11 @@ public class PostServiceImp implements PostService {
     }
 
     @Override
-    public Optional<PostResponse> getOne(String id, String currentUsername) {
+    public Optional<PostResponse> getOne(String postId, String currentUsername) {
         try {
             var currentUser = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("User not found"));
-            var post = postRepository.findFirstByIdAndStatus(id, Post.StatusEnum.SHOW)
+            var post = postRepository.findFirstByIdAndStatus(postId, Post.StatusEnum.SHOW)
                     .orElseThrow(() -> new RuntimeException("post not found"));
             var course = courseRepository.findById(post.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("course not found"));

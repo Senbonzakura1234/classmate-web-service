@@ -160,9 +160,9 @@ public class CourseServiceImp implements CourseService {
     }
 
     @Override
-    public Optional<CourseResponse> getOne(String id) {
+    public Optional<CourseResponse> getOne(String courseId) {
         try {
-            var course = courseRepository.findById(id);
+            var course = courseRepository.findById(courseId);
             if(course.isEmpty()) return Optional.empty();
             var currentSession = sessionRepository
                     .findFirstByCourse_idAndStatus(course.get().getId(),
@@ -184,14 +184,14 @@ public class CourseServiceImp implements CourseService {
 
     @Override
     public DatabaseQueryResult update(CourseRequest courseRequest,
-                                      String id, String currentUsername) {
+                                      String courseId, String currentUsername) {
         try {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, courseRequest);
 
-            var c = courseRepository.findById(id);
+            var c = courseRepository.findById(courseId);
             if(c.isEmpty()) return new DatabaseQueryResult(false,
                     "save course failed",
                     HttpStatus.NOT_FOUND, courseRequest);
@@ -210,7 +210,7 @@ public class CourseServiceImp implements CourseService {
 
             course.setCoursecategory_id(courseRequest.getCourse_category_id());
             course.setDescription(courseRequest.getDescription());
-            course.setCover_img(courseRequest.getCover_img());
+            course.setCover_file_id(courseRequest.getCover_file_id());
             course.setEnd_date(courseRequest.getEnd_date());
             course.setName(courseRequest.getName());
             course.setStart_date(courseRequest.getStart_date());
@@ -240,7 +240,7 @@ public class CourseServiceImp implements CourseService {
     }
 
     @Override
-    public DatabaseQueryResult updateStatus(String id, Course.StatusEnum status,
+    public DatabaseQueryResult updateStatus(String courseId, Course.StatusEnum status,
                                             String currentUsername) {
         try {
             var teacher = userRepository.findByUsername(currentUsername);
@@ -248,7 +248,7 @@ public class CourseServiceImp implements CourseService {
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, "");
 
-            var course = courseRepository.findById(id);
+            var course = courseRepository.findById(courseId);
             if(course.isEmpty()){
                 return new DatabaseQueryResult(false,
                         "update course failed", HttpStatus.NOT_FOUND, "");

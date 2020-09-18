@@ -17,7 +17,7 @@ public interface UserService {
     Optional<Boolean> checkExistEmail(String email);
     DatabaseQueryResult saveUser(User user, Set<String> strRoles);
     List<UserProfileResponse> findAll(Specification<User> specification, String currentUsername);
-    Optional<UserProfileResponse> userProfile(String id, String currentUsername);
+    Optional<UserProfileResponse> userProfile(String userId, String currentUsername);
     DatabaseQueryResult updateProfile(UserProfileRequest userProfileRequest, String currentUsername);
     DatabaseQueryResult faceCheckDefinition
             (FaceDefinitionClientRequest faceDefinitionClientRequest, String currentUsername);

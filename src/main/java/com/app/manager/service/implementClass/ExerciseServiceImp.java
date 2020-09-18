@@ -80,12 +80,9 @@ public class ExerciseServiceImp implements ExerciseService {
     }
 
     @Override
-    public DatabaseQueryResult save(ExerciseRequest exerciseRequest, String currentUsername) {
+    public DatabaseQueryResult save(ExerciseRequest exerciseRequest,
+                                    String currentUsername, boolean adminAuthority) {
         try {
-            var teacher = userRepository.findByUsername(currentUsername);
-            if(teacher.isEmpty())
-                return new DatabaseQueryResult(false,
-                        "Teacher not found", HttpStatus.NOT_FOUND, exerciseRequest);
             var session = sessionRepository.findById(exerciseRequest.getSession_id());
             if(session.isEmpty())
                 return new DatabaseQueryResult(false, "Session not found",
@@ -95,9 +92,17 @@ public class ExerciseServiceImp implements ExerciseService {
             if(course.isEmpty())
             return new DatabaseQueryResult(false, "Course not found",
                     HttpStatus.NOT_FOUND, exerciseRequest);
-            if(!course.get().getUser_id().equals(teacher.get().getId()))
-                return new DatabaseQueryResult(false, "Not your course",
-                        HttpStatus.BAD_REQUEST, exerciseRequest);
+
+
+            if (!adminAuthority) {
+                var teacher = userRepository.findByUsername(currentUsername);
+                if(teacher.isEmpty())
+                    return new DatabaseQueryResult(false,
+                            "Teacher not found", HttpStatus.NOT_FOUND, exerciseRequest);
+                if(!course.get().getUser_id().equals(teacher.get().getId()))
+                    return new DatabaseQueryResult(false, "Not your course",
+                            HttpStatus.BAD_REQUEST, exerciseRequest);
+            }
 
             var exercise = castObject.exerciseEntity(exerciseRequest,
                     session.get().getCourse_id());
@@ -183,7 +188,7 @@ public class ExerciseServiceImp implements ExerciseService {
 
     @Override
     public DatabaseQueryResult update(ExerciseRequest exerciseRequest,
-                                      String id, String currentUsername) {
+                                      String exerciseId, String currentUsername) {
         try {
             var teacher = userRepository.findByUsername(currentUsername);
             if(teacher.isEmpty())
@@ -191,7 +196,7 @@ public class ExerciseServiceImp implements ExerciseService {
                         "Teacher not found",
                         HttpStatus.NOT_FOUND, exerciseRequest);
 
-            var exercise = exerciseRepository.findById(id);
+            var exercise = exerciseRepository.findById(exerciseId);
 
             if(exercise.isEmpty())
                 return new DatabaseQueryResult(false,

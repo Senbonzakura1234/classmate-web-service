@@ -124,7 +124,7 @@ public class UserServiceImp implements UserService {
                 });
             }
             user.setRoles(roles);
-            user.setAvatar_uri("https://res.cloudinary.com/senbonzakura/image/upload/v1573316200/avatar_tpygpm.jpg");
+            user.setAvatar_file_id("1m34xGnYQfstyeAFx_KsrBPhEhoTVYiVD");
             userRepository.save(user);
             return new DatabaseQueryResult(true,
                     "User registered successfully!",
@@ -144,7 +144,7 @@ public class UserServiceImp implements UserService {
             var users = userRepository.findAll(specification);
 
             return users.stream().map(user -> new UserProfileResponse(
-                    user.getId(), user.getUsername(), user.getAvatar_uri()))
+                    user.getId(), user.getUsername(), user.getAvatar_file_id()))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,9 +156,9 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Optional<UserProfileResponse> userProfile(
-            String id, String currentUsername) {
+            String userId, String currentUsername) {
         try {
-            var userToSee = userRepository.findById(id)
+            var userToSee = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User Not found"));
             if(userToSee.getUsername().equals(currentUsername))
                 return Optional.of(castObject.profilePublic(userToSee));
@@ -233,7 +233,7 @@ public class UserServiceImp implements UserService {
             var u = currentUser.get();
             u.setFullname(userProfileRequest.getFullname());
             u.setPhone(userProfileRequest.getPhone());
-            u.setAvatar_uri(userProfileRequest.getAvatar_uri());
+            u.setAvatar_file_id(userProfileRequest.getAvatar_file_id());
             u.setAddress(userProfileRequest.getAddress());
             u.setCivil_id(userProfileRequest.getCivil_id());
             u.setBirthday(userProfileRequest.getBirthday());

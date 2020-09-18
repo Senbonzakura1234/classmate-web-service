@@ -60,10 +60,10 @@ public class CourseCategoryServiceImp implements CourseCategoryService {
     }
 
     @Override
-    public DatabaseQueryResult update(String id,
+    public DatabaseQueryResult update(String courseCategoryId,
                                       CourseCategoryRequest courseCategoryRequest) {
         try {
-            var oldCourseCategory = coursecategoryRepository.findById(id);
+            var oldCourseCategory = coursecategoryRepository.findById(courseCategoryId);
             if(oldCourseCategory.isEmpty())
                 return new DatabaseQueryResult(
                         false, "course category not found",

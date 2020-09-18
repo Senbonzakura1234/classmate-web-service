@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PostService {
     List<PostResponse> getAllByCourse(String courseId, String currentUsername);
-    Optional<PostResponse> getOne(String id, String currentUsername);
+    Optional<PostResponse> getOne(String postId, String currentUsername);
     DatabaseQueryResult save(PostRequest postRequest,
                              String currentUsername, String courseId);
     DatabaseQueryResult edit(PostRequest postRequest,

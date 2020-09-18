@@ -68,8 +68,8 @@ public class User {
     @Column(name = "fullname", nullable = false)
     private String fullname = "";
 
-    @Column(name = "avatar_uri", nullable = false)
-    private String avatar_uri = "";
+    @Column(name = "avatar_file_id", nullable = false)
+    private String avatar_file_id = "";
 
     @Column(name = "phone", nullable = false)
     private String phone = "";
@@ -357,12 +357,12 @@ public class User {
         this.posts = posts;
     }
 
-    public String getAvatar_uri() {
-        return avatar_uri;
+    public String getAvatar_file_id() {
+        return avatar_file_id;
     }
 
-    public void setAvatar_uri(String avatar_uri) {
-        this.avatar_uri = avatar_uri;
+    public void setAvatar_file_id(String avatar_file_id) {
+        this.avatar_file_id = avatar_file_id;
     }
 
     public List<Comment> getComments() {

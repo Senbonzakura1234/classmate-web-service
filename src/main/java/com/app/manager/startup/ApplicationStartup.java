@@ -29,28 +29,34 @@ public class ApplicationStartup {
             var result = check.getResult();
             if(result == History.EMigration.SEEDABLE){
 
-                logger.info("Seeing Roles");
+                logger.info("Seeding Roles");
                 seederService.generateRoles();
 
-                logger.info("Seeing Category");
+                logger.info("Seeding Category");
                 seederService.generateCategory();
 
-                logger.info("Seeing User");
+                logger.info("Seeding User");
                 seederService.generateUser();
 
-                logger.info("Seeing Course");
+                logger.info("Seeding Course");
                 seederService.generateCourse();
 
-                logger.info("Seeing Student to course");
+                logger.info("Seeding Student to course");
                 seederService.generateStudentCourse();
 
-                logger.info("Seeing Session");
+                logger.info("Seeding Session");
                 seederService.generateSession();
 
-                logger.info("Seeing Post");
+                logger.info("Seeding Exercise");
+                seederService.generateExercise();
+
+                logger.info("Seeding Student Exercise");
+                seederService.generateStudentExercise();
+
+                logger.info("Seeding Post");
                 seederService.generatePost();
 
-                logger.info("Seeing Comment");
+                logger.info("Seeding Comment");
                 seederService.generateComment();
 
                 logger.info("Seed data success");
@@ -68,6 +74,6 @@ public class ApplicationStartup {
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
         }
-        logger.info("Seed ended");
+        logger.info("Seeder ended");
     }
 }
