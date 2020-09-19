@@ -87,7 +87,7 @@ public class ExerciseServiceImp implements ExerciseService {
             var profile = castObject.profilePublic(student);
 
             var courseIds =
-                (courseId != null && !courseId.isEmpty() && !courseId.isBlank())
+                (courseId == null || courseId.isEmpty() || courseId.isBlank())
                 ? studentCourseRepository.findAllByUser_idAndStatus(student.getId(),
                 StudentCourse.StatusEnum.SHOW).stream().map(StudentCourse::getCourse_id)
                 .collect(Collectors.toList()) : Collections.singletonList(courseId);
@@ -125,7 +125,7 @@ public class ExerciseServiceImp implements ExerciseService {
             var profile = castObject.profilePublic(user);
 
             var courseIds =
-                (courseId != null && !courseId.isEmpty() && !courseId.isBlank())
+                (courseId == null || courseId.isEmpty() || courseId.isBlank())
                 ? studentCourseRepository.findAllByUser_idAndStatus(user.getId(),
                 StudentCourse.StatusEnum.SHOW).stream().map(StudentCourse::getCourse_id)
                 .collect(Collectors.toList()) : Collections.singletonList(courseId);
