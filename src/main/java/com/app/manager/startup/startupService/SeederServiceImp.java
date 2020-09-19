@@ -303,7 +303,9 @@ public class SeederServiceImp implements SeederService {
                         if(student.isEmpty()) return "";
                         return student.get().getUsername();
                     }).forEach(student -> {
+
                     var chance = (new Random()).nextDouble();
+
                     if(chance < 0.1) {
                         logger.info("Student " + student + " didn't submit exercise");
                         return;

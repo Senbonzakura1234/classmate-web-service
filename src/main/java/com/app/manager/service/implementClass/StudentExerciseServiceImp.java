@@ -74,56 +74,41 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                     .findFirstByUser_idAndExercise_idAndStatus(student.get().getId(),
                             exercise.get().getId(), StudentExercise.StatusEnum.SHOW);
 
-            if(oldStudentExercise.isPresent()){
-                try {
-                    var s = oldStudentExercise.get();
-                    s.setSubmitted(true);
-                    s.setContent(studentExerciseRequest.getContent());
-                    s.setStudent_message(studentExerciseRequest.getStudent_message());
-                    studentExerciseRepository.save(s);
+            if(oldStudentExercise.isEmpty())
+                return new DatabaseQueryResult(false,
+                        "Student Exercise not found",
+                        HttpStatus.NOT_FOUND, studentExerciseRequest);
+
+            var s = oldStudentExercise.get();
+            s.setSubmitted(true);
+            s.setContent(studentExerciseRequest.getContent());
+            s.setStudent_message(studentExerciseRequest.getStudent_message());
+            studentExerciseRepository.save(s);
 
 
-                    var oldFiles = fileRepository
-                            .findAllByStudentexercise_idAndStatus(
-                                    s.getId(), File.StatusEnum.SHOW);
-                    if(!oldFiles.isEmpty()){
-                        oldFiles.forEach(file -> {
-                            try {
-                                file.setStatus(File.StatusEnum.HIDE);
-                                fileRepository.save(file);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
+            var oldFiles = fileRepository
+                    .findAllByStudentexercise_idAndStatus(
+                            s.getId(), File.StatusEnum.SHOW);
+            if (!oldFiles.isEmpty()) {
+                oldFiles.forEach(file -> {
+                    try {
+                        file.setStatus(File.StatusEnum.HIDE);
+                        fileRepository.save(file);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    if(!studentExerciseRequest.getFileRequests().isEmpty()){
-                        fileRepository.saveAll(studentExerciseRequest.getFileRequests()
-                                .stream().map(fileRequest -> castObject
-                                        .fileEntity(s.getId(), fileRequest))
-                                .collect(Collectors.toList()));
-                    }
-                    return new DatabaseQueryResult(true,
-                            "Post Student Exercise success",
-                            HttpStatus.OK, castObject.studentExerciseModelPublic(s));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    logger.info(e.getMessage());
-                    logger.info(e.getCause().getMessage());
-                }
+                });
             }
-
-            var studentExercise = castObject.studentExerciseEntity(
-                    student.get().getId(), exerciseId, studentExerciseRequest);
-            studentExerciseRepository.save(studentExercise);
-            if(!studentExerciseRequest.getFileRequests().isEmpty()){
+            if (!studentExerciseRequest.getFileRequests().isEmpty()) {
                 fileRepository.saveAll(studentExerciseRequest.getFileRequests()
                         .stream().map(fileRequest -> castObject
-                                .fileEntity(studentExercise.getId(), fileRequest))
+                                .fileEntity(s.getId(), fileRequest))
                         .collect(Collectors.toList()));
             }
             return new DatabaseQueryResult(true,
                     "Post Student Exercise success",
-                    HttpStatus.OK, castObject.studentExerciseModelPublic(studentExercise));
+                    HttpStatus.OK, castObject.studentExerciseModelPublic(s));
+
         } catch (Exception e) {
             e.printStackTrace();
                     logger.info(e.getMessage());
