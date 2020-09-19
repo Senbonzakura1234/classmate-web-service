@@ -80,14 +80,18 @@ public class ExerciseServiceImp implements ExerciseService {
     }
 
     @Override
-    public List<ExerciseResponse> gradeListSingle(String studentId) {
+    public List<ExerciseResponse> gradeListSingle(String courseId, String studentId) {
         try {
             var student = userRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("user not found"));
             var profile = castObject.profilePublic(student);
-            var courseIds = studentCourseRepository
-                .findAllByUser_idAndStatus(student.getId(), StudentCourse.StatusEnum.SHOW)
-                .stream().map(StudentCourse::getCourse_id).collect(Collectors.toList());
+
+            var courseIds =
+                (courseId != null && !courseId.isEmpty() && !courseId.isBlank())
+                ? studentCourseRepository.findAllByUser_idAndStatus(student.getId(),
+                StudentCourse.StatusEnum.SHOW).stream().map(StudentCourse::getCourse_id)
+                .collect(Collectors.toList()) : Collections.singletonList(courseId);
+
             var sessionIds = sessionRepository
                 .findAllByCourse_idInAndStatusIsNot(courseIds, Session.StatusEnum.CANCEL)
                 .stream().map(Session::getId).collect(Collectors.toList());
@@ -114,14 +118,18 @@ public class ExerciseServiceImp implements ExerciseService {
     }
 
     @Override
-    public List<ExerciseResponse> gradeListStudent(String currentUsername) {
+    public List<ExerciseResponse> gradeListStudent(String courseId, String currentUsername) {
         try {
             var user = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("user not found"));
             var profile = castObject.profilePublic(user);
-            var courseIds = studentCourseRepository
-                .findAllByUser_idAndStatus(user.getId(), StudentCourse.StatusEnum.SHOW)
-                .stream().map(StudentCourse::getCourse_id).collect(Collectors.toList());
+
+            var courseIds =
+                (courseId != null && !courseId.isEmpty() && !courseId.isBlank())
+                ? studentCourseRepository.findAllByUser_idAndStatus(user.getId(),
+                StudentCourse.StatusEnum.SHOW).stream().map(StudentCourse::getCourse_id)
+                .collect(Collectors.toList()) : Collections.singletonList(courseId);
+
             var sessionIds = sessionRepository
                 .findAllByCourse_idInAndStatusIsNot(courseIds, Session.StatusEnum.CANCEL)
                 .stream().map(Session::getId).collect(Collectors.toList());

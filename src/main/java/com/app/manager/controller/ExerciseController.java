@@ -75,17 +75,19 @@ public class ExerciseController {
 
     @GetMapping("/gradeListSingle")
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
-    public ResponseEntity<?> gradeListSingle(@RequestParam(value = "user_id") String user_id) {
-        return ResponseEntity.ok(exerciseService.gradeListSingle(user_id));
+    public ResponseEntity<?> gradeListSingle(@RequestParam(value = "user_id") String user_id,
+         @RequestParam(value = "course_id", required = false, defaultValue = "") String course_id) {
+        return ResponseEntity.ok(exerciseService.gradeListSingle(course_id, user_id));
     }
 
 
     @GetMapping("/gradeListStudent")
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<?> gradeListStudent() {
+    public ResponseEntity<?> gradeListStudent(
+        @RequestParam(value = "course_id", required = false, defaultValue = "") String course_id) {
         var currentUser = SecurityContextHolder
             .getContext().getAuthentication().getName();
-        return ResponseEntity.ok(exerciseService.gradeListStudent(currentUser));
+        return ResponseEntity.ok(exerciseService.gradeListStudent(course_id,currentUser));
     }
 
     @GetMapping("/detail")
@@ -172,6 +174,18 @@ public class ExerciseController {
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
+    @PostMapping("/studentExercise/unSubmit")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> unSubmitExercise (
+            @RequestParam(value = "exercise_id") String exercise_id){
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = studentExerciseService
+                .unSubmitStudentExercise(exercise_id, currentUser);
+        return result.isSuccess() ? ResponseEntity.ok(result) :
+                ResponseEntity.status(result.getHttp_status()).body(result);
+    }
+
     @GetMapping("/studentExercise/all")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getListStudentExercises(@RequestParam(value = "session_id") String session_id) {
@@ -190,9 +204,6 @@ public class ExerciseController {
         return ResponseEntity.ok(studentExerciseService
                 .getStudentExerciseOfOneStudentByCourse(course_id, currentUser));
     }
-
-
-
 
     @GetMapping("/studentExercise/getOne")
     @PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")

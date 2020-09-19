@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface StudentExerciseService {
     DatabaseQueryResult saveStudentExercise(StudentExerciseRequest studentExerciseRequest,
                                             String currentUsername, String exerciseId);
+    DatabaseQueryResult unSubmitStudentExercise(String currentUsername, String exerciseId);
 
     List<StudentExerciseResponse> getAllStudentExercise(String sessionId, String currentUsername);
     List<StudentExerciseResponse> getStudentExerciseOfOneStudentByCourse(String courseId, String currentUsername);

@@ -136,6 +136,76 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
     }
 
     @Override
+    public DatabaseQueryResult unSubmitStudentExercise(
+            String currentUsername, String exerciseId) {
+        var student = userRepository.findByUsername(currentUsername);
+        if(student.isEmpty())
+            return new DatabaseQueryResult(false, "student not found",
+                    HttpStatus.NOT_FOUND, "");
+
+        var exercise = exerciseRepository.findById(exerciseId);
+        if(exercise.isEmpty())
+            return new DatabaseQueryResult(false, "exercise not found",
+                    HttpStatus.NOT_FOUND, "");
+
+        if(exercise.get().getStatus() != Exercise.StatusEnum.ONGOING)
+            return new DatabaseQueryResult(false, "exercise ended",
+                    HttpStatus.BAD_REQUEST, "");
+
+        var session = sessionRepository
+                .findById(exercise.get().getSession_id());
+        if(session.isEmpty())
+            return new DatabaseQueryResult(false, "session not found",
+                    HttpStatus.NOT_FOUND, "");
+
+        var course = courseRepository
+                .findById(session.get().getCourse_id());
+        if(course.isEmpty())
+            return new DatabaseQueryResult(false, "course not found",
+                    HttpStatus.NOT_FOUND, "");
+        if(studentCourseRepository.findFirstByCourse_idAndUser_id(
+                course.get().getId(), student.get().getId()).isEmpty())
+            return new DatabaseQueryResult(false,
+                    "you are not in this course",
+                    HttpStatus.BAD_REQUEST, "");
+
+        var oldStudentExercise = studentExerciseRepository
+                .findFirstByUser_idAndExercise_idAndStatus(student.get().getId(),
+                        exercise.get().getId(), StudentExercise.StatusEnum.SHOW);
+        if(oldStudentExercise.isEmpty())
+            return new DatabaseQueryResult(false,
+                    "student exercise not found",
+                    HttpStatus.NOT_FOUND, "");
+
+        var s = oldStudentExercise.get();
+        s.setContent("");
+        s.setStudent_message("");
+        s.setSubmitted(false);
+        s.setUpdated_at(System.currentTimeMillis());
+        studentExerciseRepository.save(s);
+
+
+        var oldFiles = fileRepository
+                .findAllByStudentexercise_idAndStatus(
+                        s.getId(), File.StatusEnum.SHOW);
+
+        if(!oldFiles.isEmpty()){
+            oldFiles.forEach(file -> {
+                try {
+                    file.setStatus(File.StatusEnum.HIDE);
+                    fileRepository.save(file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        return new DatabaseQueryResult(true,
+                "Post Student Exercise success",
+                HttpStatus.OK, castObject.studentExerciseModelPublic(s));
+    }
+
+    @Override
     public List<StudentExerciseResponse> getAllStudentExercise(
             String exerciseId, String currentUsername) {
         try {
