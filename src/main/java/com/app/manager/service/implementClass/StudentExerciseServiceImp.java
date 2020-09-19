@@ -293,6 +293,7 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
             se.setTeacher_message(markExerciseRequest.getTeacher_message());
             se.setMark(markExerciseRequest.getMark());
             se.setMarked(true);
+            se.setUpdated_at(System.currentTimeMillis());
             studentExerciseRepository.save(se);
             return new DatabaseQueryResult(true,
                     "mark exercise success", HttpStatus.OK, markExerciseRequest);
