@@ -204,7 +204,8 @@ public class SessionServiceImp implements SessionService {
                         return new DatabaseQueryResult(false, "Not your course",
                                 HttpStatus.BAD_REQUEST, "");
 
-                    if(session.get().getStatus() == Session.StatusEnum.CANCEL
+                    if(session.get().getStatus() == Session.StatusEnum.END
+                        || session.get().getStatus() == Session.StatusEnum.CANCEL
                         || status == Session.StatusEnum.PENDING){
                         return new DatabaseQueryResult(false,
                                 "You dont have authority to change session status",
