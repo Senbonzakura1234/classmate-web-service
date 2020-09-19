@@ -12,5 +12,6 @@ public interface SessionRepository extends JpaRepository<Session, String>,
     Optional<Session> findFirstByName (String name);
     Optional<Session> findFirstByCourse_idAndStatus(String course_id, Session.StatusEnum status);
     List<Session> findAllByCourse_idAndStatusIsNot(String course_id, Session.StatusEnum status);
+    List<Session> findAllByCourse_idInAndStatusIsNot(List<String> course_ids, Session.StatusEnum status);
     int countAllByCourse_idAndStatusIsNot(String course_id, Session.StatusEnum status);
 }

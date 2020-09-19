@@ -72,6 +72,22 @@ public class ExerciseController {
         return ResponseEntity.ok(exerciseService.gradeList(course_id));
     }
 
+
+    @GetMapping("/gradeListSingle")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    public ResponseEntity<?> gradeListSingle(@RequestParam(value = "user_id") String user_id) {
+        return ResponseEntity.ok(exerciseService.gradeListSingle(user_id));
+    }
+
+
+    @GetMapping("/gradeListStudent")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> gradeListStudent() {
+        var currentUser = SecurityContextHolder
+            .getContext().getAuthentication().getName();
+        return ResponseEntity.ok(exerciseService.gradeListStudent(currentUser));
+    }
+
     @GetMapping("/detail")
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
     public ResponseEntity<?> getOne(@RequestParam(value = "id") String id) {

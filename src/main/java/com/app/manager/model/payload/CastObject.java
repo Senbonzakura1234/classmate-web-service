@@ -68,6 +68,17 @@ public class CastObject {
                 exercise.isAuto_close(), exercise.getStatus(),
                 exercise.getCreated_at(), gradeRecordResponses);
     }
+    public ExerciseResponse exerciseModelStudent(Exercise exercise,
+            List<GradeRecordResponse> gradeRecordResponses){
+        if(exercise == null) return new ExerciseResponse();
+        return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
+                exercise.getTitle(), exercise.getContent(),
+                exercise.isShow_answer()? exercise.getAnswer() : "",
+                exercise.getExercise_end_time(), exercise.isShow_answer(),
+                exercise.isAuto_start(), exercise.isAuto_close(),
+                exercise.getStatus(), exercise.getCreated_at(),
+                gradeRecordResponses);
+    }
     public ExerciseResponse exerciseModelPublic(Exercise exercise){
         if(exercise == null) return new ExerciseResponse();
         return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),

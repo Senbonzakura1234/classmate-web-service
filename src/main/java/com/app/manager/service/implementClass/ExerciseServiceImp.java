@@ -15,10 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
@@ -73,6 +72,74 @@ public class ExerciseServiceImp implements ExerciseService {
                     return castObject.exerciseModelTeacher(exercise, records);
                 }).collect(Collectors.toList());
         } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<ExerciseResponse> gradeListSingle(String studentId) {
+        try {
+            var student = userRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("user not found"));
+            var profile = castObject.profilePublic(student);
+            var courseIds = studentCourseRepository
+                .findAllByUser_idAndStatus(student.getId(), StudentCourse.StatusEnum.SHOW)
+                .stream().map(StudentCourse::getCourse_id).collect(Collectors.toList());
+            var sessionIds = sessionRepository
+                .findAllByCourse_idInAndStatusIsNot(courseIds, Session.StatusEnum.CANCEL)
+                .stream().map(Session::getId).collect(Collectors.toList());
+            return exerciseRepository
+                .findAllBySession_idInAndStatusIsNot(sessionIds, Exercise.StatusEnum.CANCEL)
+                .stream().map(exercise -> {
+                    var sumittedExercise = studentExerciseRepository
+                        .findFirstByUser_idAndExercise_idAndStatus
+                            (student.getId(), exercise.getId(), StudentExercise.StatusEnum.SHOW);
+
+                    var records = Stream.of(sumittedExercise.isEmpty() ?
+                        new GradeRecordResponse() : new GradeRecordResponse(profile, castObject
+                        .studentExerciseModelGradeList(sumittedExercise.get())))
+                        .filter(GradeRecordResponse::isNotNull).collect(Collectors.toList());
+
+                    return castObject.exerciseModelTeacher(exercise, records);
+                }).collect(Collectors.toList());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<ExerciseResponse> gradeListStudent(String currentUsername) {
+        try {
+            var user = userRepository.findByUsername(currentUsername)
+                    .orElseThrow(() -> new RuntimeException("user not found"));
+            var profile = castObject.profilePublic(user);
+            var courseIds = studentCourseRepository
+                .findAllByUser_idAndStatus(user.getId(), StudentCourse.StatusEnum.SHOW)
+                .stream().map(StudentCourse::getCourse_id).collect(Collectors.toList());
+            var sessionIds = sessionRepository
+                .findAllByCourse_idInAndStatusIsNot(courseIds, Session.StatusEnum.CANCEL)
+                .stream().map(Session::getId).collect(Collectors.toList());
+            return exerciseRepository
+                .findAllBySession_idInAndStatusIsNot(sessionIds, Exercise.StatusEnum.CANCEL)
+                .stream().map(exercise -> {
+                    var sumittedExercise = studentExerciseRepository
+                        .findFirstByUser_idAndExercise_idAndStatus
+                            (user.getId(), exercise.getId(), StudentExercise.StatusEnum.SHOW);
+
+                    var records = Stream.of(sumittedExercise.isEmpty() ?
+                        new GradeRecordResponse() : new GradeRecordResponse(profile, castObject
+                        .studentExerciseModelGradeList(sumittedExercise.get())))
+                        .filter(GradeRecordResponse::isNotNull).collect(Collectors.toList());
+
+                    return castObject.exerciseModelStudent(exercise, records);
+                }).collect(Collectors.toList());
+        } catch (RuntimeException e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
