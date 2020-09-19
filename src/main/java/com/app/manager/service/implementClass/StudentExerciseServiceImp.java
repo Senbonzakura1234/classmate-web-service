@@ -50,7 +50,8 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                         HttpStatus.NOT_FOUND, studentExerciseRequest);
 
             if(exercise.get().getStatus() != Exercise.StatusEnum.ONGOING)
-                return new DatabaseQueryResult(false, "exercise ended",
+                return new DatabaseQueryResult(false,
+                        "exercise is" + exercise.get().getStatus().getName(),
                         HttpStatus.BAD_REQUEST, studentExerciseRequest);
 
             var session = sessionRepository
