@@ -285,7 +285,7 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                 return new DatabaseQueryResult(false,
                         "Teacher not found", HttpStatus.NOT_FOUND, markExerciseRequest);
 
-            if(course.get().getUser_id().equals(teacher.get().getId()))
+            if(!course.get().getUser_id().equals(teacher.get().getId()))
                 return new DatabaseQueryResult(false,
                         "not your course", HttpStatus.BAD_REQUEST, markExerciseRequest);
 
