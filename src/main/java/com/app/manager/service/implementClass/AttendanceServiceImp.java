@@ -133,11 +133,8 @@ public class AttendanceServiceImp implements AttendanceService {
     @Override
     public DatabaseQueryResult teacherAttendaneCheck(
             List<AttendanceCheckRequest> attendanceCheckRequests,
-            String currentUsername, String sessionId) {
+            String currentUsername, String sessionId, boolean adminAuthority) {
         try {
-            var currentUser = userRepository
-                    .findByUsername(currentUsername)
-                    .orElseThrow(() -> new RuntimeException("Session not found"));
             var session = sessionRepository
                     .findById(sessionId)
                     .orElseThrow(() -> new RuntimeException("Session not found"));
@@ -145,13 +142,21 @@ public class AttendanceServiceImp implements AttendanceService {
                     .findById(session.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("Session not found"));
 
-            if(!course.getUser_id().equals(currentUser.getId()))
-                return new DatabaseQueryResult(false,
-                        "Not your course",
-                        HttpStatus.BAD_REQUEST, attendanceCheckRequests);
+            if (!adminAuthority) {
+                var currentUser = userRepository
+                        .findByUsername(currentUsername)
+                        .orElseThrow(() -> new RuntimeException("Session not found"));
+                if(!course.getUser_id().equals(currentUser.getId()))
+                    return new DatabaseQueryResult(false,
+                            "Not your course",
+                            HttpStatus.BAD_REQUEST, attendanceCheckRequests);
+            }
 
             attendanceCheckRequests.forEach(attendanceCheckRequest -> {
                 try {
+                    if(attendanceCheckRequest.getStatus() == Attendance.StatusEnum.ALL ||
+                     attendanceCheckRequest.getStatus() == Attendance.StatusEnum.NOT_SET)
+                        return;
                     var studentCheck = studentCourseRepository
                             .findAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW)
                             .stream().noneMatch(studentCourse ->

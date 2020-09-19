@@ -65,7 +65,8 @@ public class AttendanceController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = attendanceService
-                .teacherAttendaneCheck(attendanceCheckRequests, currentUser, session_id);
+                .teacherAttendaneCheck(attendanceCheckRequests,
+                        currentUser, session_id, false);
 
         return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);

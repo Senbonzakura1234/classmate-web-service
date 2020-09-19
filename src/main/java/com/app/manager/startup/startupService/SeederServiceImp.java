@@ -2,14 +2,13 @@ package com.app.manager.startup.startupService;
 
 import com.app.manager.context.repository.*;
 import com.app.manager.entity.*;
+import com.app.manager.model.payload.request.AttendanceCheckRequest;
 import com.app.manager.model.payload.request.ExerciseRequest;
 import com.app.manager.model.payload.request.FileRequest;
 import com.app.manager.model.payload.request.StudentExerciseRequest;
 import com.app.manager.model.returnResult.MigrationQueryResult;
 import com.app.manager.model.seeder.SeederData;
-import com.app.manager.service.interfaceClass.ExerciseService;
-import com.app.manager.service.interfaceClass.StudentExerciseService;
-import com.app.manager.service.interfaceClass.UserService;
+import com.app.manager.service.interfaceClass.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +37,8 @@ public class SeederServiceImp implements SeederService {
     @Autowired ExerciseRepository exerciseRepository;
     @Autowired StudentExerciseService studentExerciseService;
     @Autowired PostRepository postRepository;
+    @Autowired SessionService sessionService;
+    @Autowired AttendanceService attendanceService;
     @Autowired AttachmentRepository attachmentRepository;
     @Autowired HistoryRepository historyRepository;
 
@@ -216,12 +217,17 @@ public class SeederServiceImp implements SeederService {
                     try {
                         logger.info("Seeding Session Name " + j + ", Course " + i);
                         var session = new Session();
-                        session.setCourse_id(course.get().getId());
                         session.setName("Session Name " + j + ", Course " + i);
-                        session.setStart_time(course.get().getStart_date() + (j + 1L) * 86400000L);
                         var checkSession = sessionRepository
-                                .findFirstByName("Session Name " + j + ", Course " + i);
+                                .findFirstByName(session.getName());
                         if(checkSession.isPresent()) return;
+
+                        session.setCourse_id(course.get().getId());
+                        session.setStart_time(i != 0 || j != 0 ? course.get().getStart_date()
+                            + (j + 1L) * 86400000L : System.currentTimeMillis());
+                        session.setStatus(i != 0 || j != 0 ? Session.StatusEnum.PENDING :
+                                Session.StatusEnum.ONGOING);
+
                         session.setContent("Session " + j + " Content: " +
                                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
                                 "Integer cursus, nunc at vehicula tempor, dui dolor eleifend lacus, " +
@@ -233,6 +239,31 @@ public class SeederServiceImp implements SeederService {
                                 " Aliquam rhoncus lectus quis laoreet aliquet.");
                         sessionRepository.save(session);
                         logger.info("Add sesion success");
+                        if(i == 0 && j == 0) {
+                            logger.info("Start sesion attendance");
+                            var result = sessionService
+                                .startAttendanceCheck(session.getId(),
+                                "", true);
+                            logger.info(result.getDescription());
+
+                            if(result.isSuccess()){
+                                logger.info("Perform attendance check");
+                                var studentChecks = studentCourseRepository
+                                    .findAllByCourse_idAndStatus(course.get().getId(),
+                                    StudentCourse.StatusEnum.SHOW).stream()
+                                    .map(studentCourse -> {
+                                        var rand = (new Random()).nextDouble();
+                                        return new AttendanceCheckRequest
+                                            (studentCourse.getUser_id(), rand < 0.1 ?
+                                                    Attendance.StatusEnum.ABSENT :
+                                                    Attendance.StatusEnum.ATTENDANT);
+                                    }).collect(Collectors.toList());
+                                var checkResult = attendanceService
+                                    .teacherAttendaneCheck(studentChecks, "",
+                                        session.getId(), true);
+                                logger.info(checkResult.getDescription());
+                            }
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                         logger.info(e.getMessage());
@@ -292,6 +323,7 @@ public class SeederServiceImp implements SeederService {
     public void generateStudentExercise() {
         exerciseRepository.findAll().forEach(exercise -> {
             try {
+                if(exercise.getStatus() != Exercise.StatusEnum.ONGOING) return;
                 logger.info("Seeding Student Exercise for Exercise id: " + exercise.getId());
                 var session = sessionRepository.findById(exercise.getSession_id())
                         .orElseThrow(() -> new RuntimeException("session not found"));

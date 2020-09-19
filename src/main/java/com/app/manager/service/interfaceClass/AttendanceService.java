@@ -11,7 +11,8 @@ public interface AttendanceService {
     DatabaseQueryResult studentAttendaneCheck(FaceCheckClientRequest faceCheckClientRequest,
                                       String currentUsername);
     DatabaseQueryResult teacherAttendaneCheck(List<AttendanceCheckRequest> attendanceCheckRequests,
-                                              String currentUsername, String sessionId);
+                                              String currentUsername, String sessionId,
+                                              boolean adminAuthority);
     DatabaseQueryResult teacherAttendaneCheckOne(AttendanceCheckRequest attendanceCheckRequest,
                                               String currentUsername, String sessionId);
     List<AttendanceCheckResponse> getAttendanceResult(String sessionId);

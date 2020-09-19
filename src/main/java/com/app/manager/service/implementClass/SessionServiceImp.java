@@ -69,6 +69,7 @@ public class SessionServiceImp implements SessionService {
 
             if(sessionRequest.isStart_immidiately()){
                 updateStatus(session.getId(), Session.StatusEnum.ONGOING, "", true);
+                startAttendanceCheck(session.getId(), currentUsername, false);
             }
             return new DatabaseQueryResult(true,
                     "save session success", HttpStatus.OK,
@@ -203,7 +204,8 @@ public class SessionServiceImp implements SessionService {
                         return new DatabaseQueryResult(false, "Not your course",
                                 HttpStatus.BAD_REQUEST, "");
 
-                    if(status != Session.StatusEnum.CANCEL){
+                    if(session.get().getStatus() == Session.StatusEnum.CANCEL
+                        || status == Session.StatusEnum.PENDING){
                         return new DatabaseQueryResult(false,
                                 "You dont have authority to change session status",
                                 HttpStatus.BAD_REQUEST, "");
@@ -215,6 +217,7 @@ public class SessionServiceImp implements SessionService {
             s.setStatus(status);
             if(status == Session.StatusEnum.ONGOING){
                 s.setStart_time(System.currentTimeMillis());
+                startAttendanceCheck(s.getId(), currentUsername, false);
             }
             sessionRepository.save(s);
             startAttendanceCheck(s.getId(), "", true);

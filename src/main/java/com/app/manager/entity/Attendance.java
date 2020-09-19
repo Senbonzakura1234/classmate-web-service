@@ -40,7 +40,7 @@ public class Attendance {
 
 
     @Column(name = "status", nullable = false)
-    private StatusEnum status = StatusEnum.ALL;
+    private StatusEnum status = StatusEnum.NOT_SET;
 
     @Column(name = "created_at", nullable = false)
     private Long created_at = System.currentTimeMillis();
@@ -57,7 +57,8 @@ public class Attendance {
     public enum StatusEnum {
         ALL(0, "All"),
         ATTENDANT(1, "On time"),
-        ABSENT(2, "Absent");
+        ABSENT(2, "Absent"),
+        NOT_SET(3, "Not set");
 
         private final int value;
         private final String name;
