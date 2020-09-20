@@ -140,4 +140,20 @@ public class ExerciseResponse {
     public void setGradeRecordResponses(List<GradeRecordResponse> gradeRecordResponses) {
         this.gradeRecordResponses = gradeRecordResponses;
     }
+
+    public int getSubmitedCount() {
+        return submitedCount;
+    }
+
+    public void setSubmitedCount(int submitedCount) {
+        this.submitedCount = submitedCount;
+    }
+
+    public int getMarkCount() {
+        return markCount;
+    }
+
+    public void setMarkCount(int markCount) {
+        this.markCount = markCount;
+    }
 }
