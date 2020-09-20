@@ -277,6 +277,10 @@ public class SessionServiceImp implements SessionService {
                     var attendance = new Attendance();
                     attendance.setUser_id(user.get().getId());
                     attendance.setSession_id(s.getId());
+                    var oldAttendance = attendanceRepository
+                            .findFirstByUser_idAndSession_id
+                            (attendance.getUser_id(), attendance.getSession_id());
+                    if(oldAttendance.isPresent()) return;
                     attendanceRepository.save(attendance);
                 } catch (Exception e) {
                     e.printStackTrace();

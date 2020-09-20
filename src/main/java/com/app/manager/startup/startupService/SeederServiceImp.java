@@ -223,10 +223,10 @@ public class SeederServiceImp implements SeederService {
                         if(checkSession.isPresent()) return;
 
                         session.setCourse_id(course.get().getId());
-                        session.setStart_time(i != 0 || j != 0 ? course.get().getStart_date()
-                            + (j + 1L) * 86400000L : System.currentTimeMillis());
-                        session.setStatus(i != 0 || j != 0 ? Session.StatusEnum.PENDING :
-                                Session.StatusEnum.ONGOING);
+                        session.setStart_time(i == 0 && j == 0 ? System.currentTimeMillis() :
+                                course.get().getStart_date() + (j + 1L) * 86400000L);
+                        session.setStatus(i == 0 && j == 0 ? Session.StatusEnum.ONGOING :
+                                Session.StatusEnum.PENDING);
 
                         session.setContent("Session " + j + " Content: " +
                                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
