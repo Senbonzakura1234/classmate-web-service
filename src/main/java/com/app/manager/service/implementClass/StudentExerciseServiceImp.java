@@ -94,6 +94,7 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                 oldFiles.forEach(file -> {
                     try {
                         file.setStatus(File.StatusEnum.HIDE);
+                        file.setDeleted_at(System.currentTimeMillis());
                         fileRepository.save(file);
                     } catch (Exception e) {
                         e.printStackTrace();

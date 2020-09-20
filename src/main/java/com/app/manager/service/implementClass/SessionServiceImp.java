@@ -68,8 +68,8 @@ public class SessionServiceImp implements SessionService {
             sessionRepository.save(session);
 
             if(sessionRequest.isStart_immidiately()){
-                updateStatus(session.getId(), Session.StatusEnum.ONGOING, "", true);
-                startAttendanceCheck(session.getId(), currentUsername, false);
+                updateStatus(session.getId(), Session.StatusEnum.ONGOING,
+                    "", true);
             }
             return new DatabaseQueryResult(true,
                     "save session success", HttpStatus.OK,
@@ -161,6 +161,7 @@ public class SessionServiceImp implements SessionService {
             sessionRepository.save(session);
             if(sessionRequest.isStart_immidiately()
                 && session.getStatus() == Session.StatusEnum.PENDING){
+
                 updateStatus(session.getId(), Session.StatusEnum.ONGOING,
                     "", true);
             }
@@ -221,7 +222,6 @@ public class SessionServiceImp implements SessionService {
             s.setStatus(status);
             if(status == Session.StatusEnum.ONGOING){
                 s.setStart_time(System.currentTimeMillis());
-                startAttendanceCheck(s.getId(), currentUsername, false);
             }
             sessionRepository.save(s);
             startAttendanceCheck(s.getId(), "", true);
@@ -269,18 +269,20 @@ public class SessionServiceImp implements SessionService {
 
             var listStudentCourse = studentCourseRepository
                     .findAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
-            var attendanceList = new ArrayList<Attendance>();
+
             listStudentCourse.forEach(studentCourse -> {
-                var user = userRepository.findById(studentCourse.getUser_id());
-                if(user.isEmpty()) return;
-                var attendance = new Attendance();
-                attendance.setUser_id(user.get().getId());
-                attendance.setSession_id(s.getId());
-                attendanceList.add(attendance);
+                try {
+                    var user = userRepository.findById(studentCourse.getUser_id());
+                    if(user.isEmpty()) return;
+                    var attendance = new Attendance();
+                    attendance.setUser_id(user.get().getId());
+                    attendance.setSession_id(s.getId());
+                    attendanceRepository.save(attendance);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.info(e.getMessage());
+                }
             });
-            if(!attendanceList.isEmpty()){
-                attendanceRepository.saveAll(attendanceList);
-            }
             return new DatabaseQueryResult(true,
                     "Attendance Check Started", HttpStatus.OK, "");
         } catch (RuntimeException e) {
