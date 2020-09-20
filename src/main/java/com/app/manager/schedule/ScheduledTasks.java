@@ -161,9 +161,12 @@ public class ScheduledTasks {
                }
                if (exercise.isAuto_close()) {
                    try {
-                       logger.info("Closing exercise");
-                       exercise.setStatus(Exercise.StatusEnum.MARKING);
-                       exerciseRepository.save(exercise);
+                       if(exercise.getExercise_end_time()
+                               <= System.currentTimeMillis()){
+                           logger.info("Closing exercise");
+                           exercise.setStatus(Exercise.StatusEnum.MARKING);
+                           exerciseRepository.save(exercise);
+                       }
                    } catch (Exception e) {
                        e.printStackTrace();
                        logger.info("Close exercise failed");
