@@ -89,40 +89,40 @@ public class ScheduledTasks {
                     return;
                 }
 
-                if(session.getStart_time() <= System.currentTimeMillis() &&
-                    (session.getStart_time() + session.getSession_duration()*3600000)
-                            >= System.currentTimeMillis()){
-                    logger.info("Starting " + session.getName());
-                    try {
-                        session.setStatus(Session.StatusEnum.ONGOING);
-                        sessionRepository.save(session);
-
-                        logger.info("Start attendancecheck for session " + session.getName());
-                        sessionService.startAttendanceCheck(session.getId(),
-                                "", true);
-
-                        exerciseRepository.findAllBySession_idAndStatus
-                                (session.getId(), Exercise.StatusEnum.PENDING)
-
-                        .forEach(exercise -> {
-                            if (exercise.isAuto_start()) {
-                                try {
-                                    exercise.setStatus(Exercise.StatusEnum.ONGOING);
-                                    exerciseRepository.save(exercise);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    logger.info("Start Exercice failed");
-                                    logger.info("Error: " + e.getMessage());
-                                }
-                            }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        logger.info("Start Session failed");
-                        logger.info("Error: " + e.getMessage());
-                    }
-                    return;
-                }
+//                if(session.getStart_time() <= System.currentTimeMillis() &&
+//                    (session.getStart_time() + session.getSession_duration()*3600000)
+//                            >= System.currentTimeMillis()){
+//                    logger.info("Starting " + session.getName());
+//                    try {
+//                        session.setStatus(Session.StatusEnum.ONGOING);
+//                        sessionRepository.save(session);
+//
+//                        logger.info("Start attendancecheck for session " + session.getName());
+//                        sessionService.startAttendanceCheck(session.getId(),
+//                                "", true);
+//
+//                        exerciseRepository.findAllBySession_idAndStatus
+//                                (session.getId(), Exercise.StatusEnum.PENDING)
+//
+//                        .forEach(exercise -> {
+//                            if (exercise.isAuto_start()) {
+//                                try {
+//                                    exercise.setStatus(Exercise.StatusEnum.ONGOING);
+//                                    exerciseRepository.save(exercise);
+//                                } catch (Exception e) {
+//                                    e.printStackTrace();
+//                                    logger.info("Start Exercice failed");
+//                                    logger.info("Error: " + e.getMessage());
+//                                }
+//                            }
+//                        });
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        logger.info("Start Session failed");
+//                        logger.info("Error: " + e.getMessage());
+//                    }
+//                    return;
+//                }
 
                 if((session.getStart_time() + session.getSession_duration()*3600000)
                         < System.currentTimeMillis()){

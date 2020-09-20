@@ -26,6 +26,7 @@ public class SessionServiceImp implements SessionService {
     @Autowired UserRepository userRepository;
     @Autowired CourseRepository courseRepository;
     @Autowired StudentCourseRepository studentCourseRepository;
+    @Autowired ExerciseRepository exerciseRepository;
     @Autowired AttendanceRepository attendanceRepository;
     @Autowired RoleRepository roleRepository;
     @Autowired CastObject castObject;
@@ -70,6 +71,7 @@ public class SessionServiceImp implements SessionService {
             if(sessionRequest.isStart_immidiately()){
                 updateStatus(session.getId(), Session.StatusEnum.ONGOING,
                     "", true);
+                startExercise(session.getId());
             }
             return new DatabaseQueryResult(true,
                     "save session success", HttpStatus.OK,
@@ -164,6 +166,8 @@ public class SessionServiceImp implements SessionService {
 
                 updateStatus(session.getId(), Session.StatusEnum.ONGOING,
                     "", true);
+
+                startExercise(session.getId());
             }
             return new DatabaseQueryResult(true,
                     "save session success",
@@ -222,6 +226,7 @@ public class SessionServiceImp implements SessionService {
             s.setStatus(status);
             if(status == Session.StatusEnum.ONGOING){
                 s.setStart_time(System.currentTimeMillis());
+                startExercise(s.getId());
             }
             sessionRepository.save(s);
             startAttendanceCheck(s.getId(), "", true);
@@ -338,5 +343,22 @@ public class SessionServiceImp implements SessionService {
                     "Fail to close Attendance Check",
                     HttpStatus.INTERNAL_SERVER_ERROR, "");
         }
+    }
+
+    private void startExercise(String sessionId){
+        exerciseRepository.findAllBySession_idAndStatus
+            (sessionId, Exercise.StatusEnum.PENDING)
+            .forEach(exercise -> {
+                if (exercise.isAuto_start()) {
+                    try {
+                        exercise.setStatus(Exercise.StatusEnum.ONGOING);
+                        exerciseRepository.save(exercise);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.info("Start Exercice failed");
+                        logger.info("Error: " + e.getMessage());
+                    }
+                }
+            });
     }
 }

@@ -17,16 +17,18 @@ public class ExerciseResponse {
     private Exercise.StatusEnum status;
     private Long created_at;
     private List<GradeRecordResponse> gradeRecordResponses;
+    private int submitedCount;
+    private int markCount;
 
     public ExerciseResponse() {
     }
-
 
     public ExerciseResponse(String id, String session_id, String title,
                             String content, String answer, Long exercise_end_time,
                             boolean show_answer, boolean auto_start, boolean auto_close,
                             Exercise.StatusEnum status, Long created_at,
-                            List<GradeRecordResponse> gradeRecordResponses) {
+                            List<GradeRecordResponse> gradeRecordResponses,
+                            int submitedCount, int markCount) {
         this.id = id;
         this.session_id = session_id;
         this.title = title;
@@ -39,6 +41,8 @@ public class ExerciseResponse {
         this.status = status;
         this.created_at = created_at;
         this.gradeRecordResponses = gradeRecordResponses;
+        this.submitedCount = submitedCount;
+        this.markCount = markCount;
     }
 
     public String getId() {

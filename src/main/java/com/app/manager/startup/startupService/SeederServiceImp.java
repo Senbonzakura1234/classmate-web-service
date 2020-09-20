@@ -224,7 +224,7 @@ public class SeederServiceImp implements SeederService {
 
                         session.setCourse_id(course.get().getId());
                         session.setStart_time(i == 0 && j == 0 ? System.currentTimeMillis() :
-                                course.get().getStart_date() + (j + 1L) * 86400000L);
+                                course.get().getStart_date() + (j + 1) * 86400000L);
                         session.setStatus(i == 0 && j == 0 ? Session.StatusEnum.ONGOING :
                                 Session.StatusEnum.PENDING);
 
@@ -237,6 +237,7 @@ public class SeederServiceImp implements SeederService {
                                 "Interdum et malesuada fames ac ante ipsum primis in faucibus." +
                                 " Cras aliquam est sit amet ipsum porta ultricies." +
                                 " Aliquam rhoncus lectus quis laoreet aliquet.");
+
                         sessionRepository.save(session);
                         logger.info("Add sesion success");
                         if(i == 0 && j == 0) {

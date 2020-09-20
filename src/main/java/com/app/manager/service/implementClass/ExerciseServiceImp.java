@@ -37,9 +37,20 @@ public class ExerciseServiceImp implements ExerciseService {
     public List<ExerciseResponse> findAll(ExerciseSpecification exerciseSpecification) {
         try {
             var exercises = exerciseRepository.findAll(exerciseSpecification);
-            return exercises.stream().map(exercise ->
-                    castObject.exerciseModel(exercise))
-                    .collect(Collectors.toList());
+            return exercises.stream().map(exercise -> {
+                try {
+                    var submitted = studentExerciseRepository
+                            .countAllByExercise_idAndSubmittedEqualsAndStatus
+                            (exercise.getId(), true, StudentExercise.StatusEnum.SHOW);
+                    var marked = studentExerciseRepository
+                            .countAllByExercise_idAndMarkedEqualsAndStatus
+                            (exercise.getId(), true, StudentExercise.StatusEnum.SHOW);
+                    return castObject.exerciseModel(exercise, submitted, marked);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return castObject.exerciseModel(exercise, 0, 0);
+                }
+            }).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -69,7 +80,16 @@ public class ExerciseServiceImp implements ExerciseService {
                         return new GradeRecordResponse(castObject.profilePublic(student.get()),
                             castObject.studentExerciseModelGradeList(sumittedExercise.get()));
                     }).filter(GradeRecordResponse::isNotNull).collect(Collectors.toList());
-                    return castObject.exerciseModelTeacher(exercise, records);
+
+                    var submitted = studentExerciseRepository
+                        .countAllByExercise_idAndSubmittedEqualsAndStatus
+                            (exercise.getId(), true, StudentExercise.StatusEnum.SHOW);
+                    var marked = studentExerciseRepository
+                        .countAllByExercise_idAndMarkedEqualsAndStatus
+                            (exercise.getId(), true, StudentExercise.StatusEnum.SHOW);
+
+                    return castObject.exerciseModelTeacher(exercise, records,
+                            submitted, marked);
                 }).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,7 +127,14 @@ public class ExerciseServiceImp implements ExerciseService {
                         .studentExerciseModelGradeList(sumittedExercise.get())))
                         .filter(GradeRecordResponse::isNotNull).collect(Collectors.toList());
 
-                    return castObject.exerciseModelTeacher(exercise, records);
+                    var submitted = studentExerciseRepository
+                            .countAllByExercise_idAndSubmittedEqualsAndStatus
+                                    (exercise.getId(), true, StudentExercise.StatusEnum.SHOW);
+                    var marked = studentExerciseRepository
+                            .countAllByExercise_idAndMarkedEqualsAndStatus
+                                    (exercise.getId(), true, StudentExercise.StatusEnum.SHOW);
+
+                    return castObject.exerciseModelTeacher(exercise, records, submitted, marked);
                 }).collect(Collectors.toList());
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -201,7 +228,7 @@ public class ExerciseServiceImp implements ExerciseService {
                 });
 
             return new DatabaseQueryResult(true, "save exercise success",
-                    HttpStatus.OK, castObject.exerciseModel(exercise));
+                    HttpStatus.OK, castObject.exerciseModel(exercise, 0, 0));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -229,8 +256,15 @@ public class ExerciseServiceImp implements ExerciseService {
             var session = sessionRepository.findById(exercise.getSession_id())
                     .orElseThrow(() -> new RuntimeException("session not found"));
 
+            var submitted = studentExerciseRepository
+                    .countAllByExercise_idAndSubmittedEqualsAndStatus
+                            (exercise.getId(), true, StudentExercise.StatusEnum.SHOW);
+            var marked = studentExerciseRepository
+                    .countAllByExercise_idAndMarkedEqualsAndStatus
+                            (exercise.getId(), true, StudentExercise.StatusEnum.SHOW);
+
             if (currentUser.getRoles().contains(role))
-                return Optional.of(castObject.exerciseModel(exercise));
+                return Optional.of(castObject.exerciseModel(exercise, submitted, marked));
 
             var course = courseRepository.findById(session.getCourse_id())
                     .orElseThrow(() -> new RuntimeException("course not found"));
@@ -242,18 +276,22 @@ public class ExerciseServiceImp implements ExerciseService {
                     var student = userRepository.findById(studentCourse.getUser_id());
                     if(student.isEmpty()) return new GradeRecordResponse();
                     var sumittedExercise = studentExerciseRepository
-                            .findFirstByUser_idAndExercise_idAndStatus(student.get().getId(), exercise.getId(),
-                                    StudentExercise.StatusEnum.SHOW);
+                        .findFirstByUser_idAndExercise_idAndStatus(student.get().getId(), exercise.getId(),
+                            StudentExercise.StatusEnum.SHOW);
                     if(sumittedExercise.isEmpty()) return new GradeRecordResponse();
                     return new GradeRecordResponse(castObject.profilePublic(student.get()),
                             castObject.studentExerciseModelGradeList(sumittedExercise.get()));
                 }).filter(GradeRecordResponse::isNotNull).collect(Collectors.toList());
-                return Optional.of(castObject.exerciseModelTeacher(exercise, records));
+
+
+
+                return Optional.of(castObject.exerciseModelTeacher(exercise, records,
+                        submitted, marked));
             }
 
             if (listStudents.stream().anyMatch(studentCourse ->
                     studentCourse.getUser_id().equals(currentUser.getId())))
-                return Optional.of(castObject.exerciseModel(exercise));
+                return Optional.of(castObject.exerciseModel(exercise, 0, 0));
             return Optional.of(castObject.exerciseModelPublic(exercise));
         } catch (Exception e) {
             e.printStackTrace();
@@ -306,9 +344,17 @@ public class ExerciseServiceImp implements ExerciseService {
             e.setAuto_start(exerciseRequest.isAuto_start());
 
             exerciseRepository.save(e);
+
+            var submitted = studentExerciseRepository
+                    .countAllByExercise_idAndSubmittedEqualsAndStatus
+                            (e.getId(), true, StudentExercise.StatusEnum.SHOW);
+            var marked = studentExerciseRepository
+                    .countAllByExercise_idAndMarkedEqualsAndStatus
+                            (e.getId(), true, StudentExercise.StatusEnum.SHOW);
+
             return new DatabaseQueryResult(true,
                     "update exercise success",
-                    HttpStatus.OK, castObject.exerciseModel(e));
+                    HttpStatus.OK, castObject.exerciseModel(e, submitted, marked));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -359,9 +405,17 @@ public class ExerciseServiceImp implements ExerciseService {
             if (status == Exercise.StatusEnum.ONGOING)
                 e.setExercise_end_time(System.currentTimeMillis());
             exerciseRepository.save(e);
+
+            var submitted = studentExerciseRepository
+                    .countAllByExercise_idAndSubmittedEqualsAndStatus
+                            (e.getId(), true, StudentExercise.StatusEnum.SHOW);
+            var marked = studentExerciseRepository
+                    .countAllByExercise_idAndMarkedEqualsAndStatus
+                            (e.getId(), true, StudentExercise.StatusEnum.SHOW);
+
             return new DatabaseQueryResult(true,
                     "update exercise success", HttpStatus.OK,
-                    castObject.exerciseModel(e));
+                    castObject.exerciseModel(e, submitted, marked));
         } catch (Exception exception) {
             exception.printStackTrace();
             logger.info(exception.getMessage());

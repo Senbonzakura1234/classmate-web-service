@@ -49,24 +49,28 @@ public class CastObject {
         exercise.setUpdated_at(System.currentTimeMillis());
         return exercise;
     }
-    public ExerciseResponse exerciseModel(Exercise exercise){
+    public ExerciseResponse exerciseModel(Exercise exercise,
+                              int submitedCount, int markCount){
         if(exercise == null) return new ExerciseResponse();
         return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
                 exercise.getTitle(), exercise.getContent(),
                 exercise.isShow_answer() ? exercise.getAnswer() : "",
                 exercise.getExercise_end_time(), exercise.isShow_answer(),
                 exercise.isAuto_start(), exercise.isAuto_close(),
-                exercise.getStatus(), exercise.getCreated_at(), new ArrayList<>());
+                exercise.getStatus(), exercise.getCreated_at(),
+                new ArrayList<>(), submitedCount, markCount);
     }
     public ExerciseResponse exerciseModelTeacher(Exercise exercise,
-            List<GradeRecordResponse> gradeRecordResponses){
+            List<GradeRecordResponse> gradeRecordResponses,
+            int submitedCount, int markCount){
         if(exercise == null) return new ExerciseResponse();
         return new ExerciseResponse(exercise.getId(), exercise.getSession_id(),
                 exercise.getTitle(), exercise.getContent(),
                 exercise.getAnswer(), exercise.getExercise_end_time(),
                 exercise.isShow_answer(), exercise.isAuto_start(),
                 exercise.isAuto_close(), exercise.getStatus(),
-                exercise.getCreated_at(), gradeRecordResponses);
+                exercise.getCreated_at(), gradeRecordResponses,
+                submitedCount, markCount);
     }
     public ExerciseResponse exerciseModelStudent(Exercise exercise,
             List<GradeRecordResponse> gradeRecordResponses){
@@ -77,7 +81,7 @@ public class CastObject {
                 exercise.getExercise_end_time(), exercise.isShow_answer(),
                 exercise.isAuto_start(), exercise.isAuto_close(),
                 exercise.getStatus(), exercise.getCreated_at(),
-                gradeRecordResponses);
+                gradeRecordResponses, 0, 0);
     }
     public ExerciseResponse exerciseModelPublic(Exercise exercise){
         if(exercise == null) return new ExerciseResponse();
@@ -86,7 +90,7 @@ public class CastObject {
                 exercise.getExercise_end_time(), exercise.isShow_answer(),
                 exercise.isAuto_start(), exercise.isAuto_close(),
                 exercise.getStatus(), exercise.getCreated_at(),
-                new ArrayList<>());
+                new ArrayList<>(), 0, 0);
     }
 
     public Session sessionEntity(SessionRequest sessionRequest){

@@ -11,4 +11,8 @@ public interface StudentExerciseRepository extends JpaRepository<StudentExercise
                                                                         StudentExercise.StatusEnum status);
     List<StudentExercise> findAllByExercise_idAndStatus(String exercise_id, StudentExercise.StatusEnum status);
     List<StudentExercise> findAllByUser_idAndStatus(String user_id, StudentExercise.StatusEnum status);
+    int countAllByExercise_idAndSubmittedEqualsAndStatus(String exercise_id, boolean submitted,
+                                                         StudentExercise.StatusEnum status);
+    int countAllByExercise_idAndMarkedEqualsAndStatus(String exercise_id, boolean marked,
+                                                      StudentExercise.StatusEnum status);
 }
