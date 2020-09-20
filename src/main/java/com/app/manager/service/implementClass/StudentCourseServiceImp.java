@@ -41,7 +41,8 @@ public class StudentCourseServiceImp implements StudentCourseService {
                 return new DatabaseQueryResult(false, "Teacher not found",
                         HttpStatus.NOT_FOUND, studentCourseRequest);
 
-            var course = courseRepository.findById(studentCourseRequest.getCourse_id());
+            var course = courseRepository
+                    .findById(studentCourseRequest.getCourse_id());
             if(course.isEmpty() || course.get().getStatus() == Course.StatusEnum.CANCEL)
                 return new DatabaseQueryResult(false, "Course not found",
                         HttpStatus.NOT_FOUND, studentCourseRequest);

@@ -264,15 +264,25 @@ public class CourseServiceImp implements CourseService {
                     return new DatabaseQueryResult(false, "Not your course",
                             HttpStatus.BAD_REQUEST, "");
 
-                if(status != Course.StatusEnum.CANCEL){
+                if(course.get().getStatus() == Course.StatusEnum.CANCEL ||
+                    course.get().getStatus() == Course.StatusEnum.END ||
+                    status == Course.StatusEnum.ALL ||
+                    status == Course.StatusEnum.PENDING){
                     return new DatabaseQueryResult(false,
-                            "You dont have authority to change course status",
+                            "You dont have authority to change course status to "
+                                    + status.getName(),
                             HttpStatus.BAD_REQUEST, "");
                 }
             }
 
             var c = course.get();
             c.setStatus(status);
+            if(status == Course.StatusEnum.ONGOING){
+                c.setStart_date(System.currentTimeMillis());
+            }
+            if(status == Course.StatusEnum.END){
+                c.setEnd_date(System.currentTimeMillis());
+            }
             courseRepository.save(c);
             return new DatabaseQueryResult(true,
                     "update course success", HttpStatus.OK,
