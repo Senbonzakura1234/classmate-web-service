@@ -5,6 +5,7 @@ import com.app.manager.entity.Attendance;
 import com.app.manager.entity.Session;
 import com.app.manager.entity.StudentCourse;
 import com.app.manager.entity.User;
+import com.app.manager.model.payload.CastObject;
 import com.app.manager.model.payload.request.AttendanceCheckRequest;
 import com.app.manager.model.payload.request.FaceCheckClientRequest;
 import com.app.manager.model.payload.request.FaceCheckServerRequest;
@@ -36,6 +37,7 @@ public class AttendanceServiceImp implements AttendanceService {
     @Autowired UserRepository userRepository;
     @Autowired CourseRepository courseRepository;
     @Autowired StudentCourseRepository studentCourseRepository;
+    @Autowired CastObject castObject;
 
     private static final Logger logger = LoggerFactory.getLogger(AttendanceServiceImp.class);
     private static final String faceCheckHost = "";
@@ -279,10 +281,15 @@ public class AttendanceServiceImp implements AttendanceService {
         try {
             var list = attendanceRepository
                     .findAllBySession_idAndStatusIsNot(sessionId, Attendance.StatusEnum.ALL);
-            return list.stream().map(attendance ->
-                    new AttendanceCheckResponse(attendance.getUser_id(),
-                        attendance.getSession_id(), attendance.getStatus()))
-                    .collect(Collectors.toList());
+            return list.stream().map(attendance -> {
+                var user = userRepository.findById(attendance.getId());
+                if(user.isEmpty()) return new AttendanceCheckResponse();
+                return new AttendanceCheckResponse(castObject
+                    .profilePrivate(user.get()), attendance.getSession_id(),
+                        attendance.getStatus());
+            }).filter(attendanceCheckResponse ->
+                attendanceCheckResponse.getSession_id() != null)
+                .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
