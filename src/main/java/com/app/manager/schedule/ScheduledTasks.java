@@ -103,6 +103,7 @@ public class ScheduledTasks {
 
                         exerciseRepository.findAllBySession_idAndStatus
                                 (session.getId(), Exercise.StatusEnum.PENDING)
+
                         .forEach(exercise -> {
                             if (exercise.isAuto_start()) {
                                 try {

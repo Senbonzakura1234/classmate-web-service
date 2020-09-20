@@ -282,7 +282,7 @@ public class AttendanceServiceImp implements AttendanceService {
             var list = attendanceRepository
                     .findAllBySession_idAndStatusIsNot(sessionId, Attendance.StatusEnum.ALL);
             return list.stream().map(attendance -> {
-                var user = userRepository.findById(attendance.getId());
+                var user = userRepository.findById(attendance.getUser_id());
                 if(user.isEmpty()) return new AttendanceCheckResponse();
                 return new AttendanceCheckResponse(castObject
                     .profilePrivate(user.get()), attendance.getSession_id(),
