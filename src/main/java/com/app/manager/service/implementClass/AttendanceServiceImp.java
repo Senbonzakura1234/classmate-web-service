@@ -11,6 +11,7 @@ import com.app.manager.model.payload.request.FaceCheckClientRequest;
 import com.app.manager.model.payload.request.FaceCheckServerRequest;
 import com.app.manager.model.payload.response.AttendanceCheckResponse;
 import com.app.manager.model.payload.response.FaceCheckServerResponse;
+import com.app.manager.model.payload.response.SessionAttendanceResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.AttendanceService;
 import org.slf4j.Logger;
@@ -290,6 +291,27 @@ public class AttendanceServiceImp implements AttendanceService {
             }).filter(attendanceCheckResponse ->
                 attendanceCheckResponse.getSession_id() != null)
                 .collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<SessionAttendanceResponse> getListAttendanceResult(String courseId) {
+        try {
+            courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("course not found"));
+            return sessionRepository
+                .findAllByCourse_idAndStatusIsNot(courseId, Session.StatusEnum.CANCEL)
+                .stream().map(session -> {
+                    var checkResults =
+                        getAttendanceResult(session.getId());
+                    return new SessionAttendanceResponse(castObject
+                        .sessionModel(session), checkResults);
+            }).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());

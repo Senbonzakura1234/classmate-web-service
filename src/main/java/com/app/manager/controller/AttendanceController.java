@@ -104,4 +104,12 @@ public class AttendanceController {
         return ResponseEntity.ok(attendanceService
                 .getAttendanceResult(session_id));
     }
+
+    @GetMapping("/listCheckResult")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    public ResponseEntity<?> listCheckResult(
+            @RequestParam(value = "course_id") String course_id){
+        return ResponseEntity.ok(attendanceService
+                .getListAttendanceResult(course_id));
+    }
 }
