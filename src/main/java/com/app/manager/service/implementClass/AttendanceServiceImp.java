@@ -41,7 +41,7 @@ public class AttendanceServiceImp implements AttendanceService {
     @Autowired CastObject castObject;
 
     private static final Logger logger = LoggerFactory.getLogger(AttendanceServiceImp.class);
-    private static final String faceCheckHost = "";
+    private static final String faceCheckHost = "http://localhost:5000/api/checked";
     private static final double minimumMatchPercent = 0.8;
 
     @Override
@@ -87,6 +87,7 @@ public class AttendanceServiceImp implements AttendanceService {
                     faceCheckClientRequest);
 
             // send request to host to face check
+
             var faceCheckResult =
                     faceCheck(faceCheckClientRequest, student);
 

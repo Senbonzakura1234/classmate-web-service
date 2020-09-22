@@ -40,7 +40,7 @@ public class UserServiceImp implements UserService {
     @Autowired CastObject castObject;
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
-    private static final String faceCheckHost = "";
+    private static final String faceCheckHost = "http://localhost:5000/api/checked";
 
     @Override
     public Optional<User> findUser(String username) {

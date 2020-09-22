@@ -1,32 +1,7 @@
 package com.app.manager.controller;
 
-import com.app.manager.model.returnResult.DatabaseQueryResult;
-import com.google.api.client.googleapis.batch.BatchRequest;
-import com.google.api.client.googleapis.batch.json.JsonBatchCallback;
-import com.google.api.client.googleapis.json.GoogleJsonError;
-import com.google.api.client.http.FileContent;
-import com.google.api.client.http.HttpHeaders;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.model.About;
-import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
-import com.google.api.services.drive.model.Permission;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Controller
@@ -48,8 +23,19 @@ public class HomeController {
 //            e.printStackTrace();
 //        }
 
+//        pingHost("localhost", 5000, 5000);
+
         return "views/home";
     }
+
+//    private boolean pingHost(String host, int port, int timeout) {
+//        try (Socket socket = new Socket()) {
+//            socket.connect(new InetSocketAddress(host, port), timeout);
+//            return true;
+//        } catch (IOException e) {
+//            return false; // Either timeout or unreachable or failed DNS lookup.
+//        }
+//    }
 
 //    private List<File> getAllGoogleDriveFiles() throws IOException {
 //        FileList result = googleDrive.files().list().execute();
