@@ -88,6 +88,52 @@ public class StudentCourseServiceImp implements StudentCourseService {
     }
 
     @Override
+    public DatabaseQueryResult removeStudentFromCourse(StudentCourseRequest studentCourseRequest,
+                                                       String currentUsername) {
+        try {
+            var teacher = userRepository.findByUsername(currentUsername);
+            if(teacher.isEmpty())
+                return new DatabaseQueryResult(false, "Teacher not found",
+                        HttpStatus.NOT_FOUND, studentCourseRequest);
+
+            var course = courseRepository
+                    .findById(studentCourseRequest.getCourse_id());
+            if(course.isEmpty() || course.get().getStatus() == Course.StatusEnum.CANCEL)
+                return new DatabaseQueryResult(false, "Course not found",
+                        HttpStatus.NOT_FOUND, studentCourseRequest);
+
+            if(!course.get().getUser_id().equals(teacher.get().getId()))
+                return new DatabaseQueryResult(false, "Not Your Course",
+                        HttpStatus.BAD_REQUEST, studentCourseRequest);
+
+            var studentCourse = studentCourseRepository
+                .findFirstByCourse_idAndUser_idAndStatus(studentCourseRequest.getCourse_id(),
+                    studentCourseRequest.getStudent_id(), StudentCourse.StatusEnum.SHOW);
+
+            if(studentCourse.isEmpty())
+                return new DatabaseQueryResult(false,
+                        "student course not found",
+                        HttpStatus.NOT_FOUND, studentCourseRequest);
+
+            var sc = studentCourse.get();
+            sc.setStatus(StudentCourse.StatusEnum.HIDE);
+            sc.setDeleted_at(System.currentTimeMillis());
+            sc.setUpdated_at(System.currentTimeMillis());
+            studentCourseRepository.save(sc);
+
+            return new DatabaseQueryResult(true,
+                    "remove student from course success",
+                    HttpStatus.OK, studentCourseRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
+            return new DatabaseQueryResult(false, "Server error",
+                    HttpStatus.INTERNAL_SERVER_ERROR, studentCourseRequest);
+        }
+    }
+
+    @Override
     public Optional<CourseProfileResponse> getAllProfileInCourse(String courseId) {
         try {
             var studentCourses = studentCourseRepository

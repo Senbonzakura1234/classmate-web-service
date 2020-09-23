@@ -10,5 +10,9 @@ import java.util.Optional;
 public interface StudentCourseService {
     DatabaseQueryResult addStudentToCourse(StudentCourseRequest studentCourseRequest,
                                            String currentUsername);
+    DatabaseQueryResult removeStudentFromCourse(StudentCourseRequest studentCourseRequest,
+                                           String currentUsername);
     Optional<CourseProfileResponse> getAllProfileInCourse(String courseId);
+
+
 }

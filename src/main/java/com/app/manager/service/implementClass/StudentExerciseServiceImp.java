@@ -65,8 +65,9 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
             if(course.isEmpty())
                 return new DatabaseQueryResult(false, "course not found",
                         HttpStatus.NOT_FOUND, studentExerciseRequest);
-            if(studentCourseRepository.findFirstByCourse_idAndUser_id(
-                    course.get().getId(), student.get().getId()).isEmpty())
+            if(studentCourseRepository.findFirstByCourse_idAndUser_idAndStatus(
+                    course.get().getId(), student.get().getId(),
+                    StudentCourse.StatusEnum.SHOW).isEmpty())
                 return new DatabaseQueryResult(false,
                         "you are not in this course",
                         HttpStatus.BAD_REQUEST, studentExerciseRequest);
@@ -150,8 +151,9 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
         if(course.isEmpty())
             return new DatabaseQueryResult(false, "course not found",
                     HttpStatus.NOT_FOUND, "");
-        if(studentCourseRepository.findFirstByCourse_idAndUser_id(
-                course.get().getId(), student.get().getId()).isEmpty())
+        if(studentCourseRepository.findFirstByCourse_idAndUser_idAndStatus(
+                course.get().getId(), student.get().getId(),
+                StudentCourse.StatusEnum.SHOW).isEmpty())
             return new DatabaseQueryResult(false,
                     "you are not in this course",
                     HttpStatus.BAD_REQUEST, "");

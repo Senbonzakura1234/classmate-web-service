@@ -242,6 +242,27 @@ public class CourseController {
                 return ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
+    @PostMapping("/removeFromCourse")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> removeFromCourse(
+            @Valid @RequestBody StudentCourseRequest studentCourseRequest,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error",""));
+        }
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = studentCourseService
+                .removeStudentFromCourse(studentCourseRequest, currentUser);
+        if(result.isSuccess()) return ResponseEntity.ok(result);
+                return ResponseEntity.status(result.getHttp_status()).body(result);
+    }
+
 
     @GetMapping("/allProfileInCourse")
     @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
