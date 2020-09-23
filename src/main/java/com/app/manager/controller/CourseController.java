@@ -4,8 +4,10 @@ import com.app.manager.context.specification.CourseSpecification;
 import com.app.manager.entity.Course;
 import com.app.manager.model.SearchCriteria;
 import com.app.manager.model.payload.request.CourseRequest;
+import com.app.manager.model.payload.request.JoinCourseByTokenRequest;
 import com.app.manager.model.payload.request.StudentCourseRequest;
 import com.app.manager.model.payload.response.MessageResponse;
+import com.app.manager.security.codeService.CourseTokenService;
 import com.app.manager.service.interfaceClass.CourseService;
 import com.app.manager.service.interfaceClass.StudentCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import java.util.List;
 public class CourseController {
     @Autowired CourseService courseService;
     @Autowired StudentCourseService studentCourseService;
+    @Autowired CourseTokenService courseTokenService;
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
@@ -221,6 +224,18 @@ public class CourseController {
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }
 
+    @PostMapping("/generateCourseToken")
+    @PreAuthorize("hasRole('TEACHER')")
+    public ResponseEntity<?> generateCourseToken(
+            @RequestParam(value = "id") String id) {
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = courseTokenService
+                .generateCourseToken(currentUser,id);
+        if(result.isSuccess()) return ResponseEntity.ok(result);
+                return ResponseEntity.status(result.getHttp_status()).body(result);
+    }
+
     @PostMapping("/addToCourse")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> addToCourse(
@@ -238,6 +253,27 @@ public class CourseController {
                 .getContext().getAuthentication().getName();
         var result = studentCourseService
                 .addStudentToCourse(studentCourseRequest, currentUser);
+        if(result.isSuccess()) return ResponseEntity.ok(result);
+                return ResponseEntity.status(result.getHttp_status()).body(result);
+    }
+
+    @PostMapping("/joinByToken")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<?> joinByToken(
+            @Valid @RequestBody JoinCourseByTokenRequest joinCourseByTokenRequest,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors()
+                    .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .forEach(System.out::println);
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Validate Error",""));
+        }
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = studentCourseService
+                .addStudentToCourseByToken(joinCourseByTokenRequest, currentUser);
         if(result.isSuccess()) return ResponseEntity.ok(result);
                 return ResponseEntity.status(result.getHttp_status()).body(result);
     }

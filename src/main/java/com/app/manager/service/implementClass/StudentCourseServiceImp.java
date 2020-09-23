@@ -3,6 +3,7 @@ package com.app.manager.service.implementClass;
 import com.app.manager.context.repository.*;
 import com.app.manager.entity.*;
 import com.app.manager.model.payload.CastObject;
+import com.app.manager.model.payload.request.JoinCourseByTokenRequest;
 import com.app.manager.model.payload.request.StudentCourseRequest;
 import com.app.manager.model.payload.response.CourseProfileResponse;
 import com.app.manager.model.payload.response.SessionResponse;
@@ -84,6 +85,54 @@ public class StudentCourseServiceImp implements StudentCourseService {
             logger.info(e.getCause().getMessage());
             return new DatabaseQueryResult(false, "Server error",
                     HttpStatus.INTERNAL_SERVER_ERROR, studentCourseRequest);
+        }
+    }
+
+    @Override
+    public DatabaseQueryResult addStudentToCourseByToken(JoinCourseByTokenRequest joinCourseByTokenRequest,
+                                                         String currentUsername) {
+        try {
+            var student = userRepository.findByUsername(currentUsername);
+            if(student.isEmpty())
+                return new DatabaseQueryResult(false, "Teacher not found",
+                        HttpStatus.NOT_FOUND, "joinCourseByTokenRequest");
+
+            var course = courseRepository
+                    .findById(joinCourseByTokenRequest.getCourse_id());
+            if(course.isEmpty() || course.get().getStatus() == Course.StatusEnum.CANCEL)
+                return new DatabaseQueryResult(false, "Course not found",
+                        HttpStatus.NOT_FOUND, "joinCourseByTokenRequest");
+            var c = course.get();
+
+            if(c.getToken_expire_date() < System.currentTimeMillis()
+                    || !c.isJoinable_by_token())
+                return new DatabaseQueryResult(false,
+                    "Token expire or course not enabled join by token yet",
+                    HttpStatus.BAD_REQUEST, "joinCourseByTokenRequest");
+
+            if(!c.getJoin_course_token().equals(joinCourseByTokenRequest.getToken()))
+                return new DatabaseQueryResult(false,
+                        "Token not match",
+                        HttpStatus.BAD_REQUEST, "joinCourseByTokenRequest");
+            var studentCourse = new StudentCourse();
+            studentCourse.setCourse_id(c.getId());
+            studentCourse.setUser_id(student.get().getId());
+            studentCourse.setName(student.get().getUsername()
+                    + ", " + course.get().getName());
+
+            studentCourseRepository.save(studentCourse);
+
+            return new DatabaseQueryResult(true,
+                    "add student to course success",
+                    HttpStatus.OK, "joinCourseByTokenRequest");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
+            return new DatabaseQueryResult(false,
+                    "Server error " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "joinCourseByTokenRequest");
         }
     }
 

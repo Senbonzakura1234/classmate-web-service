@@ -31,7 +31,8 @@ public class CastObject {
                 course.getCoursecategory_id(), course.getName(), course.getDescription(),
                 course.getCover_file_id(),
                 course.getStart_date(), course.getEnd_date(), course.getCreated_at(),
-                studentCount, sessionCount, course.getStatus(), currentSession);
+                studentCount, sessionCount, course.getStatus(), currentSession,
+                course.isJoinable_by_token());
     }
 
     public Exercise exerciseEntity(ExerciseRequest exerciseRequest,

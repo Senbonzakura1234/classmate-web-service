@@ -16,6 +16,7 @@ public class CourseResponse {
     private int sessionCount = 0;
     private Course.StatusEnum status; //search
     private SessionResponse currentSession;
+    private boolean joinable_by_token;
 
     public CourseResponse() {
     }
@@ -23,9 +24,9 @@ public class CourseResponse {
 
     public CourseResponse(String id, String user_id, String course_category_id,
                           String name, String description, String cover_file_id,
-                          Long start_date, Long end_date, Long created_at, int studentCount,
-                          int sessionCount, Course.StatusEnum status,
-                          SessionResponse currentSession) {
+                          Long start_date, Long end_date, Long created_at,
+                          int studentCount, int sessionCount, Course.StatusEnum status,
+                          SessionResponse currentSession, boolean joinable_by_token) {
         this.id = id;
         this.user_id = user_id;
         this.course_category_id = course_category_id;
@@ -39,6 +40,7 @@ public class CourseResponse {
         this.sessionCount = sessionCount;
         this.status = status;
         this.currentSession = currentSession;
+        this.joinable_by_token = joinable_by_token;
     }
 
     public String getId() {
@@ -143,5 +145,13 @@ public class CourseResponse {
 
     public void setCover_file_id(String cover_file_id) {
         this.cover_file_id = cover_file_id;
+    }
+
+    public boolean isJoinable_by_token() {
+        return joinable_by_token;
+    }
+
+    public void setJoinable_by_token(boolean joinable_by_token) {
+        this.joinable_by_token = joinable_by_token;
     }
 }

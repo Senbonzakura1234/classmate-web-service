@@ -59,6 +59,19 @@ public class Course implements Serializable {
     @Column(name = "end_date", nullable = false)
     private Long end_date = System.currentTimeMillis() + 40L * 86400000L;
 
+
+
+    @Column(name = "token_expire_date_date", nullable = false)
+    private Long token_expire_date = 0L;
+
+    @Column(name = "join_course_token", nullable = false)
+    private String join_course_token = "";
+
+    @Column(name = "joinable_by_token", nullable = false)
+    private boolean joinable_by_token = false;
+
+
+
     @Column(name = "status", nullable = false)
     private StatusEnum status = StatusEnum.PENDING;
 
@@ -232,5 +245,29 @@ public class Course implements Serializable {
 
     public void setCover_file_id(String cover_file_id) {
         this.cover_file_id = cover_file_id;
+    }
+
+    public Long getToken_expire_date() {
+        return token_expire_date;
+    }
+
+    public void setToken_expire_date(Long token_expire_date) {
+        this.token_expire_date = token_expire_date;
+    }
+
+    public String getJoin_course_token() {
+        return join_course_token;
+    }
+
+    public void setJoin_course_token(String join_course_token) {
+        this.join_course_token = join_course_token;
+    }
+
+    public boolean isJoinable_by_token() {
+        return joinable_by_token;
+    }
+
+    public void setJoinable_by_token(boolean joinable_by_token) {
+        this.joinable_by_token = joinable_by_token;
     }
 }
