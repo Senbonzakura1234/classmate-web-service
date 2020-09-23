@@ -3,6 +3,7 @@ package com.app.manager.model.payload.response;
 public class FileUploadResponse {
     private boolean upload_success = false;
     private String file_id = "";
+    private String file_url = "";
     private String file_name = "";
     private Long file_size = 0L;
 
@@ -17,6 +18,7 @@ public class FileUploadResponse {
     public FileUploadResponse(boolean upload_success, String file_id, String file_name, Long file_size) {
         this.upload_success = upload_success;
         this.file_id = file_id;
+        this.file_url = "https://drive.google.com/uc?export=view&id=" + file_id;
         this.file_name = file_name;
         this.file_size = file_size;
     }
@@ -51,5 +53,13 @@ public class FileUploadResponse {
 
     public void setFile_size(Long file_size) {
         this.file_size = file_size;
+    }
+
+    public String getFile_url() {
+        return file_url;
+    }
+
+    public void setFile_url(String file_url) {
+        this.file_url = file_url;
     }
 }
