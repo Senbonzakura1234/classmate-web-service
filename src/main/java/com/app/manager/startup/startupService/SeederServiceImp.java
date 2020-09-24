@@ -362,7 +362,7 @@ public class SeederServiceImp implements SeederService {
 
                     logger.info(result.getDescription());
                 });
-            } catch (RuntimeException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 logger.info(e.getMessage());
             }

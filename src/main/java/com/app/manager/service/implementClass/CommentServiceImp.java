@@ -62,7 +62,7 @@ public class CommentServiceImp implements CommentService {
                         .orElseThrow(() -> new RuntimeException("user not found"));
                     var profile = castObject.profilePublic(user);
                     return castObject.commentModel(profile, comment);
-                } catch (RuntimeException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     return new CommentResponse();
                 }
@@ -101,7 +101,7 @@ public class CommentServiceImp implements CommentService {
             return new DatabaseQueryResult(true,
                     "post comment success",
                     HttpStatus.OK, castObject.commentModel(profile, comment));
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
@@ -142,7 +142,7 @@ public class CommentServiceImp implements CommentService {
             return new DatabaseQueryResult(true,
                     "update comment success",
                     HttpStatus.OK,  castObject.commentModel(profile, c));
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());

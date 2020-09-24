@@ -53,7 +53,7 @@ public class UploadController {
 
                 var returnFile = googleDriveService.upload(temporaryFile,
                         uploadFile.getContentType(), uploadFile.getOriginalFilename())
-                        .orElse(new FileUploadResponse(
+                        .orElseGet(() -> new FileUploadResponse(
                                 false, uploadFile.getOriginalFilename()));
 
                 if(!temporaryFile.delete()){

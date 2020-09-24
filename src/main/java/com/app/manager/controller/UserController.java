@@ -53,13 +53,14 @@ public class UserController {
 
     @GetMapping("/profile")
     @PreAuthorize("hasRole('USER') or hasRole('TEACHER') or hasRole('STUDENT') or hasRole('ADMIN')")
-    public ResponseEntity<?> profile(@RequestParam(value = "id") String id){
+    public ResponseEntity<?> profile(@RequestParam(value = "query") String query){
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
-        var profile = userService.userProfile(id, currentUser);
+        var profile = userService
+                .userProfile(query, currentUser);
         return profile.isEmpty() ? ResponseEntity.badRequest()
-                .body(new MessageResponse("Error: user not found",  ""))
-                : ResponseEntity.ok(profile.get());
+                .body(new MessageResponse("Error: user not found",
+                    "")) : ResponseEntity.ok(profile.get());
     }
 
     @PostMapping("/profile/update")

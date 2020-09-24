@@ -82,7 +82,7 @@ public class CourseServiceImp implements CourseService {
                         new SessionResponse() : castObject
                         .sessionModelPublic(currentSession.get()), studentCount, sessionCount);
             }).collect(Collectors.toList());
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
@@ -111,7 +111,7 @@ public class CourseServiceImp implements CourseService {
                         new SessionResponse() : castObject
                         .sessionModelPublic(currentSession.get()), studentCount, sessionCount);
             }).collect(Collectors.toList());
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());

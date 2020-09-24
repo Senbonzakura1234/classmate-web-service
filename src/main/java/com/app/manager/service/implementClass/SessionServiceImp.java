@@ -294,7 +294,7 @@ public class SessionServiceImp implements SessionService {
             });
             return new DatabaseQueryResult(true,
                     "Attendance Check Started", HttpStatus.OK, "");
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
@@ -335,7 +335,7 @@ public class SessionServiceImp implements SessionService {
             sessionRepository.save(s);
             return new DatabaseQueryResult(true,
                     "Attendance Closed", HttpStatus.OK, "");
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());

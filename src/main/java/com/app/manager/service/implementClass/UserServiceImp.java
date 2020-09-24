@@ -155,7 +155,23 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public Optional<UserProfileResponse> userProfile(
+    public Optional<UserProfileResponse> userProfile(String query, String currentUsername) {
+        try {
+            var user = userRepository.findById(query)
+                .or(() -> userRepository.findByUsername(query)
+                .or(() -> userRepository.findByEmail(query)))
+                .orElseThrow(() -> new RuntimeException("User not found"));
+            return getUserProfile(user.getId(), currentUsername);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage());
+            logger.info(e.getCause().getMessage());
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<UserProfileResponse> getUserProfile(
             String userId, String currentUsername) {
         try {
             var userToSee = userRepository.findById(userId)
@@ -214,7 +230,7 @@ public class UserServiceImp implements UserService {
                             .map(toKey).filter(key::equals)).count() > 0 ?
                     Optional.of(castObject.profilePrivate(userToSee))
                     : Optional.of(castObject.profilePublic(userToSee));
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
@@ -279,7 +295,7 @@ public class UserServiceImp implements UserService {
             return new DatabaseQueryResult(true,
                     "Setup face definition success", HttpStatus.OK,
                     faceDefinitionClientRequest);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());

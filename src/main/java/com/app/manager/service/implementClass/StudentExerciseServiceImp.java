@@ -234,7 +234,7 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
 
             return studentExercises.stream().map(studentExercise ->
                     castObject.studentExerciseModelPublic(studentExercise)).collect(Collectors.toList());
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
                     logger.info(e.getMessage());
                     logger.info(e.getCause().getMessage());
@@ -301,7 +301,7 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                 return Optional.of(castObject.studentExerciseModel(studentExercise, files));
 
             return Optional.of(castObject.studentExerciseModelPublic(studentExercise));
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
                     logger.info(e.getMessage());
                     logger.info(e.getCause().getMessage());

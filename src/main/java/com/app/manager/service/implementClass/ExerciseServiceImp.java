@@ -136,7 +136,7 @@ public class ExerciseServiceImp implements ExerciseService {
 
                     return castObject.exerciseModelTeacher(exercise, records, submitted, marked);
                 }).collect(Collectors.toList());
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
@@ -174,7 +174,7 @@ public class ExerciseServiceImp implements ExerciseService {
 
                     return castObject.exerciseModelStudent(exercise, records);
                 }).collect(Collectors.toList());
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());

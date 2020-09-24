@@ -123,7 +123,7 @@ public class AttendanceServiceImp implements AttendanceService {
             return new DatabaseQueryResult(true,
                     "Attendance Checked", HttpStatus.OK,
                     faceCheckClientRequest);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
@@ -200,7 +200,7 @@ public class AttendanceServiceImp implements AttendanceService {
             return new DatabaseQueryResult(true,
                     "Attendance Check Success",
                     HttpStatus.OK, attendanceCheckRequests);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
@@ -267,7 +267,7 @@ public class AttendanceServiceImp implements AttendanceService {
             return new DatabaseQueryResult(true,
                     "Attendance Check One Success",
                     HttpStatus.OK, attendanceCheckRequest);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());

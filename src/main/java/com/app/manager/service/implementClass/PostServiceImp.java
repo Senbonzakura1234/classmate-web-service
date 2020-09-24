@@ -82,7 +82,7 @@ public class PostServiceImp implements PostService {
                     return new PostResponse();
                 }
             }).filter(postResponse -> postResponse.getId() != null).collect(Collectors.toList());
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
@@ -131,7 +131,7 @@ public class PostServiceImp implements PostService {
 
             return Optional.of(castObject.postModel(profile, post,
                     attachments, comments));
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());

@@ -197,9 +197,9 @@ public class StudentCourseServiceImp implements StudentCourseService {
                     var user = userRepository.findById(s)
                             .orElseThrow(() -> new RuntimeException("User not found"));
 
-                    return userService.userProfile(user.getId(), currentUsername)
-                            .orElse(new UserProfileResponse());
-                } catch (RuntimeException e) {
+                    return userService.getUserProfile(user.getId(), currentUsername)
+                            .orElseGet(UserProfileResponse::new);
+                } catch (Exception e) {
                     e.printStackTrace();
                     return new UserProfileResponse();
                 }
@@ -220,13 +220,13 @@ public class StudentCourseServiceImp implements StudentCourseService {
             var sessionCount = sessionRepository
                     .countAllByCourse_idAndStatusIsNot(course.getId(), Session.StatusEnum.CANCEL);
             var teacherProfile = userService
-                    .userProfile(teacher.getId(), currentUsername)
-                    .orElse(new UserProfileResponse());
+                    .getUserProfile(teacher.getId(), currentUsername)
+                    .orElseGet(UserProfileResponse::new);
 
             return Optional.of(new CourseProfileResponse(castObject.courseModel(
                     course, sessionModel, studentCount, sessionCount),
                     teacherProfile, studentCoursesProfile));
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
             logger.info(e.getCause().getMessage());
