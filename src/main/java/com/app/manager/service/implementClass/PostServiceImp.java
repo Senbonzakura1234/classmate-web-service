@@ -60,7 +60,7 @@ public class PostServiceImp implements PostService {
                 try {
                     var user = userRepository.findById(post.getUser_id());
                     if (user.isEmpty()) return new PostResponse();
-                    var profile = castObject.profilePrivate(user.get());
+                    var profile = castObject.profilePublic(user.get());
                     var attachments = attachmentRepository
                             .findAllByPost_idAndStatus(post.getId(), Attachment.StatusEnum.SHOW)
                             .stream().map(attachment -> castObject.attachmentModel(attachment))
@@ -70,7 +70,7 @@ public class PostServiceImp implements PostService {
                             .stream().map(comment -> {
                                 var userComment = userRepository.findById(comment.getUser_id());
                                 if(userComment.isEmpty()) return new CommentResponse();
-                                var commentProfile = castObject.profilePrivate(userComment.get());
+                                var commentProfile = castObject.profilePublic(userComment.get());
                                 return castObject.commentModel(commentProfile, comment);
                             }).filter(commentResponse -> commentResponse.getId() != null)
                             .collect(Collectors.toList());
@@ -112,7 +112,7 @@ public class PostServiceImp implements PostService {
 
             var user = userRepository.findById(post.getUser_id());
             if (user.isEmpty()) return Optional.empty();
-            var profile = castObject.profilePrivate(user.get());
+            var profile = castObject.profilePublic(user.get());
             var attachments = attachmentRepository
                     .findAllByPost_idAndStatus(post.getId(), Attachment.StatusEnum.SHOW)
                     .stream().map(attachment -> castObject.attachmentModel(attachment))
@@ -123,7 +123,7 @@ public class PostServiceImp implements PostService {
                 .stream().map(comment -> {
                     var userComment = userRepository.findById(comment.getUser_id());
                     if(userComment.isEmpty()) return new CommentResponse();
-                    var commentProfile = castObject.profilePrivate(userComment.get());
+                    var commentProfile = castObject.profilePublic(userComment.get());
                     return castObject.commentModel(commentProfile, comment);
                 }).filter(commentResponse -> commentResponse.getId() != null)
                 .collect(Collectors.toList());
@@ -147,7 +147,7 @@ public class PostServiceImp implements PostService {
             if(currentUser.isEmpty()) return new DatabaseQueryResult(
                     false, "User not found",
                     HttpStatus.NOT_FOUND, postRequest);
-            var profile = castObject.profilePrivate(currentUser.get());
+            var profile = castObject.profilePublic(currentUser.get());
 
 
             var course = courseRepository.findById(courseId);
@@ -195,7 +195,7 @@ public class PostServiceImp implements PostService {
             if(currentUser.isEmpty()) return new DatabaseQueryResult(
                 false, "User not found",
                 HttpStatus.NOT_FOUND, postRequest);
-            var profile = castObject.profilePrivate(currentUser.get());
+            var profile = castObject.profilePublic(currentUser.get());
             var post = postRepository
                     .findFirstByIdAndStatus(postId, Post.StatusEnum.SHOW);
 

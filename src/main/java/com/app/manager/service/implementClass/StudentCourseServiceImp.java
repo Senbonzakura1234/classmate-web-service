@@ -10,6 +10,7 @@ import com.app.manager.model.payload.response.SessionResponse;
 import com.app.manager.model.payload.response.UserProfileResponse;
 import com.app.manager.model.returnResult.DatabaseQueryResult;
 import com.app.manager.service.interfaceClass.StudentCourseService;
+import com.app.manager.service.interfaceClass.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
     @Autowired RoleRepository roleRepository;
     @Autowired SessionRepository sessionRepository;
     @Autowired CastObject castObject;
+    @Autowired UserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(StudentCourseServiceImp.class);
 
@@ -183,7 +185,8 @@ public class StudentCourseServiceImp implements StudentCourseService {
     }
 
     @Override
-    public Optional<CourseProfileResponse> getAllProfileInCourse(String courseId) {
+    public Optional<CourseProfileResponse> getAllProfileInCourse(String currentUsername,
+                                                                 String courseId) {
         try {
             var studentCourses = studentCourseRepository
                     .findAllByCourse_idAndStatus(courseId, StudentCourse.StatusEnum.SHOW)
@@ -193,7 +196,9 @@ public class StudentCourseServiceImp implements StudentCourseService {
                 try {
                     var user = userRepository.findById(s)
                             .orElseThrow(() -> new RuntimeException("User not found"));
-                    return castObject.profilePublic(user);
+
+                    return userService.userProfile(user.getId(), currentUsername)
+                            .orElse(new UserProfileResponse());
                 } catch (RuntimeException e) {
                     e.printStackTrace();
                     return new UserProfileResponse();
@@ -214,10 +219,13 @@ public class StudentCourseServiceImp implements StudentCourseService {
                     .countAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
             var sessionCount = sessionRepository
                     .countAllByCourse_idAndStatusIsNot(course.getId(), Session.StatusEnum.CANCEL);
+            var teacherProfile = userService
+                    .userProfile(teacher.getId(), currentUsername)
+                    .orElse(new UserProfileResponse());
+
             return Optional.of(new CourseProfileResponse(castObject.courseModel(
                     course, sessionModel, studentCount, sessionCount),
-                    castObject.profilePublic(teacher),
-                    studentCoursesProfile));
+                    teacherProfile, studentCoursesProfile));
         } catch (RuntimeException e) {
             e.printStackTrace();
             logger.info(e.getMessage());

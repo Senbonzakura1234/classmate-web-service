@@ -60,7 +60,7 @@ public class CommentServiceImp implements CommentService {
                 try {
                     var user = userRepository.findById(comment.getUser_id())
                         .orElseThrow(() -> new RuntimeException("user not found"));
-                    var profile = castObject.profilePrivate(user);
+                    var profile = castObject.profilePublic(user);
                     return castObject.commentModel(profile, comment);
                 } catch (RuntimeException e) {
                     e.printStackTrace();
@@ -76,7 +76,7 @@ public class CommentServiceImp implements CommentService {
         try {
             var currentUser = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("User not found"));
-            var profile = castObject.profilePrivate(currentUser);
+            var profile = castObject.profilePublic(currentUser);
             var post = postRepository.findFirstByIdAndStatus(postId, Post.StatusEnum.SHOW)
                     .orElseThrow(() -> new RuntimeException("post not found"));
             var course = courseRepository.findById(post.getCourse_id())
@@ -121,7 +121,7 @@ public class CommentServiceImp implements CommentService {
                 return new DatabaseQueryResult(false,
                         "user not found",
                         HttpStatus.NOT_FOUND, commentRequest);
-            var profile = castObject.profilePrivate(currentUser.get());
+            var profile = castObject.profilePublic(currentUser.get());
 
             var comment = commentRepository
                     .findFirstByIdAndStatus(commentId, Comment.StatusEnum.SHOW);

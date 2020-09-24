@@ -15,7 +15,8 @@ public interface StudentCourseService {
                                                   String currentUsername);
     DatabaseQueryResult removeStudentFromCourse(StudentCourseRequest studentCourseRequest,
                                            String currentUsername);
-    Optional<CourseProfileResponse> getAllProfileInCourse(String courseId);
+    Optional<CourseProfileResponse> getAllProfileInCourse(String currentUsername,
+                                                          String courseId);
 
 
 }

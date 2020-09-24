@@ -301,12 +301,15 @@ public class CourseController {
 
 
     @GetMapping("/allProfileInCourse")
-    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('TEACHER') or hasRole('ADMIN') or hasRole('STUDENT')")
     public ResponseEntity<?> allProfileInCourse(
             @RequestParam(value = "course_id") String course_id){
-//        var currentUser = SecurityContextHolder
-//                .getContext().getAuthentication().getName();
-        return ResponseEntity.ok(studentCourseService
-                .getAllProfileInCourse(course_id));
+        var currentUser = SecurityContextHolder
+                .getContext().getAuthentication().getName();
+        var result = studentCourseService
+                .getAllProfileInCourse(currentUser, course_id);
+        return result.isEmpty() ? ResponseEntity
+                .status(HttpStatus.NOT_FOUND).body("Not found")
+                : ResponseEntity.ok(result.get());
     }
 }

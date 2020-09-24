@@ -123,7 +123,7 @@ public class CastObject {
     }
 
 
-    public UserProfileResponse profilePublic(User user){
+    public UserProfileResponse profilePrivate(User user){
         if(user == null) return new UserProfileResponse();
         return new UserProfileResponse(
                 user.getId(), user.getUsername(),
@@ -132,7 +132,7 @@ public class CastObject {
                 user.getAddress(), user.getCivil_id(),
                 user.getBirthday(), user.getGender());
     }
-    public UserProfileResponse profilePrivate(User user){
+    public UserProfileResponse profilePublic(User user){
         if(user == null) return new UserProfileResponse();
         return new UserProfileResponse(user.getId(), user.getUsername(),
                 user.getAvatar_file_id());
