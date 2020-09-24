@@ -1,5 +1,8 @@
 package com.app.manager.controller;
 
+import com.app.manager.context.repository.UserRepository;
+import com.app.manager.entity.EVisibility;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -8,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 //    @Autowired private GoogleDrive googleDriveservice;
 //    @Autowired private Drive googleDrive;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @GetMapping({"/", "/home"})
@@ -24,7 +29,18 @@ public class HomeController {
 //        }
 
 //        pingHost("localhost", 5000, 5000);
-
+        userRepository.findAll().forEach(user -> {
+            if(user.getUsername().contains("Teacher")){
+                user.setProfile_visibility(EVisibility.PUBLIC);
+                userRepository.save(user);
+            }else if(user.getUsername().contains("Student")){
+                user.setProfile_visibility(EVisibility.COURSE);
+                userRepository.save(user);
+            }else {
+                user.setProfile_visibility(EVisibility.PRIVATE);
+                userRepository.save(user);
+            }
+        });
         return "views/home";
     }
 

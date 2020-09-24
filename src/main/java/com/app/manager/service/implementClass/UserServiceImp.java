@@ -128,7 +128,7 @@ public class UserServiceImp implements UserService {
             userRepository.save(user);
             return new DatabaseQueryResult(true,
                     "User registered successfully!",
-                    HttpStatus.OK, castObject.profilePrivate(user));
+                    HttpStatus.OK, castObject.profileShow(user));
         } catch (Exception e) {
             e.printStackTrace();
             return new DatabaseQueryResult(false,
@@ -144,7 +144,10 @@ public class UserServiceImp implements UserService {
             var users = userRepository.findAll(specification);
 
             return users.stream().map(user -> new UserProfileResponse(
-                    user.getId(), user.getUsername(), user.getAvatar_file_id()))
+                    user.getId(), user.getUsername(),
+                    user.getAvatar_file_id(),
+                    user.getProfile_visibility(),
+                    user.isFace_definition()))
                     .collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,7 +180,7 @@ public class UserServiceImp implements UserService {
             var userToSee = userRepository.findById(userId)
                     .orElseThrow(() -> new RuntimeException("User Not found"));
             if(userToSee.getUsername().equals(currentUsername))
-                return Optional.of(castObject.profilePrivate(userToSee));
+                return Optional.of(castObject.profileShow(userToSee));
 
             var currentUser = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("User Not found"));
@@ -186,13 +189,13 @@ public class UserServiceImp implements UserService {
                     .orElseThrow(() -> new RuntimeException("Role Not found"));
 
             if(roles.contains(roleAdmin))
-                return Optional.of(castObject.profilePrivate(userToSee));
+                return Optional.of(castObject.profileShow(userToSee));
 
             if(userToSee.getProfile_visibility() == EVisibility.PRIVATE)
-                return Optional.of(castObject.profilePublic(userToSee));
+                return Optional.of(castObject.profileHide(userToSee));
 
             if(userToSee.getProfile_visibility() == EVisibility.PUBLIC)
-                return Optional.of(castObject.profilePrivate(userToSee));
+                return Optional.of(castObject.profileShow(userToSee));
 
             var listCourseOfUserToSee = studentCourseRepository
                     .findAllByUser_idAndStatus(userToSee.getId(),
@@ -204,13 +207,14 @@ public class UserServiceImp implements UserService {
 
             if(roles.contains(roleTeacher)) {
                 if(userToSee.getProfile_visibility() == EVisibility.TEACHER)
-                    return Optional.of(castObject.profilePrivate(userToSee));
-                if (listCourseOfUserToSee.stream().map(studentCourse -> courseRepository
-                        .findById(studentCourse.getCourse_id()))
-                        .filter(Optional::isPresent)
-                        .anyMatch(course -> course.get().getUser_id()
-                            .equals(currentUser.getId()))) {
-                    return Optional.of(castObject.profilePrivate(userToSee));
+                    return Optional.of(castObject.profileShow(userToSee));
+                if (listCourseOfUserToSee.stream()
+                    .map(studentCourse -> courseRepository
+                    .findById(studentCourse.getCourse_id()))
+                    .filter(Optional::isPresent)
+                    .anyMatch(course -> course.get().getUser_id()
+                        .equals(currentUser.getId()))) {
+                    return Optional.of(castObject.profileShow(userToSee));
                 }
             }
 
@@ -218,7 +222,7 @@ public class UserServiceImp implements UserService {
                     .orElseThrow(() -> new RuntimeException("Role Not found"));
 
             if (!roles.contains(roleStudent))
-                return Optional.of(castObject.profilePublic(userToSee));
+                return Optional.of(castObject.profileHide(userToSee));
 
 
             var listCourseOfCurrentUser = studentCourseRepository
@@ -228,8 +232,8 @@ public class UserServiceImp implements UserService {
             return listCourseOfCurrentUser.stream().map(toKey)
                     .flatMap(key -> listCourseOfUserToSee.stream()
                             .map(toKey).filter(key::equals)).count() > 0 ?
-                    Optional.of(castObject.profilePrivate(userToSee))
-                    : Optional.of(castObject.profilePublic(userToSee));
+                    Optional.of(castObject.profileShow(userToSee))
+                    : Optional.of(castObject.profileHide(userToSee));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -254,9 +258,10 @@ public class UserServiceImp implements UserService {
             u.setCivil_id(userProfileRequest.getCivil_id());
             u.setBirthday(userProfileRequest.getBirthday());
             u.setGender(userProfileRequest.getGender());
+            u.setProfile_visibility(userProfileRequest.getProfile_visibility());
             userRepository.save(u);
             return new DatabaseQueryResult(true, "Update profile success",
-                    HttpStatus.OK, castObject.profilePrivate(u));
+                    HttpStatus.OK, castObject.profileShow(u));
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());

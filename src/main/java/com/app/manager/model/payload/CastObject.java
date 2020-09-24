@@ -123,19 +123,22 @@ public class CastObject {
     }
 
 
-    public UserProfileResponse profilePrivate(User user){
+    public UserProfileResponse profileShow(User user){
         if(user == null) return new UserProfileResponse();
         return new UserProfileResponse(
                 user.getId(), user.getUsername(),
                 user.getEmail(), user.getFullname(),
                 user.getPhone(), user.getAvatar_file_id(),
                 user.getAddress(), user.getCivil_id(),
-                user.getBirthday(), user.getGender());
+                user.getBirthday(), user.getGender(),
+                user.getProfile_visibility(),
+                user.isFace_definition());
     }
-    public UserProfileResponse profilePublic(User user){
+    public UserProfileResponse profileHide(User user){
         if(user == null) return new UserProfileResponse();
         return new UserProfileResponse(user.getId(), user.getUsername(),
-                user.getAvatar_file_id());
+                user.getAvatar_file_id(), user.getProfile_visibility(),
+                user.isFace_definition());
     }
 
     public StudentExercise studentExerciseEntity(String studentId, String exerciseId,

@@ -287,7 +287,7 @@ public class AttendanceServiceImp implements AttendanceService {
                 var user = userRepository.findById(attendance.getUser_id());
                 if(user.isEmpty()) return new AttendanceCheckResponse();
                 return new AttendanceCheckResponse(castObject
-                    .profilePublic(user.get()), attendance.getSession_id(),
+                    .profileHide(user.get()), attendance.getSession_id(),
                         attendance.getStatus());
             }).filter(attendanceCheckResponse ->
                 attendanceCheckResponse.getSession_id() != null)

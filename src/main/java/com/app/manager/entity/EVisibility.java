@@ -2,10 +2,10 @@ package com.app.manager.entity;
 
 public enum EVisibility {
     PUBLIC(0, "Public"),
-    TEACHER(2, "All Teacher"),
-    COURSE(1, "Classmate and teacher only"),
+    TEACHER(1, "All Teacher"),
+    COURSE(2, "Classmate and teacher only"),
     TEACHERCOURSE(3, "Teacher of course only"),
-    PRIVATE(3, "Private");
+    PRIVATE(4, "Private");
 
     private final int value;
     private final String name;

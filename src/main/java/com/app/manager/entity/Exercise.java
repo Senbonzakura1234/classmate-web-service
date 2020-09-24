@@ -77,11 +77,11 @@ public class Exercise {
 
     public enum StatusEnum {
         ALL(0, "All"),
-        PENDING(0, "Pending"),
-        ONGOING(1, "Ongoing"),
-        MARKING(2, "Marking"),
-        END(3, "End"),
-        CANCEL(4, "Cancel");
+        PENDING(1, "Pending"),
+        ONGOING(2, "Ongoing"),
+        MARKING(3, "Marking"),
+        END(4, "End"),
+        CANCEL(5, "Cancel");
 
         private final int value;
         private final String name;

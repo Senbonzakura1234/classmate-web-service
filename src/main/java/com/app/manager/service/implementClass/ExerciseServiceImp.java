@@ -77,7 +77,7 @@ public class ExerciseServiceImp implements ExerciseService {
                             .findFirstByUser_idAndExercise_idAndStatus(student.get().getId(), exercise.getId(),
                                     StudentExercise.StatusEnum.SHOW);
                         if(sumittedExercise.isEmpty()) return new GradeRecordResponse();
-                        return new GradeRecordResponse(castObject.profilePublic(student.get()),
+                        return new GradeRecordResponse(castObject.profileHide(student.get()),
                             castObject.studentExerciseModelGradeList(sumittedExercise.get()));
                     }).filter(GradeRecordResponse::isNotNull).collect(Collectors.toList());
 
@@ -104,7 +104,7 @@ public class ExerciseServiceImp implements ExerciseService {
         try {
             var student = userRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("user not found"));
-            var profile = castObject.profilePublic(student);
+            var profile = castObject.profileHide(student);
 
             var courseIds =
                 (courseId == null || courseId.isEmpty() || courseId.isBlank())
@@ -149,7 +149,7 @@ public class ExerciseServiceImp implements ExerciseService {
         try {
             var user = userRepository.findByUsername(currentUsername)
                     .orElseThrow(() -> new RuntimeException("user not found"));
-            var profile = castObject.profilePublic(user);
+            var profile = castObject.profileHide(user);
 
             var courseIds =
                 (courseId == null || courseId.isEmpty() || courseId.isBlank())
@@ -279,7 +279,7 @@ public class ExerciseServiceImp implements ExerciseService {
                         .findFirstByUser_idAndExercise_idAndStatus(student.get().getId(), exercise.getId(),
                             StudentExercise.StatusEnum.SHOW);
                     if(sumittedExercise.isEmpty()) return new GradeRecordResponse();
-                    return new GradeRecordResponse(castObject.profilePublic(student.get()),
+                    return new GradeRecordResponse(castObject.profileHide(student.get()),
                             castObject.studentExerciseModelGradeList(sumittedExercise.get()));
                 }).filter(GradeRecordResponse::isNotNull).collect(Collectors.toList());
 

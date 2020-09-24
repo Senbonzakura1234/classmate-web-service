@@ -1,5 +1,6 @@
 package com.app.manager.model.payload.request;
 
+import com.app.manager.entity.EVisibility;
 import com.app.manager.entity.User;
 
 import javax.validation.constraints.Min;
@@ -14,6 +15,8 @@ public class UserProfileRequest {
     @NotNull @Min(0L) private Long birthday = 0L;
     @NotNull private User.GenderEnum gender
             = User.GenderEnum.UNKNOWN;
+    @NotNull private EVisibility profile_visibility
+            = EVisibility.PRIVATE;
 
     public UserProfileRequest() {
     }
@@ -21,7 +24,8 @@ public class UserProfileRequest {
     public UserProfileRequest(@NotNull String fullname, @NotNull String avatar_file_id,
                               @NotNull String phone, @NotNull String address,
                               @NotNull String civil_id, @NotNull @Min(0L) Long birthday,
-                              @NotNull User.GenderEnum gender) {
+                              @NotNull User.GenderEnum gender,
+                              @NotNull EVisibility profile_visibility) {
         this.fullname = fullname;
         this.avatar_file_id = avatar_file_id;
         this.phone = phone;
@@ -29,6 +33,7 @@ public class UserProfileRequest {
         this.civil_id = civil_id;
         this.birthday = birthday;
         this.gender = gender;
+        this.profile_visibility = profile_visibility;
     }
 
     public String getFullname() {
@@ -85,5 +90,13 @@ public class UserProfileRequest {
 
     public void setAvatar_file_id(String avatar_file_id) {
         this.avatar_file_id = avatar_file_id;
+    }
+
+    public EVisibility getProfile_visibility() {
+        return profile_visibility;
+    }
+
+    public void setProfile_visibility(EVisibility profile_visibility) {
+        this.profile_visibility = profile_visibility;
     }
 }

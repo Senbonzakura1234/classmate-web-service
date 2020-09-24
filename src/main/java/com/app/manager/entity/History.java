@@ -87,7 +87,7 @@ public class History {
         NOT_SEEDED(0, "Not seed"),
         SEEDED(1, "Seeded"),
         SEEDABLE(2, "Seedable"),
-        UNSEEDABLE(2, "Unseedable");
+        UNSEEDABLE(3, "Unseedable");
 
         private final int value;
         private final String name;

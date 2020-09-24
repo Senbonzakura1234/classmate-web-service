@@ -72,8 +72,8 @@ public class Session {
         PENDING(1, "Pending"),
         ONGOING(2, "Ongoing"),
 //        ATTENDANCE_CHECK(3, "Attendance check"),
-        END(4, "End"),
-        CANCEL(5, "Cancel");
+        END(3, "End"),
+        CANCEL(4, "Cancel");
 
         private final int value;
         private final String name;

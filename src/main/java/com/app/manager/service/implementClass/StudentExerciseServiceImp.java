@@ -273,12 +273,13 @@ public class StudentExerciseServiceImp implements StudentExerciseService {
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             var studentExercise = studentExerciseRepository
-                    .findById(studentExerciseId).orElseThrow(() -> new RuntimeException("Student Exercise not found"));
+                    .findById(studentExerciseId)
+                    .orElseThrow(() -> new RuntimeException("Student Exercise not found"));
             if(studentExercise.getStatus() == StudentExercise.StatusEnum.HIDE)
                 return Optional.empty();
             var files = fileRepository.findAllByStudentexercise_idAndStatus(
-                    studentExercise.getId(),
-                    File.StatusEnum.SHOW).stream().map(file -> castObject.fileModel(file))
+                    studentExercise.getId(), File.StatusEnum.SHOW)
+                    .stream().map(file -> castObject.fileModel(file))
                     .collect(Collectors.toList());
 
             var role = roleRepository.findByName(ERole.ROLE_ADMIN)

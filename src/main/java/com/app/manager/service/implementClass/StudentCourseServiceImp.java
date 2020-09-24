@@ -65,6 +65,11 @@ public class StudentCourseServiceImp implements StudentCourseService {
                         " or user is not Student",
                         HttpStatus.NOT_FOUND, studentCourseRequest);
 
+            if(student.get().getProfile_visibility() == EVisibility.PRIVATE)
+                return new DatabaseQueryResult(false,
+                        "student has to public profile to teacher of course at least",
+                        HttpStatus.BAD_REQUEST, "joinCourseByTokenRequest");
+
 //            if(student.get().isFacedefinition())
 //                return new DatabaseQueryResult(false,
 //                        "Student must have face definition",
@@ -96,8 +101,14 @@ public class StudentCourseServiceImp implements StudentCourseService {
         try {
             var student = userRepository.findByUsername(currentUsername);
             if(student.isEmpty())
-                return new DatabaseQueryResult(false, "Teacher not found",
+                return new DatabaseQueryResult(false, "student not found",
                         HttpStatus.NOT_FOUND, "joinCourseByTokenRequest");
+
+            if(student.get().getProfile_visibility() == EVisibility.PRIVATE)
+                return new DatabaseQueryResult(false,
+                        "student has to public profile to teacher of course at least",
+                        HttpStatus.BAD_REQUEST, "joinCourseByTokenRequest");
+
 
             var course = courseRepository
                     .findById(joinCourseByTokenRequest.getCourse_id());

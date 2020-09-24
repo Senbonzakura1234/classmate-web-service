@@ -136,7 +136,7 @@ public class User {
         MALE(1, "Male"),
         FEMALE(2, "Female"),
         OTHER(3, "Other"),
-        UNKNOWN(3, "Unknown");
+        UNKNOWN(4, "Unknown");
 
         private final int value;
         private final String name;
