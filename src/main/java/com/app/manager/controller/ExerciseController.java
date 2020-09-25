@@ -169,7 +169,7 @@ public class ExerciseController {
         var currentUser = SecurityContextHolder
                 .getContext().getAuthentication().getName();
         var result = studentExerciseService
-                .saveStudentExercise(studentExerciseRequest, exercise_id, currentUser);
+                .saveStudentExercise(studentExerciseRequest, currentUser, exercise_id);
         return result.isSuccess() ? ResponseEntity.ok(result) :
                 ResponseEntity.status(result.getHttp_status()).body(result);
     }

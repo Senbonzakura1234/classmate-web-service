@@ -64,8 +64,8 @@ public class Course implements Serializable {
     @Column(name = "token_expire_date_date", nullable = false)
     private Long token_expire_date = 0L;
 
-    @Column(name = "join_course_token", nullable = false)
-    private String join_course_token = "";
+    @Column(name = "token", nullable = false)
+    private String token = "";
 
     @Column(name = "joinable_by_token", nullable = false)
     private boolean joinable_by_token = false;
@@ -255,12 +255,12 @@ public class Course implements Serializable {
         this.token_expire_date = token_expire_date;
     }
 
-    public String getJoin_course_token() {
-        return join_course_token;
+    public String getToken() {
+        return token;
     }
 
-    public void setJoin_course_token(String join_course_token) {
-        this.join_course_token = join_course_token;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public boolean isJoinable_by_token() {

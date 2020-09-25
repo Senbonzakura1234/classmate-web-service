@@ -42,11 +42,13 @@ public class CourseTokenServiceImp implements CourseTokenService {
 
             var c = course.get();
             c.setJoinable_by_token(true);
-            c.setJoin_course_token(UUID.randomUUID().toString()
-                    .replace("-", ""));
+            c.setToken(UUID.randomUUID().toString()
+                    .replace("-", "")
+                    + System.currentTimeMillis()
+                    + (System.currentTimeMillis() + 4L * 86400000L));
             c.setToken_expire_date(System.currentTimeMillis() + 4L * 86400000L);
             courseRepository.save(c);
-            return new CourseTokenResponse(c.getJoin_course_token(),
+            return new CourseTokenResponse(c.getToken(),
                     courseId, c.getToken_expire_date(), true,
                     HttpStatus.OK, "generate token success");
         } catch (Exception e) {

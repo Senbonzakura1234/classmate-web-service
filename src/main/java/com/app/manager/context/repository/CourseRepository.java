@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface CourseRepository extends JpaRepository<Course, String>,
         JpaSpecificationExecutor<Course> {
     Optional<Course> findFirstByName(String name);
+    Optional<Course> findFirstByToken(String token);
 }

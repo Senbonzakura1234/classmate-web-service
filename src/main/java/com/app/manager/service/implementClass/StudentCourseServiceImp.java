@@ -111,7 +111,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
 
 
             var course = courseRepository
-                    .findById(joinCourseByTokenRequest.getCourse_id());
+                    .findFirstByToken(joinCourseByTokenRequest.getToken());
             if(course.isEmpty() || course.get().getStatus() == Course.StatusEnum.CANCEL)
                 return new DatabaseQueryResult(false, "Course not found",
                         HttpStatus.NOT_FOUND, "joinCourseByTokenRequest");
@@ -123,7 +123,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
                     "Token expire or course not enabled join by token yet",
                     HttpStatus.BAD_REQUEST, "joinCourseByTokenRequest");
 
-            if(!c.getJoin_course_token().equals(joinCourseByTokenRequest.getToken()))
+            if(!c.getToken().equals(joinCourseByTokenRequest.getToken()))
                 return new DatabaseQueryResult(false,
                         "Token not match",
                         HttpStatus.BAD_REQUEST, "joinCourseByTokenRequest");
