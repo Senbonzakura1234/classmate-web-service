@@ -59,29 +59,40 @@ public class StudentCourseServiceImp implements StudentCourseService {
                 return new DatabaseQueryResult(false, "Role not found",
                         HttpStatus.NOT_FOUND, studentCourseRequest);
 
-            var student = userRepository.findById(studentCourseRequest.getStudent_id());
+            var student = userRepository
+                    .findById(studentCourseRequest.getStudent_id());
             if(student.isEmpty() || !student.get().getRoles().contains(role.get()))
-                return new DatabaseQueryResult(false, "Student not found," +
+                return new DatabaseQueryResult(false,
+                        "Student not found," +
                         " or user is not Student",
-                        HttpStatus.NOT_FOUND, studentCourseRequest);
+                        HttpStatus.NOT_FOUND,
+                        studentCourseRequest);
 
             if(student.get().getProfile_visibility() == EVisibility.PRIVATE)
                 return new DatabaseQueryResult(false,
-                        "student has to public profile to teacher of course at least",
-                        HttpStatus.BAD_REQUEST, "joinCourseByTokenRequest");
+                        "student has to public" +
+                                " profile to teacher of course at least",
+                        HttpStatus.BAD_REQUEST,
+                        studentCourseRequest);
 
 //            if(student.get().isFacedefinition())
 //                return new DatabaseQueryResult(false,
 //                        "Student must have face definition",
 //                        HttpStatus.BAD_REQUEST, "");
 
+            var oldStudentCourse = studentCourseRepository
+                    .findFirstByCourse_idAndUser_idAndStatus(course.get().getId(),
+                            student.get().getId(), StudentCourse.StatusEnum.SHOW);
+            if(oldStudentCourse.isEmpty())
+                return new DatabaseQueryResult(false,
+                        "You are already in course " + course.get().getName(),
+                        HttpStatus.BAD_REQUEST, studentCourseRequest);
 
             var studentCourse = new StudentCourse();
             studentCourse.setCourse_id(studentCourseRequest.getCourse_id());
             studentCourse.setUser_id(studentCourseRequest.getStudent_id());
             studentCourse.setName(student.get().getUsername()
                     + ", " + course.get().getName());
-
             studentCourseRepository.save(studentCourse);
 
             return new DatabaseQueryResult(true, "add student to course success",
@@ -96,37 +107,49 @@ public class StudentCourseServiceImp implements StudentCourseService {
     }
 
     @Override
-    public DatabaseQueryResult addStudentToCourseByToken(JoinCourseByTokenRequest joinCourseByTokenRequest,
-                                                         String currentUsername) {
+    public DatabaseQueryResult addStudentToCourseByToken(
+            JoinCourseByTokenRequest joinCourseByTokenRequest, String currentUsername) {
         try {
             var student = userRepository.findByUsername(currentUsername);
             if(student.isEmpty())
-                return new DatabaseQueryResult(false, "student not found",
-                        HttpStatus.NOT_FOUND, "joinCourseByTokenRequest");
+                return new DatabaseQueryResult(false,
+                        "student not found",
+                        HttpStatus.NOT_FOUND, "");
 
             if(student.get().getProfile_visibility() == EVisibility.PRIVATE)
                 return new DatabaseQueryResult(false,
-                        "student has to public profile to teacher of course at least",
-                        HttpStatus.BAD_REQUEST, "joinCourseByTokenRequest");
+                        "student has to public " +
+                        "profile to teacher of course at least",
+                        HttpStatus.BAD_REQUEST, "");
 
 
             var course = courseRepository
                     .findFirstByToken(joinCourseByTokenRequest.getToken());
             if(course.isEmpty() || course.get().getStatus() == Course.StatusEnum.CANCEL)
                 return new DatabaseQueryResult(false, "Course not found",
-                        HttpStatus.NOT_FOUND, "joinCourseByTokenRequest");
+                        HttpStatus.NOT_FOUND, "");
+
+            var oldStudentCourse = studentCourseRepository
+                .findFirstByCourse_idAndUser_idAndStatus(course.get().getId(),
+                        student.get().getId(), StudentCourse.StatusEnum.SHOW);
+            if(oldStudentCourse.isEmpty())
+                return new DatabaseQueryResult(false,
+                        "You are already in course " + course.get().getName(),
+                        HttpStatus.BAD_REQUEST, "");
+
             var c = course.get();
 
             if(c.getToken_expire_date() < System.currentTimeMillis()
                     || !c.isJoinable_by_token())
                 return new DatabaseQueryResult(false,
                     "Token expire or course not enabled join by token yet",
-                    HttpStatus.BAD_REQUEST, "joinCourseByTokenRequest");
+                    HttpStatus.BAD_REQUEST, "");
 
             if(!c.getToken().equals(joinCourseByTokenRequest.getToken()))
                 return new DatabaseQueryResult(false,
                         "Token not match",
-                        HttpStatus.BAD_REQUEST, "joinCourseByTokenRequest");
+                        HttpStatus.BAD_REQUEST, "");
+
             var studentCourse = new StudentCourse();
             studentCourse.setCourse_id(c.getId());
             studentCourse.setUser_id(student.get().getId());
@@ -137,7 +160,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
 
             return new DatabaseQueryResult(true,
                     "add student to course success",
-                    HttpStatus.OK, "joinCourseByTokenRequest");
+                    HttpStatus.OK, "");
         } catch (Exception e) {
             e.printStackTrace();
             logger.info(e.getMessage());
@@ -145,7 +168,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
             return new DatabaseQueryResult(false,
                     "Server error " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "joinCourseByTokenRequest");
+                    "");
         }
     }
 
