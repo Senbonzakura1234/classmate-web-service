@@ -83,7 +83,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
             var oldStudentCourse = studentCourseRepository
                     .findFirstByCourse_idAndUser_idAndStatus(course.get().getId(),
                             student.get().getId(), StudentCourse.StatusEnum.SHOW);
-            if(oldStudentCourse.isEmpty())
+            if(oldStudentCourse.isPresent())
                 return new DatabaseQueryResult(false,
                         "You are already in course " + course.get().getName(),
                         HttpStatus.BAD_REQUEST, studentCourseRequest);
@@ -132,7 +132,7 @@ public class StudentCourseServiceImp implements StudentCourseService {
             var oldStudentCourse = studentCourseRepository
                 .findFirstByCourse_idAndUser_idAndStatus(course.get().getId(),
                         student.get().getId(), StudentCourse.StatusEnum.SHOW);
-            if(oldStudentCourse.isEmpty())
+            if(oldStudentCourse.isPresent())
                 return new DatabaseQueryResult(false,
                         "You are already in course " + course.get().getName(),
                         HttpStatus.BAD_REQUEST, "");
