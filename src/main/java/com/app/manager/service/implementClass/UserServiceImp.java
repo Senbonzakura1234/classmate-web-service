@@ -285,7 +285,7 @@ public class UserServiceImp implements UserService {
                             student.isFace_definition()
                                 && student.getFace_definition_id() != null
                                 && !student.getFace_definition_id().isEmpty()?
-                            student.getFace_definition_id() : "");
+                            student.getFace_definition_id() : "", student.getId());
 
             var result = sentNewFaceDefinition(faceDefinition);
             if(result.isEmpty() || !result.get().isSuccess())

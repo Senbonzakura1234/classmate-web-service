@@ -12,15 +12,26 @@ public class FaceDefinitionServerRequest {
 
     private String oldDefinitionId;
 
+    private String user_id;
+
     public FaceDefinitionServerRequest() {
     }
 
     public FaceDefinitionServerRequest(List<String> file_ids,
-                                       boolean update,
-                                       String oldDefinitionId) {
+                                       boolean update, String oldDefinitionId,
+                                       String user_id) {
         this.file_ids = file_ids;
         this.update = update;
         this.oldDefinitionId = oldDefinitionId;
+        this.user_id = user_id;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public String getDefinition_id() {
