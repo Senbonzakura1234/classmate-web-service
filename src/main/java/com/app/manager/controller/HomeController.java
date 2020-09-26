@@ -1,17 +1,15 @@
 package com.app.manager.controller;
 
-import com.app.manager.context.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
+//@SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Controller
 public class HomeController {
 //    @Autowired private GoogleDrive googleDriveservice;
 //    @Autowired private Drive googleDrive;
-    @Autowired
-    private UserRepository userRepository;
+//    @Autowired
+//    private UserRepository userRepository;
 
 
     @GetMapping({"/", "/home"})
