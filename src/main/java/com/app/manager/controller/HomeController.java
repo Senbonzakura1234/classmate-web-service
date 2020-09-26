@@ -32,7 +32,7 @@ public class HomeController {
 //            user.setFullname(user.getUsername());
 //            userRepository.save(user);
 //        });
-//        return "views/home";
+        return "views/home";
     }
 
 //    private boolean pingHost(String host, int port, int timeout) {
