@@ -209,7 +209,7 @@ public class CourseServiceImp implements CourseService {
                         HttpStatus.BAD_REQUEST, courseRequest);
 
             if(course.getStatus() != Course.StatusEnum.PENDING &&
-                course.getStatus() != Course.StatusEnum.PENDING)
+                course.getStatus() != Course.StatusEnum.ONGOING)
                 return new DatabaseQueryResult(false,
                         "you can't update your course " +
                                 "when it is not pending or ongoing",
