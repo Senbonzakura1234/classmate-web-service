@@ -155,6 +155,12 @@ public class SessionServiceImp implements SessionService {
                         "Course is not ongoing",
                         HttpStatus.BAD_REQUEST, sessionRequest);
 
+            if(!sessionRequest.isStart_immidiately() &&
+                sessionRequest.getStart_time() < System.currentTimeMillis())
+                return new DatabaseQueryResult(false,
+                        "timestamp error",
+                        HttpStatus.BAD_REQUEST, sessionRequest);
+
             var session  = s.get();
             session.setSession_duration(sessionRequest.getSession_duration());
             session.setName(sessionRequest.getName());

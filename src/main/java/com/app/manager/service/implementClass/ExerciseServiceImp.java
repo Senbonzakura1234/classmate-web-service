@@ -206,7 +206,10 @@ public class ExerciseServiceImp implements ExerciseService {
                     return new DatabaseQueryResult(false, "Not your course",
                             HttpStatus.BAD_REQUEST, exerciseRequest);
             }
-
+            if(exerciseRequest.getExercise_end_time() < System.currentTimeMillis())
+                return new DatabaseQueryResult(false,
+                        "timestamp error",
+                        HttpStatus.BAD_REQUEST, exerciseRequest);
             var exercise = castObject.exerciseEntity(exerciseRequest,
                     session.get().getCourse_id());
             exerciseRepository.save(exercise);
@@ -338,7 +341,9 @@ public class ExerciseServiceImp implements ExerciseService {
             e.setTitle(exerciseRequest.getTitle());
             e.setContent(exerciseRequest.getContent());
             e.setAnswer(exerciseRequest.getAnswer());
-            e.setExercise_end_time(exerciseRequest.getExercise_end_time());
+            if (exerciseRequest.getExercise_end_time() >= System.currentTimeMillis()) {
+                e.setExercise_end_time(exerciseRequest.getExercise_end_time());
+            }
             e.setShow_answer(exerciseRequest.isShow_answer());
             e.setAuto_close(exerciseRequest.isAuto_close());
             e.setAuto_start(exerciseRequest.isAuto_start());

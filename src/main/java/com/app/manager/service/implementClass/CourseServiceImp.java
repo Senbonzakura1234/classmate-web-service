@@ -127,8 +127,11 @@ public class CourseServiceImp implements CourseService {
                 return new DatabaseQueryResult(false,
                         "Teacher not found",
                         HttpStatus.NOT_FOUND, courseRequest);
-
-
+            if(courseRequest.getStart_date() < System.currentTimeMillis() ||
+                courseRequest.getEnd_date() < courseRequest.getStart_date())
+                return new DatabaseQueryResult(false,
+                        "timestamp error",
+                        HttpStatus.BAD_REQUEST, courseRequest);
             var course = castObject.courseEntity(courseRequest,
                     teacher.get().getId());
             courseRepository.save(course);
@@ -137,9 +140,9 @@ public class CourseServiceImp implements CourseService {
                     .findFirstByCourse_idAndStatus(course.getId(),
                             Session.StatusEnum.ONGOING);
             var studentCount = studentCourseRepository
-                    .countAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
+                .countAllByCourse_idAndStatus(course.getId(), StudentCourse.StatusEnum.SHOW);
             var sessionCount = sessionRepository
-                    .countAllByCourse_idAndStatusIsNot(course.getId(), Session.StatusEnum.CANCEL);
+                .countAllByCourse_idAndStatusIsNot(course.getId(), Session.StatusEnum.CANCEL);
 
             return new DatabaseQueryResult(true,
                     "save course success",
@@ -195,10 +198,7 @@ public class CourseServiceImp implements CourseService {
             if(c.isEmpty()) return new DatabaseQueryResult(false,
                     "save course failed",
                     HttpStatus.NOT_FOUND, courseRequest);
-            if(c.get().getStatus() != Course.StatusEnum.PENDING)
-                return new DatabaseQueryResult(false,
-                        "you can't update your course when it is not pending",
-                        HttpStatus.BAD_REQUEST, courseRequest);
+
             var course  = c.get();
 
 
@@ -208,12 +208,24 @@ public class CourseServiceImp implements CourseService {
                 return new DatabaseQueryResult(false, "Not your course",
                         HttpStatus.BAD_REQUEST, courseRequest);
 
+            if(course.getStatus() != Course.StatusEnum.PENDING &&
+                course.getStatus() != Course.StatusEnum.PENDING)
+                return new DatabaseQueryResult(false,
+                        "you can't update your course " +
+                                "when it is not pending or ongoing",
+                        HttpStatus.BAD_REQUEST, courseRequest);
+
+
             course.setCoursecategory_id(courseRequest.getCourse_category_id());
             course.setDescription(courseRequest.getDescription());
             course.setCover_file_id(courseRequest.getCover_file_id());
-            course.setEnd_date(courseRequest.getEnd_date());
             course.setName(courseRequest.getName());
-            course.setStart_date(courseRequest.getStart_date());
+
+            if (courseRequest.getStart_date() >= System.currentTimeMillis() &&
+                courseRequest.getEnd_date() >= courseRequest.getStart_date()) {
+                course.setStart_date(courseRequest.getStart_date());
+                course.setEnd_date(courseRequest.getEnd_date());
+            }
             courseRepository.save(course);
 
             var currentSession = sessionRepository
